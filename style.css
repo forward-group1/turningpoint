@@ -784,4 +784,42 @@ body {
     }
  
 
+/* 📱 手機版專用樣式 (螢幕寬度 768px 以下) */
+@media (max-width: 768px) {
+    /* 1. 調整 Header 容器內邊距與佈局 */
+    .nav-container {
+        padding: 8px 12px;
+        gap: 8px; /* 元素之間的間隔拉近 */
+    }
 
+    /* 2. 縮小 Logo 圖片 */
+    .logo-img {
+        width: 32px;
+        height: auto;
+    }
+
+    /* 3. 隱藏手機版較不重要的英文或副標題，節省空間 */
+    .tp-sub, 
+    .company-sub {
+        display: none; /* 隱藏小字，讓視覺更乾淨 */
+    }
+
+    /* 4. 主標題字體縮小 */
+    .brand-title {
+        font-size: 1.1rem;
+        line-height: 1.2;
+    }
+
+    /* 5. 縮小右側橘色按鈕 */
+    .btn-cta {
+        padding: 6px 12px;
+        font-size: 0.85rem;
+        white-space: nowrap; /* 確保按鈕文字不換行 */
+        flex-shrink: 0; /* 防止按鈕被壓扁 */
+    }
+
+    /* 如果按鈕文字太長，可以只顯示簡短文字 */
+    .btn-cta span {
+        font-size: 0.85rem;
+    }
+}
