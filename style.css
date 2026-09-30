@@ -105,18 +105,17 @@ body {
 }
 
 .tp-sub {
-    font-size: 10px;
     font-weight: 700;
     letter-spacing: 1.5px;
-    color: var(--navy-900);
-    font-size: clamp(0.65rem, 2.5vw, 0.85rem);
+    color: var(--navy-000);
+    font-size: clamp(0.55rem, 2vw, 0.75rem);
     white-space: nowrap;
 }
 
 /* 頂部左上主標題樣式 */
 .brand-title {
     font-family: var(--font-serif);
-    font-size: 20px;
+    font-size: clamp(0.875rem, 3.5vw, 1.25rem);
     font-weight: 700;
     color: var(--navy-900);
     line-height: 1.1;
@@ -125,9 +124,8 @@ body {
 }
 
 .company-sub {
-    font-size: 13px;
     color: var(--gray-600);
-    font-size: clamp(0.65rem, 2.5vw, 0.85rem);
+    font-size: clamp(0.55rem, 2vw, 0.75rem);
     white-space: nowrap;
 }
 
@@ -158,6 +156,7 @@ body {
     align-items: center;
     gap: 8px;
     transition: background-color 0.2s ease, transform 0.1s ease;
+    flex-shrink: 0;
 }
 
 .btn-cta:hover {
@@ -790,4 +789,21 @@ body {
     }
  
 
+/* 手機版微調 (螢幕寬度 768px 以下) */
+@media (max-width: 768px) {
+    .btn-cta {
+        padding: 6px 10px;  /* 手機上縮小內邊距 */
+        font-size: 12px;    /* 手機上字體變 12px */
+        gap: 4px;           /* 圖示與文字間距縮小 */
+    }
 
+    /* 如果按鈕內有 span，也確保字體跟著變成 12px */
+    .btn-cta span {
+        font-size: 12px;
+    }
+
+    /* 按鈕內的箭頭圖示同步縮小 */
+    .btn-cta i {
+        font-size: 10px;
+    }
+}
