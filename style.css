@@ -1,0 +1,787 @@
+/*(CSS Variables)*/
+
+html {
+    scroll-behavior: smooth; /* 啟動全頁面平滑捲動效果 */
+}
+:root {
+    /* 色彩系統：海軍藍系列與品牌橘色 Accent */
+    --navy-950: #0a1426;       /* 極深海軍藍 (頁尾背景) */
+    --navy-900: #18395e;       /* 主海軍藍 (Hero背景、導航) */
+    --navy-800: #1c355e;       /* 海軍藍 Hover/卡片背景 */
+    --navy-700: #2a497a;       /* 輔助藍 */
+    --amber-accent: #f06a00;   /* 品牌主橘色 (強調/按鈕) */
+    --amber-hover: #d95d00;    /* 橘色 Hover 效果 */
+    --light-bg: #f8f9fc;       /* 全局淺灰背景 */
+    --white: #ffffff;          /* 純白 */
+    --gray-100: #f1f5f9;       /* 淺灰 */
+    --gray-200: #e2e8f0;       /* 邊框線條灰 */
+    --gray-400: #94a3b8;       /* 輔助灰 */
+    --gray-600: #475569;       /* 次要內文灰 */
+    --gray-800: #1e293b;       /* 主要內文深灰 */
+
+    /* 字型定義 */
+    --font-serif: 'Noto Serif TC', serif; /* 宋體/明體 (用於大標題) */
+    --font-sans: 'Noto Sans TC', sans-serif;  /* 黑體 (用於內文) */
+
+    /* 圓角與陰影 */
+    --radius-sm: 6px;
+    --radius-md: 10px;
+    --radius-lg: 16px;
+    --shadow-md: 0 4px 12px rgba(20, 40, 75, 0.08);
+    --shadow-lg: 0 10px 25px rgba(20, 40, 75, 0.15);
+}
+
+/* ========================================== */
+/* 全局初始化 (Reset & Base Styles)           */
+/* ========================================== */
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    font-family: var(--font-sans);
+    background-color: var(--light-bg);
+    color: var(--gray-800);
+    line-height: 1.6;
+    overflow-x: hidden;
+}
+
+/* 通用工具類別：動態隱藏元素 */
+.hidden { 
+    display: none !important; 
+}
+
+/* ========================================== */
+/* 頂部導航列樣式 (Navigation Bar)            */
+/* ========================================== */
+.navbar {
+    background: var(--white);
+    border-bottom: 1px solid var(--gray-200);
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    height: 80px;
+    display: flex;
+    align-items: center;
+}
+/* 頂端寬度*/
+.nav-container {
+    max-width: 100%;
+    width: 100%;
+    margin: 0 auto;
+    padding: 0 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+/* logo文字對齊 */
+.brand-logo-group {
+    display: flex;
+    align-items: center;
+    gap: 35px;
+}
+/* LOGO圖片外框大小控制 */
+.logo-mark {
+    width: 44px;
+    height: 44px;
+    flex-shrink: 0;      /* 防止圖片被擠壓變形 */
+    margin-top: -20px;
+}
+
+/* 確保圖片能自適應外框大小，並維持比例不變形 */
+.logo-img, .logo-svg-lg, .logo-svg-sm {
+    width: 150%;
+    height: 150%;
+    object-fit: contain; /* 保持圖片比例 */
+    display: block;
+}
+
+.brand-names {
+    display: flex;
+    flex-direction: column;
+}
+
+.tp-sub {
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 1.5px;
+    color: var(--navy-900);
+}
+
+/* 頂部左上主標題樣式 */
+.brand-title {
+    font-family: var(--font-serif);
+    font-size: 20px;
+    font-weight: 700;
+    color: var(--navy-900);
+    line-height: 1.1;
+}
+
+.company-sub {
+    font-size: 13px;
+    color: var(--gray-600);
+}
+
+.nav-actions {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+}
+
+.badge-trust {
+    font-size: 13px;
+    color: var(--navy-900);
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+/* 導航列 CTA 按鈕 */
+.btn-cta {
+    background-color: var(--amber-accent);
+    color: var(--white);
+    padding: 10px 18px;
+    border-radius: var(--radius-sm);
+    font-size: 14px;
+    font-weight: 600;
+    text-decoration: none;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    transition: background-color 0.2s ease, transform 0.1s ease;
+}
+
+.btn-cta:hover {
+    background-color: var(--amber-hover);
+    transform: translateY(-1px);
+}
+
+/* ========================================== */
+/* 主视觉 Banner 樣式 (Hero Section)           */
+/* ========================================== */
+.hero-section {
+    background-color: var(--navy-900);
+    color: var(--white);
+    position: relative;
+    padding: 60px 0 80px 0;
+    overflow: hidden;
+}
+
+/* 背景微小圓點點綴圖案 */
+.hero-bg-pattern {
+    position: absolute;
+    inset: 0;
+    opacity: 0.08;
+    background-image: radial-gradient(#fff 1px, transparent 1px);
+    background-size: 18px 18px;
+    pointer-events: none;
+}
+
+.hero-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 20px;
+    position: relative;
+    z-index: 2;
+}
+
+.hero-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 40px;
+    align-items: center;
+}
+
+@media (min-width: 992px) {
+    .hero-grid {
+        grid-template-columns: 4.5fr 7.5fr;
+    }
+}
+
+/* 左側品牌幾何卡片 */
+.visual-card-wrapper {
+    display: flex;
+    justify-content: center;
+}
+
+.brand-card-frame {
+    background: rgba(255, 255, 255, 0.96);
+    color: var(--navy-900);
+    padding: 36px 28px;
+    border-radius: var(--radius-md);
+    border: 1px solid rgba(20, 40, 75, 0.3);
+    position: relative;
+    width: 100%;
+    max-width: 320px;
+    text-align: center;
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+}
+
+/* 左上角幾何邊角框點綴 */
+.brand-card-frame::before {
+    content: '';
+    position: absolute;
+    top: -5px;
+    left: -5px;
+    width: 14px;
+    height: 14px;
+    border-top: 2.5px solid var(--navy-900);
+    border-left: 2.5px solid var(--navy-900);
+}
+
+/* 右下角幾何邊角框點綴 */
+.brand-card-frame::after {
+    content: '';
+    position: absolute;
+    bottom: -5px;
+    right: -5px;
+    width: 14px;
+    height: 14px;
+    border-bottom: 2.5px solid var(--navy-900);
+    border-right: 2.5px solid var(--navy-900);
+}
+
+.card-content{
+    display: flex;
+    flex-direction: column;
+    align-items: center; /
+    text-align: center;
+}
+
+.card-content .logo-img {
+    max-width: 150px; /*限制LOGO最大的寬度*/
+    width: 100%;      /* 確保圖片隨比例縮放 */
+    height: auto;     /* 保持圖片比例不變形 */
+    margin: 0 auto;   /* 圖片水平置中 */
+}
+
+.card-tp {
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 2px;
+    color: var(--navy-800);
+}
+
+.card-title {
+    font-family: var(--font-serif);
+    font-size: 22px;
+    font-weight: 900;
+    margin: 4px 0;
+}
+
+.card-divider {
+    height: 2px;
+    width: 40px;
+    background-color: var(--amber-accent);
+    margin: 10px auto;
+}
+
+.card-company {
+    font-size: 14px;
+    font-weight: 700;
+}
+
+.card-en {
+    font-size: 9px;
+    color: var(--gray-600);
+}
+
+/* 右側文字與排版 */
+.hero-tag {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    padding: 6px 14px;
+    border-radius: 20px;
+    font-size: 12px;
+    color: #ffc107;
+    margin-bottom: 20px;
+}
+
+.hero-headline {
+    font-family: var(--font-serif);
+    font-size: 32px;
+    line-height: 1.35;
+    margin-bottom: 16px;
+    font-weight: 700;
+}
+
+@media (min-width: 768px) {
+    .hero-headline {
+        font-size: 42px;
+    }
+}
+
+.highlight-text {
+    color: var(--amber-accent);
+    position: relative;
+}
+
+.hero-description {
+    font-size: 15px;
+    color: var(--gray-200);
+    margin-bottom: 28px;
+    font-weight: 300;
+    line-height: 1.7;
+}
+
+/* 數據與優勢網格 */
+.metrics-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
+    gap: 12px;
+    margin-bottom: 24px;
+}
+
+.metric-box {
+    background: rgba(28, 53, 94, 0.8);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    padding: 12px;
+    border-radius: var(--radius-sm);
+    display: flex;
+    flex-direction: column;
+}
+
+.metric-num {
+    font-size: 16px;
+    font-weight: 700;
+    color: var(--amber-accent);
+}
+
+.metric-label {
+    font-size: 11px;
+    color: var(--gray-400);
+}
+
+.slogan-bar {
+    font-family: var(--font-serif);
+    font-size: 14px;
+    color: var(--gray-200);
+    letter-spacing: 2px;
+    border-left: 3px solid var(--amber-accent);
+    padding-left: 12px;
+}
+
+/* ========================================== */
+/* 服務與議題介紹區塊樣式 (Services Section)   */
+/* ========================================== */
+.services-section {
+    padding: 70px 0;
+    background-color: var(--light-bg);
+}
+
+.section-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 20px;
+}
+
+.section-header {
+    text-align: center;
+    max-width: 650px;
+    margin: 0 auto 40px;
+}
+
+.section-tag {
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 2px;
+    color: var(--amber-accent);
+    display: block;
+    margin-bottom: 6px;
+}
+
+.section-title {
+    font-family: var(--font-serif);
+    font-size: 28px;
+    color: var(--navy-900);
+    font-weight: 700;
+}
+
+.section-desc {
+    font-size: 14px;
+    color: var(--gray-600);
+    margin-top: 8px;
+}
+
+.services-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 20px;
+}
+
+.service-card {
+    background: var(--white);
+    padding: 24px;
+    border-radius: var(--radius-md);
+    border: 1px solid var(--gray-200);
+    box-shadow: var(--shadow-md);
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.service-card:hover {
+    transform: translateY(-3px);
+    box-shadow: var(--shadow-lg);
+}
+
+.icon-box {
+    width: 44px;
+    height: 44px;
+    background: rgba(20, 40, 75, 0.06);
+    color: var(--navy-900);
+    border-radius: var(--radius-sm);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 18px;
+    margin-bottom: 16px;
+}
+
+.service-card h4 {
+    font-size: 16px;
+    color: var(--navy-900);
+    margin-bottom: 8px;
+}
+
+.service-card p {
+    font-size: 13px;
+    color: var(--gray-600);
+    margin-bottom: 16px;
+    line-height: 1.6;
+}
+
+.card-feature {
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--amber-accent);
+    display: flex;
+    align-items: center;
+    gap: 6px;}
+
+
+/* 後台網址設定列樣式 */
+.config-bar {
+    background: var(--navy-900);
+    color: var(--white);
+    padding: 14px 20px;
+    border-radius: var(--radius-md) var(--radius-md) 0 0;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;}
+
+.form-card-box {
+    background: var(--light-bg);
+    border: 1px solid var(--gray-200);
+    border-top: none;
+    border-radius: 0 0 var(--radius-md) var(--radius-md);
+    padding: 24px;
+    height: auto;
+    overflow: visible;
+}
+
+.form-card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+    padding-bottom: 12px;
+    border-bottom: 1px solid var(--gray-200);
+    height: auto;
+    overflow: visible;
+
+}
+
+.form-card-title {
+    font-size: 14px;
+    font-weight: 700;
+    color: var(--navy-900);
+    height: auto;
+    overflow: visible;}
+
+.iframe-container iframe {
+    width: 100%;
+    height: 700px;
+    background: var(--white);
+    border-radius: var(--radius-sm);
+    border: 1px solid var(--gray-200);
+}
+
+/* 備用原生表單欄位排版 */
+.builtin-form {
+    background: var(--white);
+    padding: 24px;
+    border-radius: var(--radius-sm);
+    border: 1px solid var(--gray-200);
+ 
+}
+
+.info-alert {
+    background: rgba(20, 40, 75, 0.05);
+    border-left: 4px solid var(--navy-900);
+    padding: 10px 14px;
+    border-radius: 4px;
+    font-size: 12px;
+    color: var(--navy-900);
+    margin-bottom: 20px;
+    display: flex;
+    gap: 8px;
+    align-items: center;
+}
+
+.form-row {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 16px;
+    margin-bottom: 16px;
+}
+
+@media (min-width: 600px) {
+    .form-row {
+        grid-template-columns: 1fr 1fr;
+    }
+}
+
+.form-group {
+    margin-bottom: 16px;
+
+}
+
+.form-group label {
+    display: block;
+    font-size: 14px;
+    font-weight: 700;
+    color: var(--navy-900);
+    margin-bottom: 6px;
+}
+
+.req { 
+    color: #e53e3e; 
+}
+
+.form-group input[type="text"],
+.form-group input[type="tel"],
+.form-group input[type="email"],
+.form-group textarea {
+    width: 100%;
+    padding: 10px 12px;
+    border: 1px solid var(--gray-200);
+    border-radius: var(--radius-sm);
+    font-size: 13px;
+    outline: none;
+}
+
+.form-group input:focus,
+.form-group textarea:focus {
+    border-color: var(--navy-900);
+}
+
+.form-group textarea{
+    width: 100% !important;
+    height: 100px !important;     
+    resize: none !important;      
+    overflow-y: auto !important; 
+    padding: 12px;
+    box-sizing: border-box;
+}
+
+.checkbox-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 8px;
+}
+
+@media (min-width: 600px) {
+    .checkbox-grid {
+        grid-template-columns: 1fr 1fr;
+    }
+}
+
+.checkbox-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 12px;
+    color: var(--gray-800);
+    padding: 8px;
+    border: 1px solid var(--gray-100);
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+.consent-box {
+    border: none;
+    padding: 0;
+    align-items: flex-start;
+    color: var(--amser-accent);
+}
+
+.consent-text {
+    font-size: 13px;
+    color: var(--amber-accent);
+    line-height: 1.4;
+}
+
+.btn-submit {
+    width: 100%;
+    background: var(--navy-900);
+    color: var(--white);
+    padding: 12px;
+    border: none;
+    border-radius: var(--radius-sm);
+    font-size: 14px;
+    font-weight: 700;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    transition: background 0.2s ease;
+}
+
+.btn-submit:hover {
+    background: var(--navy-800);
+}
+
+/* 安全標章排版 */
+.security-badges {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 13px;
+    margin-top: 24px;
+    transform: translateY(-13px);
+
+}
+
+.badge-item {
+    background: var(--light-bg);
+    border: 1px solid var(--gray-200);
+    padding: 10px;
+    border-radius: var(--radius-sm);
+    font-size: 12px;
+    color: var(--gray-600);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+}
+
+.badge-item i {
+    color: var(--navy-900);
+}
+
+/* ========================================== */
+/* 頁尾樣式 (Footer Section)                   */
+/* ========================================== */
+/* 頁尾外層容器 */
+.footer {
+    background-color: #0a192f; /* 保持頁尾背景色 */
+    color: #a8b2d1;
+    padding: 40px 20px 20px;
+}
+
+.footer-container {
+    max-width: 1100px;
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+    gap: 30px;
+}
+
+/* 各欄位基本設定 */
+.footer-col {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    font-size: 13px;
+    line-height: 1.6;
+}
+
+.footer-heading {
+    color: #ffffff;
+    font-size: 15px;
+    font-weight: 600;
+    margin-bottom: 6px;
+    border-bottom: 2px solid #ffc107;
+    display: inline-block;
+    padding-bottom: 4px;
+    width: fit-content;
+}
+
+/* 聯絡資訊 */
+.footer-info-col a {
+    color: #a8b2d1;
+    text-decoration: none;
+    transition: color 0.2s;
+}
+
+.footer-info-col a:hover {
+    color: #f06a00;
+}
+
+/* 右側LINE按鈕與版權 */
+.line-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    background-color: #06c755; /* LINE 品牌綠色 */
+    color: #ffffff;
+    padding: 8px 16px;
+    border-radius: 6px;
+    text-decoration: none;
+    font-weight: 600;
+    font-size: 13px;
+    width: fit-content;
+    margin-bottom: 12px;
+    transition: background-color 0.2s, transform 0.1s;
+}
+
+.line-btn:hover {
+    background-color: #05b34c;
+    transform: translateY(-2px);
+}
+
+.footer-copyright {
+    font-size: 11px;
+    color: var(--gray-400, #8892b0);
+    margin-top: 10px;
+}
+
+.footer-keywords {
+    margin-top: 4px;
+}
+
+/* 桌機版響應式排版 (768px 以上自動並排) */
+@media (min-width: 768px) {
+    .footer-container {
+        flex-direction: row;
+        justify-content: space-between;
+        align-items: flex-start;
+    }
+
+    .footer-col {
+        flex: 1;
+        margin-top: 20px;
+    }
+
+    .footer-right-col {
+        align-items: flex-end;
+        text-align: right;
+    }
+
+    .footer-heading {
+        margin-left: 0;
+    }
+
+    .footer-right-col .footer-heading {
+        margin-right: 0;
+    }
+ 
+
+
