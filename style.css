@@ -105,6 +105,7 @@ body {
 }
 
 .tp-sub {
+    font-size: 10px;
     font-weight: 700;
     letter-spacing: 1.5px;
     color: var(--navy-900);
@@ -115,14 +116,16 @@ body {
 /* 頂部左上主標題樣式 */
 .brand-title {
     font-family: var(--font-serif);
-    font-size: font-size: clamp(1.1rem, 4vw, 1.6rem);
-    white-space: nowrap; /* 避免文字意外斷行 */
+    font-size: 20px;
     font-weight: 700;
     color: var(--navy-900);
     line-height: 1.1;
+    font-size: clamp(1.1rem, 4vw, 1.6rem);
+    white-space: nowrap; /* 避免文字意外斷行 */
 }
 
 .company-sub {
+    font-size: 13px;
     color: var(--gray-600);
     font-size: clamp(0.65rem, 2.5vw, 0.85rem);
     white-space: nowrap;
