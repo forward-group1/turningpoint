@@ -44,15 +44,6 @@ document.addEventListener('DOMContentLoaded', function() {
             submitBtn.disabled = true;
             submitBtn.querySelector('span').innerText = '資料送出中...';
 
-            // 收集產業類別 (複選 + 其他)
-            let selectedIndustries = Array.from(document.querySelectorAll('input[name="industry"]:checked'))
-                                         .map(cb => cb.value);
-            const otherIndustryInput = document.getElementById('otherIndustry');
-            const otherIndustry = otherIndustryInput ? otherIndustryInput.value.trim() : '';
-            if (otherIndustry) {
-                selectedIndustries.push(`其他: ${otherIndustry}`);
-            }
-
             // 收集勞務議題 (複選)
             let selectedIssues = Array.from(document.querySelectorAll('input[name="issues"]:checked'))
                                       .map(cb => cb.value);
@@ -67,7 +58,7 @@ document.addEventListener('DOMContentLoaded', function() {
             const clientUserIdVal = document.getElementById('clientUserId') ? document.getElementById('clientUserId').value : '';
 
             if (selectedIndustries.length === 0) {
-    alert('請至少選擇一項產業類別！');
+    alert('還沒填寫完成再檢查一下吧!');
     submitBtn.disabled = false;
     submitBtn.querySelector('span').innerText = '送出試用申請';
     return;
