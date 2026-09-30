@@ -19,6 +19,8 @@
     
     <!-- 引入外部自訂 CSS 樣式檔 -->
     <link rel="stylesheet" href="style.css">
+
+    <script src="https://static.line-scdn.net/liff/edge/2/sdk.js"></script>
 </head>
 <body>
 
@@ -192,7 +194,6 @@
             <!-- 後台管理／表單網址設定工具列 (方便串接您的 Google 表單) -->
             <div class="config-bar">
                 <div class="config-title">
-                    
                 </div>
                 <div class="config-input-group">
                 </div>
@@ -202,7 +203,7 @@
             <div class="form-card-box">
                 <div class="form-card-header">
                     <div class="form-card-title">
-                       <i class="fa-solid fa-file"></i> 勞動法令顧問試用案
+                       <i class="fa-solid fa-file"></i> 勞動法令顧問試用案(改名字)
                     </div>
                 </div>
 
@@ -210,48 +211,41 @@
                 <form class="builtin-form" id="consultForm">
     <div class="form-row">
         <div class="form-group">
-            <label>1. 公司名稱(必填) <span class="req">*</span></label>
+            <label>1. 公司名稱<span class="req">*</span></label>
             <input type="text" id="companyName" required placeholder="XX股份有限公司">
         </div>
         <div class="form-group">
-            <label>2. 填寫人姓名 / 職稱(必填)<span class="req">*</span></label>
-            <input type="text" id="userName" required placeholder="王大明 / HR經理">
+            <label>2. 承辦姓名<span class="req">*</span></label>
+            <input type="text" id="userName" required placeholder="王大明">
         </div>
-    </div>
-
-    <div class="form-row">
         <div class="form-group">
-            <label>3. 聯絡電話 / 手機(必填)<span class="req">*</span></label>
+            <label>3. 職稱<span class="req">*</span></label>
+            <input type="text" id="jobTitle" required placeholder="HR經理">
+        </div>
+         <div class="form-group">
+            <label>4. 聯絡電話 / 手機<span class="req">*</span></label>
             <input type="tel" id="phone" required placeholder="03-123-4567(分機：123) / 0912-345-678">
         </div>
         <div class="form-group">
-            <label>4. 電子郵件 (E-mail)(必填) <span class="req">*</span></label>
+            <label>5. 電子郵件<span class="req">*</span></label>
             <input type="email" id="email" required placeholder="hr@gmail.com">
         </div>
-    </div>
-
-    <div class="form-group">
-        <label>5. 貴公司的產業類別(可多選) <span class="req">*</span></label>
-        <div class="checkbox-grid" id="industryGroup">
-            <label class="checkbox-item"><input type="checkbox" name="industry" value="科技/製造業"> <span>科技 / 製造業</span></label>
-            <label class="checkbox-item"><input type="checkbox" name="industry" value="餐飲/零售/電商"> <span>餐飲 / 零售 / 電商</span></label>
-            <label class="checkbox-item"><input type="checkbox" name="industry" value="金融/保險/法律"> <span>金融 / 保險 / 法律</span></label>
-            <label class="checkbox-item"><input type="checkbox" name="industry" value="醫療/生技/健康"> <span>醫療 / 生技 / 健康</span></label>
-            <label class="checkbox-item"><input type="checkbox" name="industry" value="教育/培訓/顧問"> <span>教育 / 培訓 / 顧問</span></label>
-            <label class="checkbox-item"><input type="checkbox" name="industry" value="媒體/廣告/公關"> <span>媒體 / 廣告 / 公關</span></label>
-            <input type="text" id="otherIndustry" placeholder="其他...">
+        <div class="form-group">
+        <label>6. 貴公司的產業類別<span class="req">*</span></label>
+        <input type="email" id="industry" required placeholder="例如:金融/電商/餐飲...">
         </div>
     </div>
 
     <div class="form-group">
-        <label>6. 公司規模（員工人數）(必填) <span class="req">*</span></label>
+        <label>7. 公司規模（員工人數）<span class="req">*</span></label>
         <label><input type="radio" name="companySize" value="100人以下" required> 100人以下</label>
         <label><input type="radio" name="companySize" value="100-200人"> 100-200人</label>
         <label><input type="radio" name="companySize" value="200人以上"> 200人以上</label>
     </div>
 
+
     <div class="form-group">
-        <label>7.貴公司目前遇到的勞務議題與現況？(可多選) <span class="req">*</span></label>
+        <label>8.貴公司目前遇到的勞務議題與現況？(可多選) <span class="req">*</span></label>
         <div class="checkbox-grid" id="issuesGroup">
             <label class="checkbox-item"><input type="checkbox" name="issues" value="勞資爭議調解中"> <span>勞資爭議調解中</span></label>
             <label class="checkbox-item"><input type="checkbox" name="issues" value="工時計算/排班/加班費爭議"> <span>工時計算 / 排班 / 加班費爭議</span></label>
@@ -265,29 +259,29 @@
     </div>
 
     <div class="form-group">
-        <label>8. 具體爭議或問題簡述 (必填)<span class="req">*</span></label>
+        <label>9. 具體爭議與遭遇的問題<span class="req">*</span></label>
         <textarea id="description" rows="3" required placeholder="例如：近期擬調動員工崗位，想確認相關程序是否合規..."></textarea>
     </div>
 
     <div class="form-group">
-        <label>9.貴公司過去是否曾遇到過勞動檢查或勞資調解事件(選填)</label>
+        <label>10.貴公司過去是否曾遇到過勞動檢查或勞資調解事件</label>
         <label><input type="radio" name="pastExperience" value="有，曾被勞檢且有改善處分/罰金紀錄"> 有，曾被勞檢且有改善處分/罰金紀錄</label>
         <label><input type="radio" name="pastExperience" value="有，曾進行過勞資爭議調解"> 有，曾進行過勞資爭議調解</label>
         <label><input type="radio" name="pastExperience" value="無，但希望預先防範"> 無，但希望預先防範</label>
     </div>
 
     <div class="form-group">
-        <label>10.貴公司目前是否有配合的外部常年勞務或法律顧問(選填)</label>
+        <label>11.貴公司目前是否有配合的外部常年勞務或法律顧問</label>
         <label><input type="radio" name="externalConsultant" value="有，已有長期配合的勞務顧問/律師"> 有，已有長期配合的勞務顧問/律師</label>
         <label><input type="radio" name="externalConsultant" value="無，目前主要由內部HR / 管理層研究處置"> 無，目前主要由內部HR / 管理層研究處置</label>
         <label><input type="radio" name="externalConsultant" value="無，正在尋找合適的勞務顧問團隊"> 無，正在尋找合適的勞務顧問團隊</label>
     </div>
 
     <div class="form-group">
-    <label>11. 期望諮詢/對接日期與時間 (請依偏好順序選擇三個時段) <span class="req">*</span></label>
+    <label>12. 期望諮詢日期與時間<span class="req">*</span></label>
     
     <div style="margin-bottom: 10px;">
-        <label style="font-size: 0.9em; color: #555;">第一首選時段：</label>
+        <label style="font-size: 0.9em; color: #555;">時段一</label>
         <div class="form-row">
             <input type="date" id="bookingDate1" required>
             <select id="bookingTime1" required>
@@ -312,7 +306,7 @@
     </div>
 
     <div style="margin-bottom: 10px;">
-        <label style="font-size: 0.9em; color: #555;">第二首選時段：</label>
+        <label style="font-size: 0.9em; color: #555;">時段二：</label>
         <div class="form-row">
             <input type="date" id="bookingDate2" required>
             <select id="bookingTime2" required>
@@ -337,7 +331,7 @@
     </div>
 
     <div style="margin-bottom: 10px;">
-        <label style="font-size: 0.9em; color: #555;">第三首選時段：</label>
+        <label style="font-size: 0.9em; color: #555;">時段三：</label>
         <div class="form-row">
             <input type="date" id="bookingDate3" required>
             <select id="bookingTime3" required>
@@ -373,6 +367,9 @@
         <i class="fa-solid fa-paper-plane"></i>
         <span>送出試用申請</span>
     </button>
+
+    <!-- 隱藏欄位：存放抓取到的 LINE User ID -->
+<input type="hidden" id="clientUserId" name="clientUserId" value="">
 </form>
         
 
@@ -425,6 +422,5 @@
 
     <!-- 引入外部自訂 JS 腳本檔 -->
     <script src="script.js"></script>
-    <script src="https://static.line-scdn.net/liff/edge/2/sdk.js"></script>
 </body>
 </html>
