@@ -22,17 +22,16 @@ document.addEventListener('DOMContentLoaded', function() {
         })
         .catch(err => console.error("LIFF 初始化失敗:", err));
 
-    // 2. 鎖定日期輸入框：只能選擇「明天（含）之後」
+  document.addEventListener("DOMContentLoaded", function () {
+    // 鎖定只能選擇明天及未來的日期
     const tomorrow = new Date();
     tomorrow.setDate(tomorrow.getDate() + 1);
     const minDate = tomorrow.toISOString().split('T')[0];
 
-    if (document.getElementById('bookingDate1')) {
-        document.getElementById('bookingDate1').setAttribute('min', minDate);
-        document.getElementById('bookingDate2').setAttribute('min', minDate);
-        document.getElementById('bookingDate3').setAttribute('min', minDate);
-    }
-
+    document.getElementById('bookingDate1').setAttribute('min', minDate);
+    document.getElementById('bookingDate2').setAttribute('min', minDate);
+    document.getElementById('bookingDate3').setAttribute('min', minDate);
+});
     // 3. 表單送出監聽
     const form = document.getElementById('consultForm');
     const submitBtn = document.getElementById('submitBtn');
