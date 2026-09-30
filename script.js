@@ -58,11 +58,6 @@ document.addEventListener('DOMContentLoaded', function() {
             const clientUserIdVal = document.getElementById('clientUserId') ? document.getElementById('clientUserId').value : '';
 
             if (selectedIndustries.length === 0) {
-    alert('還沒填寫完成再檢查一下吧!');
-    submitBtn.disabled = false;
-    submitBtn.querySelector('span').innerText = '送出試用申請';
-    return;
-}
 
 if (selectedIssues.length === 0) {
     alert('請至少選擇一項遇到的勞務議題！');
