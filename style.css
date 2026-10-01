@@ -793,7 +793,7 @@ body {
 }
 
 /* 只有在電腦版 (寬度大於 768px) 才顯示 */
-@media screen and (min-width: 769px) {
+@media screen and (min-width: 992px) {
     .desktop-only-btn {
         display: inline-flex !important;
     }
