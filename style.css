@@ -164,6 +164,24 @@ body {
     transform: translateY(-1px);
 }
 
+/* -----------------------------------------
+   992px 以下（包含所有平板與手機）強制完全隱藏按鈕
+----------------------------------------- */
+@media screen and (max-width: 992px) {
+    .btn-cta,
+    header .btn-cta,
+    .nav-actions .btn-cta {
+        display: none !important;
+        visibility: hidden !important;
+        opacity: 0 !important;
+        width: 0 !important;
+        height: 0 !important;
+        padding: 0 !important;
+        margin: 0 !important;
+        overflow: hidden !important;
+    }
+}
+
 /* ========================================== */
 /* 主视觉 Banner 樣式 (Hero Section)           */
 /* ========================================== */
@@ -787,15 +805,5 @@ body {
     .footer-right-col .footer-heading {
         margin-right: 0;
     }
-    /* 預設在手機版/小螢幕完全隱藏 */
-.desktop-only-btn {
-    display: none !important;
-}
 
-/* 只有在電腦版 (寬度大於 768px) 才顯示 */
-@media screen and (min-width: 992px) {
-    .desktop-only-btn {
-        display: inline-flex !important;
-    }
-}
 }
