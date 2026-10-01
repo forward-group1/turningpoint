@@ -1,11 +1,12 @@
 const GAS_WEB_APP_URL = 'https://script.google.com/macros/s/AKfycby8NlePGVKzMRI3enrV8fI8xndRowhWXUBY5nMrHkTPQXH0AK2N4KIssQMtyM0N0envkg/exec';
-const LIFF_URL = 'https://liff.line.me/2011796780-42NFl2WH'; // 您的 LIFF 連結
+const LIFF_ID = '20117996780-42NFl2WH'; 
+const LIFF_URL = `https://liff.line.me/${LIFF_ID}`; // 補上 LIFF URL 定義
 
 document.addEventListener('DOMContentLoaded', function() {
-    
-    // 如果頁面網址帶有 ?bind=1，代表這是從 LIFF 點進來做 LINE ID 綁定的頁面
     const urlParams = new URLSearchParams(window.location.search);
-    if (urlParams.get('bind') === '1') {
+    
+    // 如果網址帶有 ?bind=1 或帶有 rowId，代表是從 LIFF 進來做綁定的
+    if (urlParams.get('bind') === '1' || urlParams.has('rowId')) {
         handleLiffBinding();
         return;
     }
@@ -41,7 +42,7 @@ document.addEventListener('DOMContentLoaded', function() {
             };
 
             const formData = {
-                action: 'submitForm', // 標記為寫入表單
+                action: 'submitForm',
                 companyName: document.getElementById('companyName').value,
                 userName: document.getElementById('userName').value,
                 jobTitle: document.getElementById('jobTitle').value,
@@ -67,8 +68,8 @@ document.addEventListener('DOMContentLoaded', function() {
             .then(res => res.json())
             .then(data => {
                 if (data.result === 'success') {
-                    // 將 GAS 回傳的 rowId 帶入 LIFF 連結中，供後續綁定
-                    const bindUrl = `${LIFF_URL}?rowId=${data.rowId}`;
+                    // 將 rowId 與 bind 標記帶入 LIFF 連結中
+                    const bindUrl = `${LIFF_URL}?bind=1&rowId=${data.rowId}`;
                     document.getElementById('lineBindBtn').href = bindUrl;
                     
                     // 顯示成功彈窗
@@ -91,7 +92,7 @@ document.addEventListener('DOMContentLoaded', function() {
 function handleLiffBinding() {
     if (typeof liff === 'undefined') return;
 
-    liff.init({ liffId: "2011796780-42NFl2WH" }).then(() => {
+    liff.init({ liffId: LIFF_ID }).then(() => {
         if (liff.isLoggedIn()) {
             liff.getProfile().then(profile => {
                 const urlParams = new URLSearchParams(window.location.search);
@@ -107,7 +108,6 @@ function handleLiffBinding() {
                         clientUserId: profile.userId
                     })
                 }).then(() => {
-                    // 綁定完成，關閉 LIFF 視窗回到 LINE 聊天室
                     if (liff.isInClient()) {
                         liff.closeWindow();
                     } else {
@@ -119,6 +119,8 @@ function handleLiffBinding() {
         } else {
             liff.login();
         }
+    }).catch(err => {
+        console.error('LIFF Init Error:', err);
     });
 }
 
