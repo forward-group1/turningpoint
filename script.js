@@ -10,7 +10,41 @@ document.addEventListener('DOMContentLoaded', function() {
         handleLiffBinding();
         return;
     }
+    // 當使用者點擊彈窗按鈕，進入 LIFF 頁面後的綁定處理
+function handleLiffBinding() {
+    if (typeof liff === 'undefined') return;
 
+    liff.init({ liffId: LIFF_ID }).then(() => {
+        if (liff.isLoggedIn()) {
+            liff.getProfile().then(profile => {
+                const urlParams = new URLSearchParams(window.location.search);
+                const rowId = urlParams.get('rowId');
+
+                // 將 LINE User ID 更新回試算表該筆資料，並觸發推播
+                fetch(GAS_WEB_APP_URL, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+                    body: JSON.stringify({
+                        action: 'bindLine',
+                        rowId: rowId,
+                        clientUserId: profile.userId
+                    })
+                }).then(() => {
+                    if (liff.isInClient()) {
+                        liff.closeWindow();
+                    } else {
+                        alert('LINE 綁定成功！已為您發送預約確認通知。');
+                        window.location.href = 'https://page.line.me/885xpnyp';
+                    }
+                });
+            });
+        } else {
+            liff.login();
+        }
+    }).catch(err => {
+        console.error('LIFF Init Error:', err);
+    });
+}
     // 普通填表邏輯
     const form = document.getElementById('consultForm');
     if (form) {
@@ -88,41 +122,7 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 });
 
-// 當使用者點擊彈窗按鈕，進入 LIFF 頁面後的綁定處理
-function handleLiffBinding() {
-    if (typeof liff === 'undefined') return;
 
-    liff.init({ liffId: LIFF_ID }).then(() => {
-        if (liff.isLoggedIn()) {
-            liff.getProfile().then(profile => {
-                const urlParams = new URLSearchParams(window.location.search);
-                const rowId = urlParams.get('rowId');
-
-                // 將 LINE User ID 更新回試算表該筆資料，並觸發推播
-                fetch(GAS_WEB_APP_URL, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'text/plain;charset=utf-8' },
-                    body: JSON.stringify({
-                        action: 'bindLine',
-                        rowId: rowId,
-                        clientUserId: profile.userId
-                    })
-                }).then(() => {
-                    if (liff.isInClient()) {
-                        liff.closeWindow();
-                    } else {
-                        alert('LINE 綁定成功！已為您發送預約確認通知。');
-                        window.location.href = 'https://page.line.me/885xpnyp';
-                    }
-                });
-            });
-        } else {
-            liff.login();
-        }
-    }).catch(err => {
-        console.error('LIFF Init Error:', err);
-    });
-}
 
 function resetSubmitBtn() {
     const submitBtn = document.getElementById('submitBtn');
