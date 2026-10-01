@@ -789,9 +789,14 @@ body {
     }
  
 
-/* 手機版專用：隱藏頂部橘色按鈕 */
-@media (max-width: 768px) {
-    .btn-cta {
+/* 手機版強制隱藏此元素 */
+@media screen and (max-width: 768px) {
+    .mobile-hide {
         display: none !important;
+        visibility: hidden !important;
+        opacity: 0 !important;
+        width: 0 !important;
+        height: 0 !important;
+        overflow: hidden !important;
     }
 }
