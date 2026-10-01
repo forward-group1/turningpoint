@@ -1,27 +1,29 @@
-/*(CSS Variables)*/
-
+/* ========================================== */
+/* CSS Variables & System Setup               */
+/* ========================================== */
 html {
-    scroll-behavior: smooth; /* 啟動全頁面平滑捲動效果 */
+    scroll-behavior: smooth;
 }
+
 :root {
     /* 色彩系統：海軍藍系列與品牌橘色 Accent */
-    --navy-950: #0a1426;       /* 極深海軍藍 (頁尾背景) */
-    --navy-900: #18395e;       /* 主海軍藍 (Hero背景、導航) */
-    --navy-800: #1c355e;       /* 海軍藍 Hover/卡片背景 */
-    --navy-700: #2a497a;       /* 輔助藍 */
-    --amber-accent: #f06a00;   /* 品牌主橘色 (強調/按鈕) */
-    --amber-hover: #d95d00;    /* 橘色 Hover 效果 */
-    --light-bg: #f8f9fc;       /* 全局淺灰背景 */
-    --white: #ffffff;          /* 純白 */
-    --gray-100: #f1f5f9;       /* 淺灰 */
-    --gray-200: #e2e8f0;       /* 邊框線條灰 */
-    --gray-400: #94a3b8;       /* 輔助灰 */
-    --gray-600: #475569;       /* 次要內文灰 */
-    --gray-800: #1e293b;       /* 主要內文深灰 */
+    --navy-950: #0a1426;
+    --navy-900: #18395e;
+    --navy-800: #1c355e;
+    --navy-700: #2a497a;
+    --amber-accent: #f06a00;
+    --amber-hover: #d95d00;
+    --light-bg: #f8f9fc;
+    --white: #ffffff;
+    --gray-100: #f1f5f9;
+    --gray-200: #e2e8f0;
+    --gray-400: #94a3b8;
+    --gray-600: #475569;
+    --gray-800: #1e293b;
 
     /* 字型定義 */
-    --font-serif: 'Noto Serif TC', serif; /* 宋體/明體 (用於大標題) */
-    --font-sans: 'Noto Sans TC', sans-serif;  /* 黑體 (用於內文) */
+    --font-serif: 'Noto Serif TC', serif;
+    --font-sans: 'Noto Sans TC', sans-serif;
 
     /* 圓角與陰影 */
     --radius-sm: 6px;
@@ -32,7 +34,7 @@ html {
 }
 
 /* ========================================== */
-/* 全局初始化 (Reset & Base Styles)           */
+/* 全局初始化 (Reset & Base Styles)          */
 /* ========================================== */
 * {
     box-sizing: border-box;
@@ -48,51 +50,8 @@ body {
     overflow-x: hidden;
 }
 
-/* 通用工具類別：動態隱藏元素 */
 .hidden { 
     display: none !important; 
-}
-
-/* 確保 input 與 select 擁有完全相同的基礎樣式 */
-.form-control, 
-select.form-control {
-    width: 100%;
-    height: 48px;                  /* 固定高度確保一致 */
-    padding: 10px 12px;            /* 內邊距 */
-    font-size: 13px;
-    line-height: 1.5;
-    color: #333333;
-    background-color: #ffffff;
-    border: 1px solid #cccccc;     /* 邊框顏色 */
-    border-radius: 6px;            /* 圓角大小 */
-    outline: none;
-    transition: border-color 0.2s, box-shadow 0.2s;
-    box-sizing: border-box;        /* 確保包含 padding 與 border */
-    
-    /* 清除瀏覽器預設箭頭與外觀 */
-    -webkit-appearance: none;
-    -moz-appearance: none;
-    appearance: none;
-
-    /* 自訂美麗的下拉小箭頭圖示 (右側) */
-    background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%20666666' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><polyline points='6 9 12 15 18 9'></polyline></svg>");
-    background-repeat: no-repeat;
-    background-position: right 14px center;
-    background-size: 16px;
-    padding-right: 40px;           /* 預留右側箭頭空間 */
-}
-
-/* 當未選擇（預設提示字）時的顏色，比照 input placeholder */
-select.form-control:invalid,
-select.form-control option[value=""] {
-    color: #888888;
-}
-
-/* 點擊聚焦時的邊框效果 */
-.form-control:focus,
-select.form-control:focus {
-    border-color: #00b900;         /* 可改為您的主題主色 */
-    box-shadow: 0 0 0 3px rgba(0, 185, 0, 0.15);
 }
 
 /* ========================================== */
@@ -108,7 +67,7 @@ select.form-control:focus {
     display: flex;
     align-items: center;
 }
-/* 頂端寬度*/
+
 .nav-container {
     max-width: 100%;
     width: 100%;
@@ -119,25 +78,23 @@ select.form-control:focus {
     align-items: center;
 }
 
-/* logo文字對齊 */
 .brand-logo-group {
     display: flex;
     align-items: center;
     gap: 35px;
 }
-/* LOGO圖片外框大小控制 */
+
 .logo-mark {
     width: 44px;
     height: 44px;
-    flex-shrink: 0;      /* 防止圖片被擠壓變形 */
+    flex-shrink: 0;
     margin-top: -20px;
 }
 
-/* 確保圖片能自適應外框大小，並維持比例不變形 */
 .logo-img, .logo-svg-lg, .logo-svg-sm {
     width: 150%;
     height: 150%;
-    object-fit: contain; /* 保持圖片比例 */
+    object-fit: contain;
     display: block;
 }
 
@@ -149,20 +106,18 @@ select.form-control:focus {
 .tp-sub {
     font-weight: 700;
     letter-spacing: 1.5px;
-    color: var(--navy-000);
+    color: var(--navy-900);
     font-size: clamp(0.55rem, 2vw, 0.75rem);
     white-space: nowrap;
 }
 
-/* 頂部左上主標題樣式 */
 .brand-title {
     font-family: var(--font-serif);
-    font-size: clamp(0.875rem, 3.5vw, 1.25rem);
     font-weight: 700;
     color: var(--navy-900);
     line-height: 1.1;
     font-size: clamp(1.1rem, 4vw, 1.6rem);
-    white-space: nowrap; /* 避免文字意外斷行 */
+    white-space: nowrap;
 }
 
 .company-sub {
@@ -185,7 +140,6 @@ select.form-control:focus {
     gap: 6px;
 }
 
-/* 導航列 CTA 按鈕 */
 .btn-cta {
     background-color: var(--amber-accent);
     color: var(--white);
@@ -206,26 +160,16 @@ select.form-control:focus {
     transform: translateY(-1px);
 }
 
-/* -----------------------------------------
-   992px 以下（包含所有平板與手機）強制完全隱藏按鈕
------------------------------------------ */
 @media screen and (max-width: 768px) {
     .btn-cta,
     header .btn-cta,
     .nav-actions .btn-cta {
         display: none !important;
-        visibility: hidden !important;
-        opacity: 0 !important;
-        width: 0 !important;
-        height: 0 !important;
-        padding: 0 !important;
-        margin: 0 !important;
-        overflow: hidden !important;
     }
 }
 
 /* ========================================== */
-/* 主视觉 Banner 樣式 (Hero Section)           */
+/* 主視覺 Banner 樣式 (Hero Section)           */
 /* ========================================== */
 .hero-section {
     background-color: var(--navy-900);
@@ -235,7 +179,6 @@ select.form-control:focus {
     overflow: hidden;
 }
 
-/* 背景微小圓點點綴圖案 */
 .hero-bg-pattern {
     position: absolute;
     inset: 0;
@@ -266,7 +209,6 @@ select.form-control:focus {
     }
 }
 
-/* 左側品牌幾何卡片 */
 .visual-card-wrapper {
     display: flex;
     justify-content: center;
@@ -285,7 +227,6 @@ select.form-control:focus {
     box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
 }
 
-/* 左上角幾何邊角框點綴 */
 .brand-card-frame::before {
     content: '';
     position: absolute;
@@ -297,7 +238,6 @@ select.form-control:focus {
     border-left: 2.5px solid var(--navy-900);
 }
 
-/* 右下角幾何邊角框點綴 */
 .brand-card-frame::after {
     content: '';
     position: absolute;
@@ -309,18 +249,18 @@ select.form-control:focus {
     border-right: 2.5px solid var(--navy-900);
 }
 
-.card-content{
+.card-content {
     display: flex;
     flex-direction: column;
-    align-items: center; /
+    align-items: center;
     text-align: center;
 }
 
 .card-content .logo-img {
-    max-width: 150px; /*限制LOGO最大的寬度*/
-    width: 100%;      /* 確保圖片隨比例縮放 */
-    height: auto;     /* 保持圖片比例不變形 */
-    margin: 0 auto;   /* 圖片水平置中 */
+    max-width: 150px;
+    width: 100%;
+    height: auto;
+    margin: 0 auto;
 }
 
 .card-tp {
@@ -354,7 +294,6 @@ select.form-control:focus {
     color: var(--gray-600);
 }
 
-/* 右側文字與排版 */
 .hero-tag {
     display: inline-flex;
     align-items: center;
@@ -395,7 +334,6 @@ select.form-control:focus {
     line-height: 1.7;
 }
 
-/* 數據與優勢網格 */
 .metrics-grid {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
@@ -526,10 +464,12 @@ select.form-control:focus {
     color: var(--amber-accent);
     display: flex;
     align-items: center;
-    gap: 6px;}
+    gap: 6px;
+}
 
-
-/* 後台網址設定列樣式 */
+/* ========================================== */
+/* 表單區塊樣式 (Form Section)                */
+/* ========================================== */
 .config-bar {
     background: var(--navy-900);
     color: var(--white);
@@ -539,7 +479,8 @@ select.form-control:focus {
     flex-wrap: wrap;
     align-items: center;
     justify-content: space-between;
-    gap: 12px;}
+    gap: 12px;
+}
 
 .form-card-box {
     background: var(--light-bg);
@@ -547,8 +488,6 @@ select.form-control:focus {
     border-top: none;
     border-radius: 0 0 var(--radius-md) var(--radius-md);
     padding: 24px;
-    height: auto;
-    overflow: visible;
 }
 
 .form-card-header {
@@ -558,17 +497,13 @@ select.form-control:focus {
     margin-bottom: 20px;
     padding-bottom: 12px;
     border-bottom: 1px solid var(--gray-200);
-    height: auto;
-    overflow: visible;
-
 }
 
 .form-card-title {
     font-size: 14px;
     font-weight: 700;
     color: var(--navy-900);
-    height: auto;
-    overflow: visible;}
+}
 
 .iframe-container iframe {
     width: 100%;
@@ -578,13 +513,11 @@ select.form-control:focus {
     border: 1px solid var(--gray-200);
 }
 
-/* 備用原生表單欄位排版 */
 .builtin-form {
     background: var(--white);
     padding: 24px;
     border-radius: var(--radius-sm);
     border: 1px solid var(--gray-200);
- 
 }
 
 .info-alert {
@@ -615,7 +548,6 @@ select.form-control:focus {
 
 .form-group {
     margin-bottom: 16px;
-
 }
 
 .form-group label {
@@ -630,24 +562,53 @@ select.form-control:focus {
     color: #e53e3e; 
 }
 
+/* 統一文字輸入框與下拉選單 */
 .form-group input[type="text"],
 .form-group input[type="tel"],
 .form-group input[type="email"],
-.form-group textarea {
+.form-group select,
+.form-control,
+select.form-control {
     width: 100%;
-    padding: 10px 12px;
+    height: 48px !important;
+    padding: 10px 14px;
+    font-size: 14px;
+    line-height: 1.5;
+    color: #333333;
+    background-color: #ffffff;
     border: 1px solid var(--gray-200);
     border-radius: var(--radius-sm);
-    font-size: 13px;
     outline: none;
+    box-sizing: border-box !important;
+    transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.form-group select,
+select.form-control {
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+    background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%20666666' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><polyline points='6 9 12 15 18 9'></polyline></svg>");
+    background-repeat: no-repeat;
+    background-position: right 14px center;
+    background-size: 16px;
+    padding-right: 40px;
 }
 
 .form-group input:focus,
+.form-group select:focus,
+.form-control:focus,
 .form-group textarea:focus {
     border-color: var(--navy-900);
+    box-shadow: 0 0 0 3px rgba(24, 57, 94, 0.15);
 }
 
-.form-group textarea{
+select.form-control:invalid,
+select.form-control option[value=""] {
+    color: #888888;
+}
+
+.form-group textarea {
     width: 100% !important;
     height: 100px !important;     
     resize: none !important;      
@@ -684,7 +645,6 @@ select.form-control:focus {
     border: none;
     padding: 0;
     align-items: flex-start;
-    color: var(--amser-accent);
 }
 
 .consent-text {
@@ -714,14 +674,12 @@ select.form-control:focus {
     background: var(--navy-800);
 }
 
-/* 安全標章排版 */
 .security-badges {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
     gap: 13px;
     margin-top: 24px;
     transform: translateY(-13px);
-
 }
 
 .badge-item {
@@ -742,11 +700,10 @@ select.form-control:focus {
 }
 
 /* ========================================== */
-/* 頁尾樣式 (Footer Section)                   */
+/* 頁尾與彈窗樣式 (Footer & Modal)            */
 /* ========================================== */
-/* 頁尾外層容器 */
 .footer {
-    background-color: #0a192f; /* 保持頁尾背景色 */
+    background-color: #0a192f;
     color: #a8b2d1;
     padding: 40px 20px 20px;
 }
@@ -759,7 +716,6 @@ select.form-control:focus {
     gap: 30px;
 }
 
-/* 各欄位基本設定 */
 .footer-col {
     display: flex;
     flex-direction: column;
@@ -779,7 +735,6 @@ select.form-control:focus {
     width: fit-content;
 }
 
-/* 聯絡資訊 */
 .footer-info-col a {
     color: #a8b2d1;
     text-decoration: none;
@@ -790,12 +745,11 @@ select.form-control:focus {
     color: #f06a00;
 }
 
-/* 右側LINE按鈕與版權 */
 .line-btn {
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    background-color: #06c755; /* LINE 品牌綠色 */
+    background-color: #06c755;
     color: #ffffff;
     padding: 8px 16px;
     border-radius: 6px;
@@ -814,7 +768,7 @@ select.form-control:focus {
 
 .footer-copyright {
     font-size: 11px;
-    color: var(--gray-400, #8892b0);
+    color: var(--gray-400);
     margin-top: 10px;
 }
 
@@ -822,7 +776,6 @@ select.form-control:focus {
     margin-top: 4px;
 }
 
-/* 桌機版響應式排版 (768px 以上自動並排) */
 @media (min-width: 768px) {
     .footer-container {
         flex-direction: row;
@@ -847,5 +800,72 @@ select.form-control:focus {
     .footer-right-col .footer-heading {
         margin-right: 0;
     }
+}
 
+/* 彈窗樣式 */
+.modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.6);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 9999;
+}
+
+.modal-content {
+    background: #ffffff;
+    padding: 30px 24px;
+    border-radius: 12px;
+    text-align: center;
+    max-width: 90%;
+    width: 380px;
+    box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+}
+
+.modal-icon {
+    width: 60px;
+    height: 60px;
+    background: #e8f5e9;
+    color: #2e7d32;
+    font-size: 32px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 16px auto;
+}
+
+.modal-content h2 {
+    font-size: 20px;
+    margin-bottom: 10px;
+    color: #333;
+}
+
+.modal-content p {
+    font-size: 14px;
+    color: #666;
+    line-height: 1.5;
+    margin-bottom: 24px;
+}
+
+.btn-line-bind {
+    display: block;
+    width: 100%;
+    padding: 14px 0;
+    background-color: #06C755;
+    color: #ffffff;
+    font-weight: bold;
+    font-size: 16px;
+    text-decoration: none;
+    border-radius: 8px;
+    box-shadow: 0 4px 10px rgba(6, 199, 85, 0.3);
+    transition: background 0.2s;
+}
+
+.btn-line-bind:hover {
+    background-color: #05b34c;
 }
