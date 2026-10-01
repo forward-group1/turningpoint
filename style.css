@@ -58,8 +58,8 @@ body {
 select.form-control {
     width: 100%;
     height: 48px;                  /* 固定高度確保一致 */
-    padding: 10px 16px;            /* 內邊距 */
-    font-size: 15px;
+    padding: 10px 12px;            /* 內邊距 */
+    font-size: 13px;
     line-height: 1.5;
     color: #333333;
     background-color: #ffffff;
