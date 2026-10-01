@@ -173,25 +173,36 @@
                             <input type="text" id="companyName" required placeholder="XX股份有限公司">
                         </div>
                         <div class="form-group">
-                            <label>2. 承辦姓名<span class="req">*</span></label>
+                            <label>2. 貴公司的產業類別<span class="req">*</span></label>
+                            <input type="text" id="industry" required placeholder="例如:金融/電商/餐飲...">
+                        </div>
+                        <div class="form-group">
+                            <label>3. 承辦姓名<span class="req">*</span></label>
                             <input type="text" id="userName" required placeholder="王大明">
                         </div>
                         <div class="form-group">
-                            <label>3. 職稱<span class="req">*</span></label>
-                            <input type="text" id="jobTitle" required placeholder="HR經理">
+                            <label for="jobTitle" class="form-label required">4.職稱</label>
+                            <select id="jobTitle" name="jobTitle" class="form-control" required>
+                                <option value="" disabled selected>請選擇職稱</option>
+                                <option value="負責人/創辦人">負責人 / 創辦人</option>
+                                <option value="董事長/總經理">董事長 / 總經理</option>
+                                <option value="高階主管/執行長">高階主管 / 執行長</option>
+                                <option value="人資主管/HR">人資主管 / HR</option>
+                                <option value="行政總務/法務">行政總務 / 法務</option>
+                                <option value="財務會計主管">財務會計主管</option>
+                                <option value="部門主管/經理">部門主管 / 經理</option>
+                                <option value="其他">其他</option>
+                            </select>
                         </div>
                         <div class="form-group">
-                            <label>4. 聯絡電話 / 手機<span class="req">*</span></label>
+                            <label>5. 聯絡電話 / 手機<span class="req">*</span></label>
                             <input type="tel" id="phone" required placeholder="03-123-4567(分機：123) / 0912-345-678">
                         </div>
                         <div class="form-group">
-                            <label>5. 電子郵件<span class="req">*</span></label>
+                            <label>6. 電子郵件<span class="req">*</span></label>
                             <input type="email" id="email" required placeholder="hr@gmail.com">
                         </div>
-                        <div class="form-group">
-                            <label>6. 貴公司的產業類別<span class="req">*</span></label>
-                            <input type="text" id="industry" required placeholder="例如:金融/電商/餐飲...">
-                        </div>
+                        
                     </div>
 
                     <div class="form-group">
@@ -316,7 +327,7 @@
                     <div class="form-group">
                         <label class="checkbox-item consent-box">
                             <input type="checkbox" id="consent" required>
-                            <span class="consent-text">我已閱讀並同意本表單收集之資訊僅供《企業危機百科》顧問團隊聯繫與試用案評估使用，嚴格遵守《個人資料保護法》。</span>
+                            <span class="consent-text">我已閱讀本表單、瞭解蒐集之目的，並依照《個人資料保護法》同意授權相關資訊供《企業危機百科》服務使用。</span>
                         </label>
                     </div>
 
