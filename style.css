@@ -167,7 +167,7 @@ body {
 /* -----------------------------------------
    992px 以下（包含所有平板與手機）強制完全隱藏按鈕
 ----------------------------------------- */
-@media screen and (max-width: 992px) {
+@media screen and (max-width: 768px) {
     .btn-cta,
     header .btn-cta,
     .nav-actions .btn-cta {
