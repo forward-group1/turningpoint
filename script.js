@@ -1,30 +1,11 @@
 // ⚠️ 請確認 LIFF ID 與 GAS 網址正確
 const LIFF_ID = "2011796780-42NFl2WH";
 const GAS_WEB_APP_URL = 'https://script.google.com/macros/s/AKfycby8NlePGVKzMRI3enrV8fI8xndRowhWXUBY5nMrHkTPQXH0AK2N4KIssQMtyM0N0envkg/exec';
+const LINE_OFFICIAL_ACCOUNT_URL = 'https://page.line.me/885xpnyp?oat_content=url&openQrModal=true'; // 官方帳號加好友連結
 
 document.addEventListener('DOMContentLoaded', function() {
     
-    // 1. 初始化 LIFF SDK 取得客戶 LINE User ID
-    if (typeof liff !== 'undefined') {
-        liff.init({ liffId: LIFF_ID })
-            .then(() => {
-                if (liff.isLoggedIn()) {
-                    liff.getProfile().then(profile => {
-                        const userId = profile.userId;
-                        const clientInput = document.getElementById('clientUserId');
-                        if (clientInput) {
-                            clientInput.value = userId;
-                        }
-                        console.log("成功取得 LINE User ID:", userId);
-                    }).catch(err => console.error("取得 Profile 失敗:", err));
-                } else {
-                    liff.login(); // 引導登入
-                }
-            })
-            .catch(err => console.error("LIFF 初始化失敗:", err));
-    }
-
-    // 2. 鎖定只能選擇明天及未來的日期
+    // 1. 設定日期選擇器（鎖定只能選擇明天及未來的日期）
     const tomorrow = new Date();
     tomorrow.setDate(tomorrow.getDate() + 1);
     const minDate = tomorrow.toISOString().split('T')[0];
@@ -33,47 +14,37 @@ document.addEventListener('DOMContentLoaded', function() {
     if (document.getElementById('bookingDate2')) document.getElementById('bookingDate2').setAttribute('min', minDate);
     if (document.getElementById('bookingDate3')) document.getElementById('bookingDate3').setAttribute('min', minDate);
 
+    // 2. 檢查頁面重新載入後，是否有「等待送出」的表單資料（從 LINE 登入跳回）
+    checkPendingSubmission();
+
     // 3. 表單送出監聽
     const form = document.getElementById('consultForm');
-    const submitBtn = document.getElementById('submitBtn');
-
     if (form) {
         form.addEventListener('submit', function(e) {
-            e.preventDefault(); // 阻止表單預設刷新
+            e.preventDefault(); // 阻止預設送出
 
             // 收集勞務議題 (複選)
             let selectedIssues = Array.from(document.querySelectorAll('input[name="issues"]:checked'))
                                       .map(cb => cb.value);
 
-            // 檢查是否至少勾選一項議題
             if (selectedIssues.length === 0) {
                 alert('請至少選擇一項遇到的勞務議題！');
                 return;
             }
 
-            // 鎖定按鈕避免重複提交
-            submitBtn.disabled = true;
-            submitBtn.querySelector('span').innerText = '資料送出中...';
-
-            // 收集單選題 (Radio) Helper
             const getRadioValue = (name) => {
                 const selected = document.querySelector(`input[name="${name}"]:checked`);
                 return selected ? selected.value : '';
             };
 
-            // 處理選填時段 (如果沒填則傳回空字串)
             const getBookingStr = (dateId, timeId) => {
                 const d = document.getElementById(dateId).value;
                 const t = document.getElementById(timeId).value;
                 return (d && t) ? `${d} ${t}` : '';
             };
 
-            // 取得隱藏欄位中的 clientUserId
-            const clientUserIdVal = document.getElementById('clientUserId') ? document.getElementById('clientUserId').value : '';
-
-            // 打包 JSON 物件傳給 GAS
+            // 打包表單資料
             const formData = {
-                clientUserId: clientUserIdVal,
                 companyName: document.getElementById('companyName').value,
                 userName: document.getElementById('userName').value,
                 jobTitle: document.getElementById('jobTitle').value,
@@ -90,36 +61,122 @@ document.addEventListener('DOMContentLoaded', function() {
                 booking3: getBookingStr('bookingDate3', 'bookingTime3')
             };
 
-            // 發送資料至 Google Apps Script
-            fetch(GAS_WEB_APP_URL, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'text/plain;charset=utf-8'
-                },
-                body: JSON.stringify(formData)
-            })
-            .then(response => response.json())
-            .then(data => {
-                if (data.result === 'success') {
-                    alert('感謝您的申請！我們已收到您的資訊，並已發送預約確認訊息至您的 LINE 聊天室！');
-                    
-                    if (typeof liff !== 'undefined' && liff.isInClient()) {
-                        liff.closeWindow();
-                    } else {
-                        window.location.href = 'https://page.line.me/885xpnyp?oat_content=url&openQrModal=true'; 
-                    }
-                } else {
-                    alert('送出失敗：' + (data.error || '未知錯誤'));
-                }
-            })
-            .catch(error => {
-                console.error('Error:', error);
-                alert('申請已送出！我們會在3個工作天內與您聯繫。');
-            })
-            .finally(() => {
-                submitBtn.disabled = false;
-                submitBtn.querySelector('span').innerText = '送出試用申請';
-            });
+            // 將表單資料暫存於 SessionStorage
+            sessionStorage.setItem('pendingFormData', JSON.stringify(formData));
+
+            // 觸發 LINE 登入流程
+            handleLineAuthAndSubmit();
         });
     }
 });
+
+// 處理 LINE 登入/認證
+function handleLineAuthAndSubmit() {
+    const submitBtn = document.getElementById('submitBtn');
+    if (submitBtn) {
+        submitBtn.disabled = true;
+        submitBtn.querySelector('span').innerText = '正轉接 LINE 驗證中...';
+    }
+
+    if (typeof liff !== 'undefined') {
+        liff.init({ liffId: LIFF_ID })
+            .then(() => {
+                if (liff.isLoggedIn()) {
+                    // 若已登入，直接取得 Profile 並提交資料
+                    liff.getProfile().then(profile => {
+                        sendDataToGas(profile.userId);
+                    }).catch(err => {
+                        console.error("取得 Profile 失敗:", err);
+                        sendDataToGas(''); // 拿不到 ID 依然嘗試送出表單
+                    });
+                } else {
+                    // 若未登入，引導登入（登入完成後會刷新頁面跳回本頁）
+                    liff.login({ redirectUri: window.location.href });
+                }
+            })
+            .catch(err => {
+                console.error("LIFF 初始化失敗:", err);
+                alert("LINE 驗證失敗，將直接提交表單。");
+                sendDataToGas('');
+            });
+    } else {
+        // 如果無 LIFF 環境，直接送出
+        sendDataToGas('');
+    }
+}
+
+// 檢查是否有登入回傳後待處理的資料
+function checkPendingSubmission() {
+    const savedData = sessionStorage.getItem('pendingFormData');
+    if (savedData && typeof liff !== 'undefined') {
+        const submitBtn = document.getElementById('submitBtn');
+        if (submitBtn) {
+            submitBtn.disabled = true;
+            submitBtn.querySelector('span').innerText = '資料傳送中...';
+        }
+
+        liff.init({ liffId: LIFF_ID })
+            .then(() => {
+                if (liff.isLoggedIn()) {
+                    liff.getProfile().then(profile => {
+                        sendDataToGas(profile.userId);
+                    }).catch(() => {
+                        sendDataToGas('');
+                    });
+                } else {
+                    sendDataToGas('');
+                }
+            })
+            .catch(() => {
+                sendDataToGas('');
+            });
+    }
+}
+
+// 發送資料至 Google Apps Script
+function sendDataToGas(clientUserId) {
+    const savedDataStr = sessionStorage.getItem('pendingFormData');
+    if (!savedDataStr) return;
+
+    let formData = JSON.parse(savedDataStr);
+    formData.clientUserId = clientUserId || '';
+
+    fetch(GAS_WEB_APP_URL, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'text/plain;charset=utf-8'
+        },
+        body: JSON.stringify(formData)
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.result === 'success') {
+            // 清除暫存
+            sessionStorage.removeItem('pendingFormData');
+            alert('感謝您的申請！我們已收到您的資訊，將引導您加入官方 LINE 以便後續推播通知！');
+            
+            // 引導加好友或回到官方帳號
+            if (typeof liff !== 'undefined' && liff.isInClient()) {
+                window.location.href = LINE_OFFICIAL_ACCOUNT_URL;
+            } else {
+                window.location.href = LINE_OFFICIAL_ACCOUNT_URL;
+            }
+        } else {
+            alert('送出失敗：' + (data.error || '未知錯誤'));
+            resetSubmitBtn();
+        }
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        alert('網路連線異常，請重新嘗試送出。');
+        resetSubmitBtn();
+    });
+}
+
+function resetSubmitBtn() {
+    const submitBtn = document.getElementById('submitBtn');
+    if (submitBtn) {
+        submitBtn.disabled = false;
+        submitBtn.querySelector('span').innerText = '送出申請';
+    }
+}
