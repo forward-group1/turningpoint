@@ -800,45 +800,9 @@ body {
     }
  
 
-/* 手機版微調 (螢幕寬度 768px 以下) */
+/* 手機版專用：隱藏頂部橘色按鈕 */
 @media (max-width: 768px) {
-    /* 縮小 Header 整體上下邊距 */
-    .navbar {
-        padding: 6px 10px;
-    }
-
-    .nav-container {
-        gap: 6px;
-    }
-
-    /* 隱藏左側次要的英文與小字，避免與按鈕搶空間 */
-    .tp-sub,
-    .company-sub {
-        display: none !important;
-    }
-
-    /* 縮小左側主標題 */
-    .brand-title {
-        font-size: 0.95rem !important;
-    }
-
-    /* 縮小 Logo */
-    .logo-img {
-        width: 28px;
-        height: auto;
-    }
-
-    /* 縮小橘色按鈕的內邊距與字體 */
     .btn-cta {
-        padding: 5px 8px !important;
-        font-size: 11px !important;
-    }
-
-    .btn-cta span {
-        font-size: 11px !important;
-    }
-
-    .btn-cta i {
-        font-size: 10px !important;
+        display: none !important;
     }
 }
