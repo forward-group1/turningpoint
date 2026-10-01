@@ -787,16 +787,15 @@ body {
     .footer-right-col .footer-heading {
         margin-right: 0;
     }
- 
+    /* 預設在手機版/小螢幕完全隱藏 */
+.desktop-only-btn {
+    display: none !important;
+}
 
-/* 手機版強制隱藏此元素 */
-@media screen and (max-width: 768px) {
-    .mobile-hide {
-        display: none !important;
-        visibility: hidden !important;
-        opacity: 0 !important;
-        width: 0 !important;
-        height: 0 !important;
-        overflow: hidden !important;
+/* 只有在電腦版 (寬度大於 768px) 才顯示 */
+@media screen and (min-width: 769px) {
+    .desktop-only-btn {
+        display: inline-flex !important;
     }
+}
 }
