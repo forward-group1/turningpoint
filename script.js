@@ -10,39 +10,67 @@ document.addEventListener('DOMContentLoaded', function() {
         handleLiffBinding();
         return;
     }
-    // 當使用者點擊彈窗按鈕，進入 LIFF 頁面後的綁定處理
+   // 當使用者點擊彈窗按鈕，進入 LIFF 頁面後的綁定處理
 function handleLiffBinding() {
-    if (typeof liff === 'undefined') return;
+    if (typeof liff === 'undefined') {
+        alert('LINE SDK 載入失敗，請重新整理頁面');
+        return;
+    }
 
     liff.init({ liffId: LIFF_ID }).then(() => {
-        if (liff.isLoggedIn()) {
-            liff.getProfile().then(profile => {
-                const urlParams = new URLSearchParams(window.location.search);
-                const rowId = urlParams.get('rowId');
+        // 1. 檢查使用者是否已登入 LINE
+        if (!liff.isLoggedIn()) {
+            // 關鍵修改：登入時，指定登入成功後要帶妥原網址（包含 ?bind=1&rowId=XX）重定向回來！
+            liff.login({ redirectUri: window.location.href });
+            return;
+        }
 
-                // 將 LINE User ID 更新回試算表該筆資料，並觸發推播
-                fetch(GAS_WEB_APP_URL, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'text/plain;charset=utf-8' },
-                    body: JSON.stringify({
-                        action: 'bindLine',
-                        rowId: rowId,
-                        clientUserId: profile.userId
-                    })
-                }).then(() => {
+        // 2. 已登入，取得 User Profile
+        liff.getProfile().then(profile => {
+            const urlParams = new URLSearchParams(window.location.search);
+            const rowId = urlParams.get('rowId');
+
+            if (!rowId) {
+                alert('綁定失敗：找不到預約單 ID (rowId)');
+                return;
+            }
+
+            // 3. 將 LINE User ID 更新回 GAS 試算表，並發送推播
+            fetch(GAS_WEB_APP_URL, {
+                method: 'POST',
+                headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+                body: JSON.stringify({
+                    action: 'bindLine',
+                    rowId: rowId,
+                    clientUserId: profile.userId
+                })
+            })
+            .then(res => res.json())
+            .then(data => {
+                if (data.result === 'success') {
+                    alert('LINE 帳號綁定成功！已發送確認訊息至您的 LINE。');
+                    
+                    // 如果是在 LINE App 內開啟，直接關閉 LIFF 視窗
                     if (liff.isInClient()) {
                         liff.closeWindow();
                     } else {
-                        alert('LINE 綁定成功！已為您發送預約確認通知。');
+                        // 如果是在外部瀏覽器，引導前往官方帳號聊天室
                         window.location.href = 'https://page.line.me/885xpnyp';
                     }
-                });
+                } else {
+                    alert('綁定失敗：' + (data.error || '未知錯誤'));
+                }
+            })
+            .catch(err => {
+                console.error(err);
+                alert('網路異常，綁定請求發送失敗');
             });
-        } else {
-            liff.login();
-        }
+        }).catch(err => {
+            alert('無法取得 LINE 用戶資料：' + err);
+        });
     }).catch(err => {
         console.error('LIFF Init Error:', err);
+        alert('LIFF 初始化失敗：' + err);
     });
 }
     // 普通填表邏輯
