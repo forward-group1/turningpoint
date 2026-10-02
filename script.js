@@ -1,21 +1,16 @@
 const GAS_WEB_APP_URL = 'https://script.google.com/macros/s/AKfycby8NlePGVKzMRI3enrV8fI8xndRowhWXUBY5nMrHkTPQXH0AK2N4KIssQMtyM0N0envkg/exec';
 const LIFF_ID = '2011796780-42NFl2WH'; 
-const OFFICIAL_LINE_URL = 'https://page.line.me/885xpnyp'; // 官方 LINE 連結
+const ADD_FRIEND_URL = 'https://line.me/R/ti/p/@885xpnyp'; 
 
-let currentCreatedRowId = null; // 紀錄表單送出後的列號
+let currentCreatedRowId = null; 
 
 document.addEventListener('DOMContentLoaded', function() {
-    // 靜默初始化 LIFF SDK
     if (typeof liff !== 'undefined') {
         liff.init({ liffId: LIFF_ID }).catch(err => console.error('LIFF Init error:', err));
     }
-
     initFormSubmit();
 });
 
-/* ----------------------------------------------------
-   表單提交與彈窗按鈕互動 (完美相容 iOS 手機，不開新視窗)
-   ---------------------------------------------------- */
 function initFormSubmit() {
     const form = document.getElementById('consultForm');
     if (!form) return;
@@ -76,25 +71,22 @@ function initFormSubmit() {
         .then(res => res.json())
         .then(data => {
             if (data.result === 'success') {
-                currentCreatedRowId = data.rowId; // 儲存表單建立的列號
+                currentCreatedRowId = data.rowId; 
                 
                 const bindBtn = document.getElementById('lineBindBtn');
                 if (bindBtn) {
-                    // 初始化按鈕樣式
                     bindBtn.removeAttribute('href');
                     bindBtn.style.pointerEvents = 'auto';
                     bindBtn.style.opacity = '1';
                     bindBtn.style.backgroundColor = '#4CAF50';
                     bindBtn.innerHTML = '點此綁定 LINE 接收通知';
 
-                    // 綁定點擊事件（純原地處理，絕對不跳頁）
                     bindBtn.onclick = function(evt) {
                         evt.preventDefault();
                         handleInPageBinding(bindBtn);
                     };
                 }
                 
-                // 顯示成功彈窗
                 const successModal = document.getElementById('successModal');
                 if (successModal) successModal.style.display = 'flex';
             } else {
@@ -110,21 +102,16 @@ function initFormSubmit() {
     });
 }
 
-/* ----------------------------------------------------
-   iOS 友善的靜默綁定處理 (無跳轉，穩定發送 POST)
-   ---------------------------------------------------- */
 function handleInPageBinding(btnElem) {
     if (!currentCreatedRowId) {
         alert('找不到預約單號，請重新提交表單');
         return;
     }
 
-    // 1. 立即更新按鈕狀態為「處理中」
     btnElem.style.pointerEvents = 'none';
     btnElem.style.opacity = '0.8';
     btnElem.innerHTML = '⏳ 綁定處理中...';
 
-    // 執行發送 POST 給 GAS 的核心邏輯（相容 iOS 手機）
     const sendBindRequest = (userId) => {
         const payload = JSON.stringify({
             action: 'bindLine',
@@ -132,47 +119,37 @@ function handleInPageBinding(btnElem) {
             clientUserId: userId || 'web_user'
         });
 
-        // iOS 相容性佳的 text/plain 送出方式（避免被 iOS 攔截）
         fetch(GAS_WEB_APP_URL, {
             method: 'POST',
             headers: { 'Content-Type': 'text/plain;charset=utf-8' },
             body: payload
         })
-        .then(() => {
-            finishBindingUI(btnElem);
-        })
-        .catch(() => {
-            // 即使 response 解析有誤，因為資料已經成功打進 GAS，同樣判定完成
-            finishBindingUI(btnElem);
-        });
+        .then(() => finishBindingUI(btnElem))
+        .catch(() => finishBindingUI(btnElem));
     };
 
-    // 判斷 LIFF 環境，避免在 iOS 上觸發 login 跳轉
     if (typeof liff !== 'undefined' && liff.isInClient() && liff.isLoggedIn()) {
         liff.getProfile()
             .then(profile => sendBindRequest(profile.userId))
             .catch(() => sendBindRequest(''));
     } else {
-        // iOS 外部瀏覽器或未授權時，不呼叫會造成跳頁的 liff.login()
-        // 直接背景綁定，確保成功發送推播
         sendBindRequest('');
     }
 }
 
-// 2. 綁定完成後的 UI 切換
 function finishBindingUI(btnElem) {
     setTimeout(() => {
         btnElem.style.pointerEvents = 'auto';
         btnElem.style.opacity = '1';
         btnElem.style.backgroundColor = '#1DB954';
-        btnElem.innerHTML = '✅ 綁定成功！點此前往官方 LINE';
+        btnElem.innerHTML = '✅ 綁定成功！點此加好友/開啟 LINE';
 
-        // 3. 點擊後才開啟官方 LINE 畫面
+        // 💡 修改點 2：點擊直接開啟深層連結跳轉 LINE App 加好友
         btnElem.onclick = function(e) {
             e.preventDefault();
-            window.location.href = OFFICIAL_LINE_URL;
+            window.location.href = ADD_FRIEND_URL;
         };
-    }, 1000);
+    }, 800);
 }
 
 function resetSubmitBtn() {
