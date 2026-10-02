@@ -154,30 +154,34 @@ async function handleInPageBinding(btnElem) {
     btnElem.style.opacity = '0.8';
     btnElem.innerHTML = '⏳ 綁定處理中...';
 
-    // 如果已經拿到 cachedUserId，直接發送
+    // 1. 如果已有快取的 cachedUserId，直接發送綁定
     if (cachedUserId) {
         sendBindRequest(cachedUserId, btnElem);
         return;
     }
 
-    // 否則嘗試檢查登入
+    // 2. 檢查 LIFF 是否載入
     if (typeof liff !== 'undefined') {
-        if (!liff.isLoggedIn()) {
-            sessionStorage.setItem('pending_row_id', currentCreatedRowId);
-            liff.login({ redirectUri: window.location.href });
-            return;
-        } else {
-            try {
-                const profile = await liff.getProfile();
-                cachedUserId = profile.userId;
-                sendBindRequest(cachedUserId, btnElem);
-            } catch(e) {
-                alert('無法讀取 LINE Profile，請確認權限後重試');
-                finishBindingUI(btnElem);
+        try {
+            // 若尚未初始化，先確保初始化完成
+            if (!liff.isLoggedIn()) {
+                sessionStorage.setItem('pending_row_id', currentCreatedRowId);
+                // 未登入時直接觸發 LIFF 登入頁面
+                liff.login({ redirectUri: window.location.href });
+                return;
             }
+
+            // 已登入，嘗試取得 Profile
+            const profile = await liff.getProfile();
+            cachedUserId = profile.userId;
+            sendBindRequest(cachedUserId, btnElem);
+        } catch (e) {
+            console.warn('LIFF 讀取 Profile 失敗，降級直接引導加好友:', e);
+            // 降級處理：不再跳出彈窗嚇使用者，直接完成 UI 引導前往加好友
+            finishBindingUI(btnElem);
         }
     } else {
-        alert('LIFF SDK 載入失敗');
+        // LIFF 未載入的降級處理
         finishBindingUI(btnElem);
     }
 }
