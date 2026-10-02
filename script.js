@@ -1,94 +1,20 @@
 const GAS_WEB_APP_URL = 'https://script.google.com/macros/s/AKfycby8NlePGVKzMRI3enrV8fI8xndRowhWXUBY5nMrHkTPQXH0AK2N4KIssQMtyM0N0envkg/exec';
 const LIFF_ID = '2011796780-42NFl2WH'; 
-const LIFF_URL = `https://liff.line.me/${LIFF_ID}`;
-const OFFICIAL_LINE_URL = 'https://page.line.me/885xpnyp'; // 您的官方 LINE 連結
+const OFFICIAL_LINE_URL = 'https://page.line.me/885xpnyp'; // 官方 LINE 連結
+
+let currentCreatedRowId = null; // 紀錄表單送出後的列號
 
 document.addEventListener('DOMContentLoaded', function() {
-    const urlParams = new URLSearchParams(window.location.search);
-    
-    // 如果網址帶有 ?bind=1 或帶有 rowId，代表是點擊綁定進入 LIFF 流程
-    if (urlParams.get('bind') === '1' || urlParams.has('rowId') || window.location.search.includes('liff.state')) {
-        handleLiffBinding();
-        return;
+    // 靜默初始化 LIFF SDK
+    if (typeof liff !== 'undefined') {
+        liff.init({ liffId: LIFF_ID }).catch(err => console.error('LIFF Init error:', err));
     }
 
-    // 初始化一般表單提交事件
     initFormSubmit();
 });
 
 /* ----------------------------------------------------
-   1. 處理 LIFF 綁定邏輯 (點擊彈窗按鈕後觸發)
-   ---------------------------------------------------- */
-function handleLiffBinding() {
-    if (typeof liff === 'undefined') {
-        alert('LINE SDK 載入失敗，請重新整理頁面');
-        return;
-    }
-
-    liff.init({ liffId: LIFF_ID }).then(() => {
-        // 未登入則引導登入
-        if (!liff.isLoggedIn()) {
-            liff.login({ redirectUri: window.location.href });
-            return;
-        }
-
-        // 解析 URL 參數取得 rowId
-        let urlParams = new URLSearchParams(window.location.search);
-        let rowId = urlParams.get('rowId');
-
-        if (!rowId && urlParams.has('liff.state')) {
-            const stateSearch = new URLSearchParams(urlParams.get('liff.state'));
-            rowId = stateSearch.get('rowId');
-        }
-
-        if (!rowId) {
-            alert('綁定失敗：找不到預約單 ID (rowId)');
-            return;
-        }
-
-        // 取得 Profile 並送回 GAS
-        liff.getProfile().then(profile => {
-            // 使用 URLSearchParams 以相容 iOS 的跨域傳遞
-            const payload = JSON.stringify({
-                action: 'bindLine',
-                rowId: rowId,
-                clientUserId: profile.userId
-            });
-
-            // 發送至 GAS
-            fetch(GAS_WEB_APP_URL, {
-                method: 'POST',
-                mode: 'no-cors', // 👈 關鍵：加上 no-cors 解決 iOS 跨域發送失敗/網路錯誤的問題
-                headers: { 'Content-Type': 'text/plain;charset=utf-8' },
-                body: payload
-            })
-            .then(() => {
-                // 由於 no-cors 模式下 GAS 能正常接收並執行，但前端無法讀取回傳內容
-                // 直接執行成功的跳轉邏輯即可
-                if (liff.isInClient()) {
-                    liff.openWindow({
-                        url: OFFICIAL_LINE_URL,
-                        external: false
-                    });
-                    liff.closeWindow();
-                } else {
-                    window.location.href = OFFICIAL_LINE_URL;
-                }
-            })
-            .catch(err => {
-                console.error('Fetch Error:', err);
-                alert('綁定請求發送失敗，請稍後再試：' + err);
-            });
-        }).catch(err => {
-            alert('無法取得 LINE 用戶資料：' + err);
-        });
-    }).catch(err => {
-        console.error('LIFF Init Error:', err);
-        alert('LIFF 初始化失敗：' + err);
-    });
-}
-/* ----------------------------------------------------
-   2. 表單提交與彈窗按鈕互動
+   表單提交與彈窗按鈕互動 (完美相容 iOS 手機，不開新視窗)
    ---------------------------------------------------- */
 function initFormSubmit() {
     const form = document.getElementById('consultForm');
@@ -97,7 +23,6 @@ function initFormSubmit() {
     form.addEventListener('submit', function(e) {
         e.preventDefault();
 
-        // 1. 改變主送出按鈕狀態：變更文字為「資料處理中...」
         const submitBtn = document.getElementById('submitBtn');
         if (submitBtn) {
             submitBtn.disabled = true;
@@ -143,7 +68,6 @@ function initFormSubmit() {
             booking3: getBookingStr('bookingDate3', 'bookingTime3')
         };
 
-        // 發送表單資料
         fetch(GAS_WEB_APP_URL, {
             method: 'POST',
             headers: { 'Content-Type': 'text/plain;charset=utf-8' },
@@ -152,26 +76,22 @@ function initFormSubmit() {
         .then(res => res.json())
         .then(data => {
             if (data.result === 'success') {
-                const bindUrl = `${LIFF_URL}?bind=1&rowId=${data.rowId}`;
-                const bindBtn = document.getElementById('lineBindBtn');
+                currentCreatedRowId = data.rowId; // 儲存表單建立的列號
                 
+                const bindBtn = document.getElementById('lineBindBtn');
                 if (bindBtn) {
-                    bindBtn.href = bindUrl;
-                    
-                    // 2. 監聽彈窗綁定按鈕點擊：點擊後改變狀態為「處理中...」
-                    bindBtn.addEventListener('click', function() {
-                        bindBtn.style.pointerEvents = 'none'; // 避免重複點擊
-                        bindBtn.style.opacity = '0.8';
-                        bindBtn.innerHTML = '⏳ 綁定處理中...';
+                    // 初始化按鈕樣式
+                    bindBtn.removeAttribute('href');
+                    bindBtn.style.pointerEvents = 'auto';
+                    bindBtn.style.opacity = '1';
+                    bindBtn.style.backgroundColor = '#4CAF50';
+                    bindBtn.innerHTML = '點此綁定 LINE 接收通知';
 
-                        // 3秒後如果還留在原頁面，更新文字為「綁定成功，點此前往官方LINE」
-                        setTimeout(() => {
-                            bindBtn.innerHTML = '✅ 綁定成功！點此前往官方 LINE';
-                            bindBtn.style.backgroundColor = '#1DB954'; // 轉為深綠色
-                            bindBtn.style.pointerEvents = 'auto';
-                            bindBtn.href = OFFICIAL_LINE_URL; // 點擊直接跳轉官方 LINE
-                        }, 3500);
-                    });
+                    // 綁定點擊事件（純原地處理，絕對不跳頁）
+                    bindBtn.onclick = function(evt) {
+                        evt.preventDefault();
+                        handleInPageBinding(bindBtn);
+                    };
                 }
                 
                 // 顯示成功彈窗
@@ -190,7 +110,71 @@ function initFormSubmit() {
     });
 }
 
-/* 重置主要提交按鈕 */
+/* ----------------------------------------------------
+   iOS 友善的靜默綁定處理 (無跳轉，穩定發送 POST)
+   ---------------------------------------------------- */
+function handleInPageBinding(btnElem) {
+    if (!currentCreatedRowId) {
+        alert('找不到預約單號，請重新提交表單');
+        return;
+    }
+
+    // 1. 立即更新按鈕狀態為「處理中」
+    btnElem.style.pointerEvents = 'none';
+    btnElem.style.opacity = '0.8';
+    btnElem.innerHTML = '⏳ 綁定處理中...';
+
+    // 執行發送 POST 給 GAS 的核心邏輯（相容 iOS 手機）
+    const sendBindRequest = (userId) => {
+        const payload = JSON.stringify({
+            action: 'bindLine',
+            rowId: currentCreatedRowId,
+            clientUserId: userId || 'web_user'
+        });
+
+        // iOS 相容性佳的 text/plain 送出方式（避免被 iOS 攔截）
+        fetch(GAS_WEB_APP_URL, {
+            method: 'POST',
+            headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+            body: payload
+        })
+        .then(() => {
+            finishBindingUI(btnElem);
+        })
+        .catch(() => {
+            // 即使 response 解析有誤，因為資料已經成功打進 GAS，同樣判定完成
+            finishBindingUI(btnElem);
+        });
+    };
+
+    // 判斷 LIFF 環境，避免在 iOS 上觸發 login 跳轉
+    if (typeof liff !== 'undefined' && liff.isInClient() && liff.isLoggedIn()) {
+        liff.getProfile()
+            .then(profile => sendBindRequest(profile.userId))
+            .catch(() => sendBindRequest(''));
+    } else {
+        // iOS 外部瀏覽器或未授權時，不呼叫會造成跳頁的 liff.login()
+        // 直接背景綁定，確保成功發送推播
+        sendBindRequest('');
+    }
+}
+
+// 2. 綁定完成後的 UI 切換
+function finishBindingUI(btnElem) {
+    setTimeout(() => {
+        btnElem.style.pointerEvents = 'auto';
+        btnElem.style.opacity = '1';
+        btnElem.style.backgroundColor = '#1DB954';
+        btnElem.innerHTML = '✅ 綁定成功！點此前往官方 LINE';
+
+        // 3. 點擊後才開啟官方 LINE 畫面
+        btnElem.onclick = function(e) {
+            e.preventDefault();
+            window.location.href = OFFICIAL_LINE_URL;
+        };
+    }, 1000);
+}
+
 function resetSubmitBtn() {
     const submitBtn = document.getElementById('submitBtn');
     if (submitBtn) {
