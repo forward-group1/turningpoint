@@ -3,10 +3,17 @@ const LIFF_ID = '2011796780-42NFl2WH';
 const ADD_FRIEND_URL = 'https://line.me/R/ti/p/@885xpnyp'; 
 
 let currentCreatedRowId = null; 
+let isLiffInitialized = false;
 
 document.addEventListener('DOMContentLoaded', function() {
+    // 初始化 LIFF
     if (typeof liff !== 'undefined') {
-        liff.init({ liffId: LIFF_ID }).catch(err => console.error('LIFF Init error:', err));
+        liff.init({ liffId: LIFF_ID })
+            .then(() => {
+                isLiffInitialized = true;
+                // 如果在外部瀏覽器且尚未登入，且 URL 帶有轉址參數時處理
+            })
+            .catch(err => console.error('LIFF Init error:', err));
     }
     initFormSubmit();
 });
@@ -102,7 +109,7 @@ function initFormSubmit() {
     });
 }
 
-function handleInPageBinding(btnElem) {
+async function handleInPageBinding(btnElem) {
     if (!currentCreatedRowId) {
         alert('找不到預約單號，請重新提交表單');
         return;
@@ -112,29 +119,52 @@ function handleInPageBinding(btnElem) {
     btnElem.style.opacity = '0.8';
     btnElem.innerHTML = '⏳ 綁定處理中...';
 
-    const sendBindRequest = (userId) => {
-        const payload = JSON.stringify({
-            action: 'bindLine',
-            rowId: currentCreatedRowId,
-            clientUserId: userId || 'web_user'
-        });
+    let userId = 'web_user';
 
-        fetch(GAS_WEB_APP_URL, {
-            method: 'POST',
-            headers: { 'Content-Type': 'text/plain;charset=utf-8' },
-            body: payload
-        })
-        .then(() => finishBindingUI(btnElem))
-        .catch(() => finishBindingUI(btnElem));
-    };
+    try {
+        if (typeof liff !== 'undefined') {
+            // 如果尚未初始化完成，稍作等待
+            if (!isLiffInitialized) {
+                await liff.init({ liffId: LIFF_ID });
+                isLiffInitialized = true;
+            }
 
-    if (typeof liff !== 'undefined' && liff.isInClient() && liff.isLoggedIn()) {
-        liff.getProfile()
-            .then(profile => sendBindRequest(profile.userId))
-            .catch(() => sendBindRequest(''));
-    } else {
-        sendBindRequest('');
+            // 檢查是否登入，未登入則彈出 LINE 登入頁
+            if (!liff.isLoggedIn()) {
+                liff.login({ redirectUri: window.location.href });
+                return;
+            }
+
+            // 取得 Profile 中的 userId
+            const profile = await liff.getProfile();
+            if (profile && profile.userId) {
+                userId = profile.userId;
+            }
+        }
+    } catch (err) {
+        console.error('取得 LINE User ID 失敗:', err);
     }
+
+    // 發送綁定請求至 GAS
+    const payload = JSON.stringify({
+        action: 'bindLine',
+        rowId: currentCreatedRowId,
+        clientUserId: userId
+    });
+
+    fetch(GAS_WEB_APP_URL, {
+        method: 'POST',
+        headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+        body: payload
+    })
+    .then(res => res.json())
+    .then(data => {
+        finishBindingUI(btnElem);
+    })
+    .catch(err => {
+        console.error('Bind Error:', err);
+        finishBindingUI(btnElem);
+    });
 }
 
 function finishBindingUI(btnElem) {
@@ -142,9 +172,8 @@ function finishBindingUI(btnElem) {
         btnElem.style.pointerEvents = 'auto';
         btnElem.style.opacity = '1';
         btnElem.style.backgroundColor = '#1DB954';
-        btnElem.innerHTML = '✅ 綁定成功！點此加好友/開啟 LINE';
+        btnElem.innerHTML = '✅ 綁定成功！點此開啟 LINE 聊天室';
 
-        // 💡 修改點 2：點擊直接開啟深層連結跳轉 LINE App 加好友
         btnElem.onclick = function(e) {
             e.preventDefault();
             window.location.href = ADD_FRIEND_URL;
