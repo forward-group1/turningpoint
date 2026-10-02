@@ -46,7 +46,8 @@ function autoFinishPendingBinding() {
     })
     .then(res => res.json())
     .then(data => {
-        alert('🎉 LINE 綁定成功！您現在會收到最新通知。');
+        // 綁定成功後，自動導向 LINE 加好友/聊天室畫面
+        window.location.href = ADD_FRIEND_URL;
     })
     .catch(err => console.error('Auto bind error:', err));
 }
@@ -162,7 +163,6 @@ async function handleInPageBinding(btnElem) {
     // 否則嘗試檢查登入
     if (typeof liff !== 'undefined') {
         if (!liff.isLoggedIn()) {
-            // 未登入：存下當前單號，跳轉至 LINE 登入
             sessionStorage.setItem('pending_row_id', currentCreatedRowId);
             liff.login({ redirectUri: window.location.href });
             return;
@@ -196,7 +196,6 @@ function sendBindRequest(userId, btnElem) {
     })
     .then(res => res.json())
     .then(data => {
-        alert('綁定成功！User ID: ' + userId);
         finishBindingUI(btnElem);
     })
     .catch(err => {
@@ -210,13 +209,14 @@ function finishBindingUI(btnElem) {
         btnElem.style.pointerEvents = 'auto';
         btnElem.style.opacity = '1';
         btnElem.style.backgroundColor = '#1DB954';
-        btnElem.innerHTML = '✅ 綁定成功！點此開啟 LINE 聊天室';
+        btnElem.innerHTML = '✅ 綁定完成！點此開啟 LINE 查看通知';
 
         btnElem.onclick = function(e) {
             e.preventDefault();
+            // 直接跳轉開啟 LINE 加好友/聊天室畫面
             window.location.href = ADD_FRIEND_URL;
         };
-    }, 800);
+    }, 600);
 }
 
 function resetSubmitBtn() {
