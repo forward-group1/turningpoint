@@ -1,56 +1,26 @@
 const GAS_WEB_APP_URL = 'https://script.google.com/macros/s/AKfycby8NlePGVKzMRI3enrV8fI8xndRowhWXUBY5nMrHkTPQXH0AK2N4KIssQMtyM0N0envkg/exec';
 const LIFF_ID = '2011796780-42NFl2WH'; 
-const ADD_FRIEND_URL = 'https://line.me/R/ti/p/@885xpnyp'; 
+const ADD_FRIEND_URL = 'https://line.me/R/ti/p/@885xpnyp'; // LINE 官方帳號加好友/聊天室連結
 
 let currentCreatedRowId = sessionStorage.getItem('pending_row_id') || null; 
 let cachedUserId = '';
 
 document.addEventListener('DOMContentLoaded', async function() {
-    // 1. 初始化 LIFF 並嘗試在載入時就拿到 User ID
+    // 靜默初始化 LIFF（僅在 LINE 內部瀏覽器或已登入狀態下順暢取得 UserID，失敗不影響流程）
     if (typeof liff !== 'undefined') {
         try {
             await liff.init({ liffId: LIFF_ID });
             if (liff.isLoggedIn()) {
                 const profile = await liff.getProfile();
                 cachedUserId = profile.userId;
-                console.log('✅ 頁面載入即取得 UserID:', cachedUserId);
             }
         } catch (err) {
-            console.error('LIFF Init error:', err);
+            console.log('LIFF 靜默初始化（非 LINE 環境或未授權，自動切換至相容模式）');
         }
-    }
-
-    // 2. 檢查是否有登入轉址後「待完成的綁定任務」
-    if (currentCreatedRowId && cachedUserId) {
-        autoFinishPendingBinding();
     }
 
     initFormSubmit();
 });
-
-// 如果登入轉址回來，自動完成綁定
-function autoFinishPendingBinding() {
-    const rowId = currentCreatedRowId;
-    sessionStorage.removeItem('pending_row_id'); // 執行後清除
-
-    const payload = JSON.stringify({
-        action: 'bindLine',
-        rowId: rowId,
-        clientUserId: cachedUserId
-    });
-
-    fetch(GAS_WEB_APP_URL, {
-        method: 'POST',
-        headers: { 'Content-Type': 'text/plain;charset=utf-8' },
-        body: payload
-    })
-    .then(res => res.json())
-    .then(data => {
-        // 綁定成功後，自動導向 LINE 加好友/聊天室畫面
-        window.location.href = ADD_FRIEND_URL;
-    })
-    .catch(err => console.error('Auto bind error:', err));
-}
 
 function initFormSubmit() {
     const form = document.getElementById('consultForm');
@@ -120,8 +90,8 @@ function initFormSubmit() {
                     bindBtn.removeAttribute('href');
                     bindBtn.style.pointerEvents = 'auto';
                     bindBtn.style.opacity = '1';
-                    bindBtn.style.backgroundColor = '#4CAF50';
-                    bindBtn.innerHTML = '點此綁定 LINE 接收通知';
+                    bindBtn.style.backgroundColor = '#00B900'; // LINE 經典綠
+                    bindBtn.innerHTML = '💬 點此前往 LINE 接收預約確認通知';
 
                     bindBtn.onclick = function(evt) {
                         evt.preventDefault();
@@ -144,6 +114,7 @@ function initFormSubmit() {
     });
 }
 
+// 跨平台完美的綁定與導向邏輯
 async function handleInPageBinding(btnElem) {
     if (!currentCreatedRowId) {
         alert('找不到預約單號，請重新提交表單');
@@ -152,75 +123,25 @@ async function handleInPageBinding(btnElem) {
 
     btnElem.style.pointerEvents = 'none';
     btnElem.style.opacity = '0.8';
-    btnElem.innerHTML = '⏳ 綁定處理中...';
+    btnElem.innerHTML = '⏳ 開啟 LINE 中...';
 
-    // 1. 如果已有快取的 cachedUserId，直接發送綁定
+    // 1. 若環境有抓到 LINE UserID，非同步通知 GAS 綁定
     if (cachedUserId) {
-        sendBindRequest(cachedUserId, btnElem);
-        return;
+        fetch(GAS_WEB_APP_URL, {
+            method: 'POST',
+            headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+            body: JSON.stringify({
+                action: 'bindLine',
+                rowId: currentCreatedRowId,
+                clientUserId: cachedUserId
+            })
+        }).catch(err => console.error(err));
     }
 
-    // 2. 檢查 LIFF 是否載入
-    if (typeof liff !== 'undefined') {
-        try {
-            // 若尚未初始化，先確保初始化完成
-            if (!liff.isLoggedIn()) {
-                sessionStorage.setItem('pending_row_id', currentCreatedRowId);
-                // 未登入時直接觸發 LIFF 登入頁面
-                liff.login({ redirectUri: window.location.href });
-                return;
-            }
-
-            // 已登入，嘗試取得 Profile
-            const profile = await liff.getProfile();
-            cachedUserId = profile.userId;
-            sendBindRequest(cachedUserId, btnElem);
-        } catch (e) {
-            console.warn('LIFF 讀取 Profile 失敗，降級直接引導加好友:', e);
-            // 降級處理：不再跳出彈窗嚇使用者，直接完成 UI 引導前往加好友
-            finishBindingUI(btnElem);
-        }
-    } else {
-        // LIFF 未載入的降級處理
-        finishBindingUI(btnElem);
-    }
-}
-
-function sendBindRequest(userId, btnElem) {
-    const payload = JSON.stringify({
-        action: 'bindLine',
-        rowId: currentCreatedRowId,
-        clientUserId: userId
-    });
-
-    fetch(GAS_WEB_APP_URL, {
-        method: 'POST',
-        headers: { 'Content-Type': 'text/plain;charset=utf-8' },
-        body: payload
-    })
-    .then(res => res.json())
-    .then(data => {
-        finishBindingUI(btnElem);
-    })
-    .catch(err => {
-        console.error('Bind Error:', err);
-        finishBindingUI(btnElem);
-    });
-}
-
-function finishBindingUI(btnElem) {
+    // 2. 跨平台平滑跳轉：無論桌機、iOS、Android，直接打開 LINE 加好友/聊天室畫面
     setTimeout(() => {
-        btnElem.style.pointerEvents = 'auto';
-        btnElem.style.opacity = '1';
-        btnElem.style.backgroundColor = '#1DB954';
-        btnElem.innerHTML = '✅ 綁定完成！點此開啟 LINE 查看通知';
-
-        btnElem.onclick = function(e) {
-            e.preventDefault();
-            // 直接跳轉開啟 LINE 加好友/聊天室畫面
-            window.location.href = ADD_FRIEND_URL;
-        };
-    }, 600);
+        window.location.href = ADD_FRIEND_URL;
+    }, 300);
 }
 
 function resetSubmitBtn() {
