@@ -120,30 +120,34 @@ async function handleInPageBinding(btnElem) {
     btnElem.innerHTML = '⏳ 綁定處理中...';
 
     let userId = 'web_user';
+    let debugMsg = '';
 
     try {
-        if (typeof liff !== 'undefined') {
-            // 如果尚未初始化完成，稍作等待
+        if (typeof liff === 'undefined') {
+            debugMsg = 'LIFF SDK 未載入';
+        } else {
             if (!isLiffInitialized) {
                 await liff.init({ liffId: LIFF_ID });
                 isLiffInitialized = true;
             }
 
-            // 檢查是否登入，未登入則彈出 LINE 登入頁
             if (!liff.isLoggedIn()) {
+                debugMsg = 'LIFF 未登入，導向登入中...';
                 liff.login({ redirectUri: window.location.href });
                 return;
             }
 
-            // 取得 Profile 中的 userId
             const profile = await liff.getProfile();
-            if (profile && profile.userId) {
-                userId = profile.userId;
-            }
+            userId = profile.userId;
+            debugMsg = '成功取得 ID: ' + userId;
         }
     } catch (err) {
-        console.error('取得 LINE User ID 失敗:', err);
+        debugMsg = 'LIFF 發生錯誤: ' + err.message;
+        console.error(err);
     }
+
+    // 彈出提示視窗，顯示除錯資訊
+    alert('【除錯資訊】\n' + debugMsg);
 
     // 發送綁定請求至 GAS
     const payload = JSON.stringify({
