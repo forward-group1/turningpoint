@@ -2,21 +2,54 @@ const GAS_WEB_APP_URL = 'https://script.google.com/macros/s/AKfycby8NlePGVKzMRI3
 const LIFF_ID = '2011796780-42NFl2WH'; 
 const ADD_FRIEND_URL = 'https://line.me/R/ti/p/@885xpnyp'; 
 
-let currentCreatedRowId = null; 
-let isLiffInitialized = false;
+let currentCreatedRowId = sessionStorage.getItem('pending_row_id') || null; 
+let cachedUserId = '';
 
-document.addEventListener('DOMContentLoaded', function() {
-    // 初始化 LIFF
+document.addEventListener('DOMContentLoaded', async function() {
+    // 1. 初始化 LIFF 並嘗試在載入時就拿到 User ID
     if (typeof liff !== 'undefined') {
-        liff.init({ liffId: LIFF_ID })
-            .then(() => {
-                isLiffInitialized = true;
-                // 如果在外部瀏覽器且尚未登入，且 URL 帶有轉址參數時處理
-            })
-            .catch(err => console.error('LIFF Init error:', err));
+        try {
+            await liff.init({ liffId: LIFF_ID });
+            if (liff.isLoggedIn()) {
+                const profile = await liff.getProfile();
+                cachedUserId = profile.userId;
+                console.log('✅ 頁面載入即取得 UserID:', cachedUserId);
+            }
+        } catch (err) {
+            console.error('LIFF Init error:', err);
+        }
     }
+
+    // 2. 檢查是否有登入轉址後「待完成的綁定任務」
+    if (currentCreatedRowId && cachedUserId) {
+        autoFinishPendingBinding();
+    }
+
     initFormSubmit();
 });
+
+// 如果登入轉址回來，自動完成綁定
+function autoFinishPendingBinding() {
+    const rowId = currentCreatedRowId;
+    sessionStorage.removeItem('pending_row_id'); // 執行後清除
+
+    const payload = JSON.stringify({
+        action: 'bindLine',
+        rowId: rowId,
+        clientUserId: cachedUserId
+    });
+
+    fetch(GAS_WEB_APP_URL, {
+        method: 'POST',
+        headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+        body: payload
+    })
+    .then(res => res.json())
+    .then(data => {
+        alert('🎉 LINE 綁定成功！您現在會收到最新通知。');
+    })
+    .catch(err => console.error('Auto bind error:', err));
+}
 
 function initFormSubmit() {
     const form = document.getElementById('consultForm');
@@ -79,6 +112,7 @@ function initFormSubmit() {
         .then(data => {
             if (data.result === 'success') {
                 currentCreatedRowId = data.rowId; 
+                sessionStorage.setItem('pending_row_id', data.rowId);
                 
                 const bindBtn = document.getElementById('lineBindBtn');
                 if (bindBtn) {
@@ -119,37 +153,36 @@ async function handleInPageBinding(btnElem) {
     btnElem.style.opacity = '0.8';
     btnElem.innerHTML = '⏳ 綁定處理中...';
 
-    let userId = 'web_user';
-    let debugMsg = '';
-
-    try {
-        if (typeof liff === 'undefined') {
-            debugMsg = 'LIFF SDK 未載入';
-        } else {
-            if (!isLiffInitialized) {
-                await liff.init({ liffId: LIFF_ID });
-                isLiffInitialized = true;
-            }
-
-            if (!liff.isLoggedIn()) {
-                debugMsg = 'LIFF 未登入，導向登入中...';
-                liff.login({ redirectUri: window.location.href });
-                return;
-            }
-
-            const profile = await liff.getProfile();
-            userId = profile.userId;
-            debugMsg = '成功取得 ID: ' + userId;
-        }
-    } catch (err) {
-        debugMsg = 'LIFF 發生錯誤: ' + err.message;
-        console.error(err);
+    // 如果已經拿到 cachedUserId，直接發送
+    if (cachedUserId) {
+        sendBindRequest(cachedUserId, btnElem);
+        return;
     }
 
-    // 彈出提示視窗，顯示除錯資訊
-    alert('【除錯資訊】\n' + debugMsg);
+    // 否則嘗試檢查登入
+    if (typeof liff !== 'undefined') {
+        if (!liff.isLoggedIn()) {
+            // 未登入：存下當前單號，跳轉至 LINE 登入
+            sessionStorage.setItem('pending_row_id', currentCreatedRowId);
+            liff.login({ redirectUri: window.location.href });
+            return;
+        } else {
+            try {
+                const profile = await liff.getProfile();
+                cachedUserId = profile.userId;
+                sendBindRequest(cachedUserId, btnElem);
+            } catch(e) {
+                alert('無法讀取 LINE Profile，請確認權限後重試');
+                finishBindingUI(btnElem);
+            }
+        }
+    } else {
+        alert('LIFF SDK 載入失敗');
+        finishBindingUI(btnElem);
+    }
+}
 
-    // 發送綁定請求至 GAS
+function sendBindRequest(userId, btnElem) {
     const payload = JSON.stringify({
         action: 'bindLine',
         rowId: currentCreatedRowId,
@@ -163,6 +196,7 @@ async function handleInPageBinding(btnElem) {
     })
     .then(res => res.json())
     .then(data => {
+        alert('綁定成功！User ID: ' + userId);
         finishBindingUI(btnElem);
     })
     .catch(err => {
