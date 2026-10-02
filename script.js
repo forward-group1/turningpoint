@@ -1,32 +1,38 @@
 const GAS_WEB_APP_URL = 'https://script.google.com/macros/s/AKfycby8NlePGVKzMRI3enrV8fI8xndRowhWXUBY5nMrHkTPQXH0AK2N4KIssQMtyM0N0envkg/exec';
 const LIFF_ID = '2011796780-42NFl2WH'; 
-const LIFF_URL = `https://liff.line.me/${LIFF_ID}`;
 const OFFICIAL_LINE_URL = 'https://page.line.me/885xpnyp'; // 您的官方 LINE 連結
 
 document.addEventListener('DOMContentLoaded', function() {
     const urlParams = new URLSearchParams(window.location.search);
     
-    // 如果網址帶有 ?bind=1 或帶有 rowId，代表是點擊綁定進入 LIFF 流程
+    // 檢查是否是點擊綁定進入 LIFF 流程
     if (urlParams.get('bind') === '1' || urlParams.has('rowId') || window.location.search.includes('liff.state')) {
         handleLiffBinding();
         return;
     }
 
-    // 初始化一般表單提交事件
     initFormSubmit();
 });
 
 /* ----------------------------------------------------
-   1. 處理 LIFF 綁定邏輯 (點擊彈窗按鈕後觸發)
+   1. 處理 LIFF 綁定邏輯 (iOS 完美優化版)
    ---------------------------------------------------- */
 function handleLiffBinding() {
+    // 進入 LIFF 綁定流程時，立即將按鈕顯示為「綁定處理中...」
+    const bindBtn = document.getElementById('lineBindBtn');
+    if (bindBtn) {
+        bindBtn.style.pointerEvents = 'none';
+        bindBtn.style.opacity = '0.8';
+        bindBtn.innerHTML = '⏳ 綁定處理中...';
+    }
+
     if (typeof liff === 'undefined') {
         alert('LINE SDK 載入失敗，請重新整理頁面');
         return;
     }
 
     liff.init({ liffId: LIFF_ID }).then(() => {
-        // 未登入則引導登入
+        // 未登入時觸發登入 (iOS 會重寫網頁)
         if (!liff.isLoggedIn()) {
             liff.login({ redirectUri: window.location.href });
             return;
@@ -46,31 +52,39 @@ function handleLiffBinding() {
             return;
         }
 
-        // 取得 Profile 並送回 GAS
+        // 取得 Profile 並發送給 GAS
         liff.getProfile().then(profile => {
-            // 使用 URLSearchParams 以相容 iOS 的跨域傳遞
             const payload = JSON.stringify({
                 action: 'bindLine',
                 rowId: rowId,
                 clientUserId: profile.userId
             });
 
-            // 發送至 GAS
             fetch(GAS_WEB_APP_URL, {
                 method: 'POST',
-                mode: 'no-cors', // 👈 關鍵：加上 no-cors 解決 iOS 跨域發送失敗/網路錯誤的問題
+                mode: 'no-cors', // 避開 iOS CORS 限制
                 headers: { 'Content-Type': 'text/plain;charset=utf-8' },
                 body: payload
             })
             .then(() => {
-                // 由於 no-cors 模式下 GAS 能正常接收並執行，但前端無法讀取回傳內容
-                // 直接執行成功的跳轉邏輯即可
+                // 更新按鈕為完成狀態
+                if (bindBtn) {
+                    bindBtn.innerHTML = '✅ 綁定成功！前往官方 LINE';
+                    bindBtn.style.backgroundColor = '#1DB954';
+                    bindBtn.style.pointerEvents = 'auto';
+                    bindBtn.href = OFFICIAL_LINE_URL;
+                }
+
+                // 強制導向至官方 LINE 帳號
                 if (liff.isInClient()) {
+                    // 使用 external: true 開啟系統層級深層連結，解決 iOS 開新視窗卡住問題
                     liff.openWindow({
                         url: OFFICIAL_LINE_URL,
-                        external: false
+                        external: true
                     });
-                    liff.closeWindow();
+                    setTimeout(() => {
+                        liff.closeWindow(); // 順利開啟後自動關閉 LIFF 彈窗
+                    }, 500);
                 } else {
                     window.location.href = OFFICIAL_LINE_URL;
                 }
@@ -87,8 +101,9 @@ function handleLiffBinding() {
         alert('LIFF 初始化失敗：' + err);
     });
 }
+
 /* ----------------------------------------------------
-   2. 表單提交與彈窗按鈕互動
+   2. 表單提交與彈窗初始化
    ---------------------------------------------------- */
 function initFormSubmit() {
     const form = document.getElementById('consultForm');
@@ -97,7 +112,6 @@ function initFormSubmit() {
     form.addEventListener('submit', function(e) {
         e.preventDefault();
 
-        // 1. 改變主送出按鈕狀態：變更文字為「資料處理中...」
         const submitBtn = document.getElementById('submitBtn');
         if (submitBtn) {
             submitBtn.disabled = true;
@@ -143,7 +157,6 @@ function initFormSubmit() {
             booking3: getBookingStr('bookingDate3', 'bookingTime3')
         };
 
-        // 發送表單資料
         fetch(GAS_WEB_APP_URL, {
             method: 'POST',
             headers: { 'Content-Type': 'text/plain;charset=utf-8' },
@@ -152,29 +165,14 @@ function initFormSubmit() {
         .then(res => res.json())
         .then(data => {
             if (data.result === 'success') {
+                const LIFF_URL = `https://liff.line.me/${LIFF_ID}`;
                 const bindUrl = `${LIFF_URL}?bind=1&rowId=${data.rowId}`;
                 const bindBtn = document.getElementById('lineBindBtn');
                 
                 if (bindBtn) {
                     bindBtn.href = bindUrl;
-                    
-                    // 2. 監聽彈窗綁定按鈕點擊：點擊後改變狀態為「處理中...」
-                    bindBtn.addEventListener('click', function() {
-                        bindBtn.style.pointerEvents = 'none'; // 避免重複點擊
-                        bindBtn.style.opacity = '0.8';
-                        bindBtn.innerHTML = '⏳ 綁定處理中...';
-
-                        // 3秒後如果還留在原頁面，更新文字為「綁定成功，點此前往官方LINE」
-                        setTimeout(() => {
-                            bindBtn.innerHTML = '✅ 綁定成功！點此前往官方 LINE';
-                            bindBtn.style.backgroundColor = '#1DB954'; // 轉為深綠色
-                            bindBtn.style.pointerEvents = 'auto';
-                            bindBtn.href = OFFICIAL_LINE_URL; // 點擊直接跳轉官方 LINE
-                        }, 3500);
-                    });
                 }
                 
-                // 顯示成功彈窗
                 const successModal = document.getElementById('successModal');
                 if (successModal) successModal.style.display = 'flex';
             } else {
@@ -190,7 +188,6 @@ function initFormSubmit() {
     });
 }
 
-/* 重置主要提交按鈕 */
 function resetSubmitBtn() {
     const submitBtn = document.getElementById('submitBtn');
     if (submitBtn) {
