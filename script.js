@@ -6,7 +6,7 @@ document.addEventListener('DOMContentLoaded', function() {
     const urlParams = new URLSearchParams(window.location.search);
     
     // 如果網址帶有 ?bind=1 或帶有 rowId，代表是從 LIFF 進來做綁定的
-    if (urlParams.get('bind') === '1' || urlParams.has('rowId')) || window.location.search.includes('liff.state') {
+    if (urlParams.get('bind') === '1' || urlParams.has('rowId') || window.location.search.includes('liff.state')) {
         handleLiffBinding();
         return;
     }
@@ -20,6 +20,7 @@ function handleLiffBinding() {
         alert('LINE SDK 載入失敗，請重新整理頁面');
         return;
     }
+    
     /* 處理 LIFF 進入時的 LINE 帳號綁定邏輯*/
     liff.init({ liffId: LIFF_ID }).then(() => {
         // 1. 未登入處理
@@ -80,87 +81,91 @@ function handleLiffBinding() {
         alert('LIFF 初始化失敗：' + err);
     });
 }
-    // 普通填表邏輯
+
+// 修正2：補上 initFormSubmit 函數，整合表單送出邏輯
+function initFormSubmit() {
     const form = document.getElementById('consultForm');
-    if (form) {
-        form.addEventListener('submit', function(e) {
-            e.preventDefault();
+    if (!form) return;
 
-            const submitBtn = document.getElementById('submitBtn');
-            if (submitBtn) {
-                submitBtn.disabled = true;
-                submitBtn.querySelector('span').innerText = '資料處理中...';
-            }
+    form.addEventListener('submit', function(e) {
+        e.preventDefault();
 
-            let selectedIssues = Array.from(document.querySelectorAll('input[name="issues"]:checked')).map(cb => cb.value);
-            if (selectedIssues.length === 0) {
-                alert('請至少選擇一項遇到的勞務議題！');
-                resetSubmitBtn();
-                return;
-            }
+        const submitBtn = document.getElementById('submitBtn');
+        if (submitBtn) {
+            submitBtn.disabled = true;
+            const btnSpan = submitBtn.querySelector('span');
+            if (btnSpan) btnSpan.innerText = '資料處理中...';
+        }
 
-            const getRadioValue = (name) => {
-                const selected = document.querySelector(`input[name="${name}"]:checked`);
-                return selected ? selected.value : '';
-            };
+        let selectedIssues = Array.from(document.querySelectorAll('input[name="issues"]:checked')).map(cb => cb.value);
+        if (selectedIssues.length === 0) {
+            alert('請至少選擇一項遇到的勞務議題！');
+            resetSubmitBtn();
+            return;
+        }
 
-            const getBookingStr = (dateId, timeId) => {
-                const d = document.getElementById(dateId).value;
-                const t = document.getElementById(timeId).value;
-                return (d && t) ? `${d} ${t}` : '';
-            };
+        const getRadioValue = (name) => {
+            const selected = document.querySelector(`input[name="${name}"]:checked`);
+            return selected ? selected.value : '';
+        };
 
-            const formData = {
-                action: 'submitForm',
-                companyName: document.getElementById('companyName').value,
-                userName: document.getElementById('userName').value,
-                jobTitle: document.getElementById('jobTitle').value,
-                phone: document.getElementById('phone').value,
-                email: document.getElementById('email').value,
-                industry: document.getElementById('industry').value,
-                companySize: getRadioValue('companySize'),
-                issues: selectedIssues.join(', '),
-                description: document.getElementById('description').value,
-                pastExperience: getRadioValue('pastExperience'),
-                externalConsultant: getRadioValue('externalConsultant'),
-                booking1: getBookingStr('bookingDate1', 'bookingTime1'),
-                booking2: getBookingStr('bookingDate2', 'bookingTime2'),
-                booking3: getBookingStr('bookingDate3', 'bookingTime3')
-            };
+        const getBookingStr = (dateId, timeId) => {
+            const dElem = document.getElementById(dateId);
+            const tElem = document.getElementById(timeId);
+            const d = dElem ? dElem.value : '';
+            const t = tElem ? tElem.value : '';
+            return (d && t) ? `${d} ${t}` : '';
+        };
 
-            // 送出表單資料到 GAS
-            fetch(GAS_WEB_APP_URL, {
-                method: 'POST',
-                headers: { 'Content-Type': 'text/plain;charset=utf-8' },
-                body: JSON.stringify(formData)
-            })
-            .then(res => res.json())
-            .then(data => {
-                if (data.result === 'success') {
-                    // 將 rowId 與 bind 標記帶入 LIFF 連結中
-                   const bindUrl = `${LIFF_URL}?bind=1&rowId=${data.rowId}`;
-                   const bindBtn = document.getElementById('lineBindBtn');
-                   if (bindBtn) bindBtn.href = bindUrl;
-                    
-                    // 顯示成功彈窗
-                   const successModal = document.getElementById('successModal');
+        const formData = {
+            action: 'submitForm',
+            companyName: document.getElementById('companyName')?.value || '',
+            userName: document.getElementById('userName')?.value || '',
+            jobTitle: document.getElementById('jobTitle')?.value || '',
+            phone: document.getElementById('phone')?.value || '',
+            email: document.getElementById('email')?.value || '',
+            industry: document.getElementById('industry')?.value || '',
+            companySize: getRadioValue('companySize'),
+            issues: selectedIssues.join(', '),
+            description: document.getElementById('description')?.value || '',
+            pastExperience: getRadioValue('pastExperience'),
+            externalConsultant: getRadioValue('externalConsultant'),
+            booking1: getBookingStr('bookingDate1', 'bookingTime1'),
+            booking2: getBookingStr('bookingDate2', 'bookingTime2'),
+            booking3: getBookingStr('bookingDate3', 'bookingTime3')
+        };
+
+        // 送出表單資料到 GAS
+        fetch(GAS_WEB_APP_URL, {
+            method: 'POST',
+            headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+            body: JSON.stringify(formData)
+        })
+        .then(res => res.json())
+        .then(data => {
+            if (data.result === 'success') {
+                // 將 rowId 與 bind 標記帶入 LIFF 連結中
+                const bindUrl = `${LIFF_URL}?bind=1&rowId=${data.rowId}`;
+                const bindBtn = document.getElementById('lineBindBtn');
+                if (bindBtn) bindBtn.href = bindUrl;
+                
+                // 顯示成功彈窗
+                const successModal = document.getElementById('successModal');
                 if (successModal) successModal.style.display = 'flex';
             } else {
                 alert('送出失敗：' + (data.error || '未知錯誤'));
                 resetSubmitBtn();
             }
         })
-            .catch(err => {
-                console.error(err);
-                alert('網路連線異常，請重新嘗試。');
-                resetSubmitBtn();
-            });
+        .catch(err => {
+            console.error(err);
+            alert('網路連線異常，請重新嘗試。');
+            resetSubmitBtn();
         });
-    }
+    });
+}
 
-
-
-/* 重置提交按鈕狀態*/
+/* 重置提交按鈕狀態 */
 function resetSubmitBtn() {
     const submitBtn = document.getElementById('submitBtn');
     if (submitBtn) {
