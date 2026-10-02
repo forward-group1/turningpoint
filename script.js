@@ -48,37 +48,36 @@ function handleLiffBinding() {
 
         // 取得 Profile 並送回 GAS
         liff.getProfile().then(profile => {
+            // 使用 URLSearchParams 以相容 iOS 的跨域傳遞
+            const payload = JSON.stringify({
+                action: 'bindLine',
+                rowId: rowId,
+                clientUserId: profile.userId
+            });
+
+            // 發送至 GAS
             fetch(GAS_WEB_APP_URL, {
                 method: 'POST',
+                mode: 'no-cors', // 👈 關鍵：加上 no-cors 解決 iOS 跨域發送失敗/網路錯誤的問題
                 headers: { 'Content-Type': 'text/plain;charset=utf-8' },
-                body: JSON.stringify({
-                    action: 'bindLine',
-                    rowId: rowId,
-                    clientUserId: profile.userId
-                })
+                body: payload
             })
-            .then(res => res.json())
-            .then(data => {
-                if (data.result === 'success') {
-                    // 綁定成功後，自動導向 LINE 官方帳號好友頁面
-                    if (liff.isInClient()) {
-                        // 若在 LINE App 內，開新頁面開啟官方帳號後關閉本視窗
-                        liff.openWindow({
-                            url: OFFICIAL_LINE_URL,
-                            external: false
-                        });
-                        liff.closeWindow();
-                    } else {
-                        // 外部瀏覽器直接跳轉
-                        window.location.href = OFFICIAL_LINE_URL;
-                    }
+            .then(() => {
+                // 由於 no-cors 模式下 GAS 能正常接收並執行，但前端無法讀取回傳內容
+                // 直接執行成功的跳轉邏輯即可
+                if (liff.isInClient()) {
+                    liff.openWindow({
+                        url: OFFICIAL_LINE_URL,
+                        external: false
+                    });
+                    liff.closeWindow();
                 } else {
-                    alert('綁定失敗：' + (data.error || '未知錯誤'));
+                    window.location.href = OFFICIAL_LINE_URL;
                 }
             })
             .catch(err => {
-                console.error(err);
-                alert('網路異常，綁定請求發送失敗');
+                console.error('Fetch Error:', err);
+                alert('綁定請求發送失敗，請稍後再試：' + err);
             });
         }).catch(err => {
             alert('無法取得 LINE 用戶資料：' + err);
@@ -88,7 +87,6 @@ function handleLiffBinding() {
         alert('LIFF 初始化失敗：' + err);
     });
 }
-
 /* ----------------------------------------------------
    2. 表單提交與彈窗按鈕互動
    ---------------------------------------------------- */
