@@ -6,36 +6,45 @@ document.addEventListener('DOMContentLoaded', function() {
     const urlParams = new URLSearchParams(window.location.search);
     
     // 如果網址帶有 ?bind=1 或帶有 rowId，代表是從 LIFF 進來做綁定的
-    if (urlParams.get('bind') === '1' || urlParams.has('rowId')) {
+    if (urlParams.get('bind') === '1' || urlParams.has('rowId')) || window.location.search.includes('liff.state') {
         handleLiffBinding();
         return;
     }
-   // 當使用者點擊彈窗按鈕，進入 LIFF 頁面後的綁定處理
+
+    // 綁定一般表單提交事件
+    initFormSubmit();
+});
+
 function handleLiffBinding() {
     if (typeof liff === 'undefined') {
         alert('LINE SDK 載入失敗，請重新整理頁面');
         return;
     }
-
+    /* 處理 LIFF 進入時的 LINE 帳號綁定邏輯*/
     liff.init({ liffId: LIFF_ID }).then(() => {
-        // 1. 檢查使用者是否已登入 LINE
+        // 1. 未登入處理
         if (!liff.isLoggedIn()) {
-            // 關鍵修改：登入時，指定登入成功後要帶妥原網址（包含 ?bind=1&rowId=XX）重定向回來！
             liff.login({ redirectUri: window.location.href });
             return;
         }
 
-        // 2. 已登入，取得 User Profile
+        // 2. 已登入，解析 URL 參數取得 rowId
+        let urlParams = new URLSearchParams(window.location.search);
+        let rowId = urlParams.get('rowId');
+
+        // 相容性處理：若經由 LINE LIFF 轉址，參數可能放在 liff.state 中
+        if (!rowId && urlParams.has('liff.state')) {
+            const stateSearch = new URLSearchParams(urlParams.get('liff.state'));
+            rowId = stateSearch.get('rowId');
+        }
+
+        if (!rowId) {
+            alert('綁定失敗：找不到預約單 ID (rowId)');
+            return;
+        }
+
+        // 3. 取得 User Profile 並回傳至 GAS 綁定
         liff.getProfile().then(profile => {
-            const urlParams = new URLSearchParams(window.location.search);
-            const rowId = urlParams.get('rowId');
-
-            if (!rowId) {
-                alert('綁定失敗：找不到預約單 ID (rowId)');
-                return;
-            }
-
-            // 3. 將 LINE User ID 更新回 GAS 試算表，並發送推播
             fetch(GAS_WEB_APP_URL, {
                 method: 'POST',
                 headers: { 'Content-Type': 'text/plain;charset=utf-8' },
@@ -50,11 +59,9 @@ function handleLiffBinding() {
                 if (data.result === 'success') {
                     alert('LINE 帳號綁定成功！已發送確認訊息至您的 LINE。');
                     
-                    // 如果是在 LINE App 內開啟，直接關閉 LIFF 視窗
                     if (liff.isInClient()) {
                         liff.closeWindow();
                     } else {
-                        // 如果是在外部瀏覽器，引導前往官方帳號聊天室
                         window.location.href = 'https://page.line.me/885xpnyp';
                     }
                 } else {
@@ -131,16 +138,18 @@ function handleLiffBinding() {
             .then(data => {
                 if (data.result === 'success') {
                     // 將 rowId 與 bind 標記帶入 LIFF 連結中
-                    const bindUrl = `${LIFF_URL}?bind=1&rowId=${data.rowId}`;
-                    document.getElementById('lineBindBtn').href = bindUrl;
+                   const bindUrl = `${LIFF_URL}?bind=1&rowId=${data.rowId}`;
+                   const bindBtn = document.getElementById('lineBindBtn');
+                   if (bindBtn) bindBtn.href = bindUrl;
                     
                     // 顯示成功彈窗
-                    document.getElementById('successModal').style.display = 'flex';
-                } else {
-                    alert('送出失敗：' + (data.error || '未知錯誤'));
-                    resetSubmitBtn();
-                }
-            })
+                   const successModal = document.getElementById('successModal');
+                if (successModal) successModal.style.display = 'flex';
+            } else {
+                alert('送出失敗：' + (data.error || '未知錯誤'));
+                resetSubmitBtn();
+            }
+        })
             .catch(err => {
                 console.error(err);
                 alert('網路連線異常，請重新嘗試。');
@@ -148,14 +157,15 @@ function handleLiffBinding() {
             });
         });
     }
-});
 
 
 
+/* 重置提交按鈕狀態*/
 function resetSubmitBtn() {
     const submitBtn = document.getElementById('submitBtn');
     if (submitBtn) {
         submitBtn.disabled = false;
-        submitBtn.querySelector('span').innerText = '送出申請';
+        const btnText = submitBtn.querySelector('span');
+        if (btnText) btnText.innerText = '送出申請';
     }
 }
