@@ -2,28 +2,29 @@ const GAS_WEB_APP_URL = 'https://script.google.com/macros/s/AKfycby8NlePGVKzMRI3
 const LIFF_ID = '2011796780-42NFl2WH'; 
 const ADD_FRIEND_URL = 'https://line.me/R/ti/p/@885xpnyp'; 
 
-let currentCreatedRowId = sessionStorage.getItem('pending_row_id') || null; 
-let cachedUserId = '';
+let currentCreatedRowId = sessionStorage.getItem('pending_row_id') || null;
 
 document.addEventListener('DOMContentLoaded', async function() {
-    // 1. 初始化 LIFF
+    // 進入頁面先初始化 LIFF
     if (typeof liff !== 'undefined') {
         try {
             await liff.init({ liffId: LIFF_ID });
-            
-            // 檢查是否已登入（若剛從 LINE 登入頁授權轉址回來）
+
+            // 如果已經是登入狀態（剛授權重定向回來）
             if (liff.isLoggedIn()) {
                 const profile = await liff.getProfile();
-                cachedUserId = profile.userId;
-                console.log('✅ 成功取得 UserID:', cachedUserId);
+                const userId = profile.userId;
 
-                // 2. 如果先前有暫存的預約單號，自動觸發綁定與推播
+                // 如果暫存中有尚未綁定的單號，立即向 GAS 補發綁定！
                 if (currentCreatedRowId) {
-                    await sendBindRequest(currentCreatedRowId, cachedUserId);
+                    await sendBindRequest(currentCreatedRowId, userId);
+                    sessionStorage.removeItem('pending_row_id');
+                    alert('✅ LINE 帳號綁定成功！即將跳轉加好友。');
+                    window.location.href = ADD_FRIEND_URL;
                 }
             }
         } catch (err) {
-            console.warn('LIFF Init log:', err);
+            console.error('LIFF 初始化錯誤:', err);
         }
     }
 
@@ -99,11 +100,25 @@ function initFormSubmit() {
                     bindBtn.style.pointerEvents = 'auto';
                     bindBtn.style.opacity = '1';
                     bindBtn.style.backgroundColor = '#00B900';
-                    bindBtn.innerHTML = '💬 點此綁定 LINE 並開啟通知';
+                    bindBtn.innerHTML = '💬 點此授權綁定 LINE 並開啟通知';
 
+                    // 使用者點擊按鈕時，強行要求登入
                     bindBtn.onclick = function(evt) {
                         evt.preventDefault();
-                        handleInPageBinding(bindBtn);
+                        if (typeof liff !== 'undefined') {
+                            if (!liff.isLoggedIn()) {
+                                // 手機外部瀏覽器點擊後跳轉 LINE 登入頁
+                                liff.login({ redirectUri: window.location.origin + window.location.pathname });
+                            } else {
+                                liff.getProfile().then(profile => {
+                                    sendBindRequest(currentCreatedRowId, profile.userId).then(() => {
+                                        window.location.href = ADD_FRIEND_URL;
+                                    });
+                                });
+                            }
+                        } else {
+                            window.location.href = ADD_FRIEND_URL;
+                        }
                     };
                 }
                 
@@ -122,49 +137,6 @@ function initFormSubmit() {
     });
 }
 
-// 處理綁定點擊事件
-async function handleInPageBinding(btnElem) {
-    if (!currentCreatedRowId) {
-        alert('找不到預約單號，請重新提交表單');
-        return;
-    }
-
-    btnElem.style.pointerEvents = 'none';
-    btnElem.style.opacity = '0.8';
-    btnElem.innerHTML = '⏳ 處理中，請稍候...';
-
-    // A. 若已有 UserID（例如在 LINE 內建瀏覽器開啟，或已完成登入）
-    if (cachedUserId) {
-        await sendBindRequest(currentCreatedRowId, cachedUserId);
-        window.location.href = ADD_FRIEND_URL;
-        return;
-    }
-
-    // B. 手機 Safari / Chrome 等外部瀏覽器：引導進行 LINE OAuth 登入授權
-    if (typeof liff !== 'undefined') {
-        sessionStorage.setItem('pending_row_id', currentCreatedRowId);
-        
-        if (!liff.isLoggedIn()) {
-            // 自動跳轉 LINE 登入授權，授權後帶回原頁面自動發送綁定
-            liff.login({ redirectUri: window.location.href });
-        } else {
-            try {
-                const profile = await liff.getProfile();
-                cachedUserId = profile.userId;
-                await sendBindRequest(currentCreatedRowId, cachedUserId);
-                window.location.href = ADD_FRIEND_URL;
-            } catch (err) {
-                // 若登入過期，重新觸發登入
-                liff.login({ redirectUri: window.location.href });
-            }
-        }
-    } else {
-        // LIFF 載入失敗降級直接跳轉
-        window.location.href = ADD_FRIEND_URL;
-    }
-}
-
-// 發送綁定請求給 GAS
 function sendBindRequest(rowId, userId) {
     return fetch(GAS_WEB_APP_URL, {
         method: 'POST',
@@ -174,12 +146,7 @@ function sendBindRequest(rowId, userId) {
             rowId: rowId,
             clientUserId: userId
         })
-    })
-    .then(res => res.json())
-    .then(data => {
-        sessionStorage.removeItem('pending_row_id'); // 綁定成功後清除
-    })
-    .catch(err => console.error('Bind Error:', err));
+    }).then(res => res.json());
 }
 
 function resetSubmitBtn() {
