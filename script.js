@@ -120,11 +120,11 @@ function initFormSubmit() {
         const formData = {
             action: 'submitForm',
             companyName: document.getElementById('companyName')?.value || '',
+            industry: document.getElementById('industry')?.value || '',
             userName: document.getElementById('userName')?.value || '',
             jobTitle: document.getElementById('jobTitle')?.value || '',
             phone: document.getElementById('phone')?.value || '',
             email: document.getElementById('email')?.value || '',
-            industry: document.getElementById('industry')?.value || '',
             companySize: getRadioValue('companySize'),
             issues: selectedIssues.join(', '),
             description: document.getElementById('description')?.value || '',
