@@ -1,21 +1,29 @@
 const GAS_WEB_APP_URL = 'https://script.google.com/macros/s/AKfycby8NlePGVKzMRI3enrV8fI8xndRowhWXUBY5nMrHkTPQXH0AK2N4KIssQMtyM0N0envkg/exec';
 const LIFF_ID = '2011796780-42NFl2WH'; 
-const ADD_FRIEND_URL = 'https://line.me/R/ti/p/@885xpnyp'; // LINE 官方帳號加好友/聊天室連結
+const ADD_FRIEND_URL = 'https://line.me/R/ti/p/@885xpnyp'; 
 
 let currentCreatedRowId = sessionStorage.getItem('pending_row_id') || null; 
 let cachedUserId = '';
 
 document.addEventListener('DOMContentLoaded', async function() {
-    // 靜默初始化 LIFF（僅在 LINE 內部瀏覽器或已登入狀態下順暢取得 UserID，失敗不影響流程）
+    // 1. 初始化 LIFF
     if (typeof liff !== 'undefined') {
         try {
             await liff.init({ liffId: LIFF_ID });
+            
+            // 檢查是否已登入（若剛從 LINE 登入頁授權轉址回來）
             if (liff.isLoggedIn()) {
                 const profile = await liff.getProfile();
                 cachedUserId = profile.userId;
+                console.log('✅ 成功取得 UserID:', cachedUserId);
+
+                // 2. 如果先前有暫存的預約單號，自動觸發綁定與推播
+                if (currentCreatedRowId) {
+                    await sendBindRequest(currentCreatedRowId, cachedUserId);
+                }
             }
         } catch (err) {
-            console.log('LIFF 靜默初始化（非 LINE 環境或未授權，自動切換至相容模式）');
+            console.warn('LIFF Init log:', err);
         }
     }
 
@@ -90,8 +98,8 @@ function initFormSubmit() {
                     bindBtn.removeAttribute('href');
                     bindBtn.style.pointerEvents = 'auto';
                     bindBtn.style.opacity = '1';
-                    bindBtn.style.backgroundColor = '#00B900'; // LINE 經典綠
-                    bindBtn.innerHTML = '💬 點此前往 LINE 接收預約確認通知';
+                    bindBtn.style.backgroundColor = '#00B900';
+                    bindBtn.innerHTML = '💬 點此綁定 LINE 並開啟通知';
 
                     bindBtn.onclick = function(evt) {
                         evt.preventDefault();
@@ -114,7 +122,7 @@ function initFormSubmit() {
     });
 }
 
-// 跨平台完美的綁定與導向邏輯
+// 處理綁定點擊事件
 async function handleInPageBinding(btnElem) {
     if (!currentCreatedRowId) {
         alert('找不到預約單號，請重新提交表單');
@@ -123,25 +131,55 @@ async function handleInPageBinding(btnElem) {
 
     btnElem.style.pointerEvents = 'none';
     btnElem.style.opacity = '0.8';
-    btnElem.innerHTML = '⏳ 開啟 LINE 中...';
+    btnElem.innerHTML = '⏳ 處理中，請稍候...';
 
-    // 1. 若環境有抓到 LINE UserID，非同步通知 GAS 綁定
+    // A. 若已有 UserID（例如在 LINE 內建瀏覽器開啟，或已完成登入）
     if (cachedUserId) {
-        fetch(GAS_WEB_APP_URL, {
-            method: 'POST',
-            headers: { 'Content-Type': 'text/plain;charset=utf-8' },
-            body: JSON.stringify({
-                action: 'bindLine',
-                rowId: currentCreatedRowId,
-                clientUserId: cachedUserId
-            })
-        }).catch(err => console.error(err));
+        await sendBindRequest(currentCreatedRowId, cachedUserId);
+        window.location.href = ADD_FRIEND_URL;
+        return;
     }
 
-    // 2. 跨平台平滑跳轉：無論桌機、iOS、Android，直接打開 LINE 加好友/聊天室畫面
-    setTimeout(() => {
+    // B. 手機 Safari / Chrome 等外部瀏覽器：引導進行 LINE OAuth 登入授權
+    if (typeof liff !== 'undefined') {
+        sessionStorage.setItem('pending_row_id', currentCreatedRowId);
+        
+        if (!liff.isLoggedIn()) {
+            // 自動跳轉 LINE 登入授權，授權後帶回原頁面自動發送綁定
+            liff.login({ redirectUri: window.location.href });
+        } else {
+            try {
+                const profile = await liff.getProfile();
+                cachedUserId = profile.userId;
+                await sendBindRequest(currentCreatedRowId, cachedUserId);
+                window.location.href = ADD_FRIEND_URL;
+            } catch (err) {
+                // 若登入過期，重新觸發登入
+                liff.login({ redirectUri: window.location.href });
+            }
+        }
+    } else {
+        // LIFF 載入失敗降級直接跳轉
         window.location.href = ADD_FRIEND_URL;
-    }, 300);
+    }
+}
+
+// 發送綁定請求給 GAS
+function sendBindRequest(rowId, userId) {
+    return fetch(GAS_WEB_APP_URL, {
+        method: 'POST',
+        headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+        body: JSON.stringify({
+            action: 'bindLine',
+            rowId: rowId,
+            clientUserId: userId
+        })
+    })
+    .then(res => res.json())
+    .then(data => {
+        sessionStorage.removeItem('pending_row_id'); // 綁定成功後清除
+    })
+    .catch(err => console.error('Bind Error:', err));
 }
 
 function resetSubmitBtn() {
