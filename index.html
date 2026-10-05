@@ -1,406 +1,219 @@
 <!DOCTYPE html>
 <html lang="zh-TW">
 <head>
-    <!-- 設定字元集編碼為 UTF-8 -->
-    <meta charset="UTF-8">
-    <!-- 設定響應式網頁（RWD）螢幕縮放比例 -->
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <!-- 網頁標題 -->
-    <title>灃禾管理顧問 — 讓我們一起。洞察危機，迎向轉機。</title>
-    
-    <!-- 引入 Google Fonts 中文字型 -->
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@300;400;500;700&family=Noto+Serif+TC:wght@600;700;900&display=swap" rel="stylesheet">
-    
-    <!-- 引入 FontAwesome 圖示庫 -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    
-    <!-- 引入外部自訂 CSS 樣式檔 -->
-    <link rel="stylesheet" href="style.css">
-
-    <script src="https://static.line-scdn.net/liff/edge/2/sdk.js"></script>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>勞資顧問預約與爭議評估</title>
+  <!-- Bootstrap 5 CSS -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <style>
+    body {
+      background-color: #f8f9fa;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    }
+    .form-card {
+      background: #ffffff;
+      border-radius: 12px;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+      padding: 2.5rem;
+      margin-top: 2rem;
+      margin-bottom: 2rem;
+    }
+    .section-title {
+      border-left: 4px solid #0d6efd;
+      padding-left: 10px;
+      margin-bottom: 1.5rem;
+      font-weight: 600;
+      color: #212529;
+    }
+    .required-star {
+      color: #dc3545;
+      margin-left: 2px;
+    }
+    .form-check-input:checked {
+      background-color: #0d6efd;
+      border-color: #0d6efd;
+    }
+  </style>
 </head>
 <body>
 
-    <!-- 頂部導航列區塊 -->
-    <header class="navbar">
-        <div class="nav-container">
-            <div class="brand-logo-group">
-                <div class="logo-mark">
-                    <img src="logo.png" alt="企業危機百科 LOGO" class="logo-img">
-                </div>
-                <div class="brand-names">
-                    <span class="tp-sub">TURNING POINT</span>
-                    <h1 class="brand-title">企業危機百科</h1>
-                    <span class="company-sub">灃禾管理顧問 Forward Management Consulting</span>
-                </div>
+<div class="container">
+  <div class="row justify-content-center">
+    <div class="col-lg-10">
+      <div class="form-card">
+        <h2 class="text-center mb-4 font-weight-bold">勞資顧問預約與爭議評估表單</h2>
+        <p class="text-muted text-center mb-5">請填寫以下資訊，我們的專業勞資顧問團隊將儘速與您聯繫並安排諮詢時段。</p>
+
+        <form id="consultForm" novalidate>
+          
+          <!-- 第一區塊：基本資料 -->
+          <h4 class="section-title">一、公司與聯絡人基本資料</h4>
+          <div class="row g-3 mb-4">
+            <div class="col-md-6">
+              <label for="companyName" class="form-label">公司名稱 <span class="required-star">*</span></label>
+              <input type="text" id="companyName" class="form-control" placeholder="XX股份有限公司">
             </div>
-            <a href="#apply-section" class="btn-cta desktop-only-btn">
-                <span>企業法律諮詢室</span>
-                <i class="fa-solid fa-arrow-right"></i>
-            </a>
-        </div>
-    </header>
-
-    <!-- 主視覺 Banner 區塊 -->
-    <section class="hero-section">
-        <div class="hero-bg-pattern"></div>
-        <div class="hero-container">
-            <div class="hero-grid">
-                <div class="visual-card-wrapper">
-                    <div class="brand-card-frame">
-                        <div class="card-content">
-                            <img src="logo.png" alt="企業危機百科 LOGO" class="logo-img">
-                            <div class="card-divider"></div>
-                            <p class="card-company">灃禾管理顧問</p>
-                            <span class="card-en">Forward Management Consulting</span>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="hero-text-content">
-                    <div class="hero-tag">
-                        <i class="fa-solid fa-user"></i>
-                        <span>專業勞動法令顧問案</span>
-                    </div>
-
-                    <h2 class="hero-headline">
-                        讓我們一起。<br>
-                        <span class="highlight-text">洞察危機，迎向轉機。</span>
-                    </h2>
-
-                    <p class="hero-description">
-                        面對勞動檢查、加班費認定爭議、離職協議條款或勞資調解等棘手問題？<br>
-                        由<strong>灃禾管理顧問</strong>專家團隊提供專屬「企業法律諮詢」，協助貴公司建構完善勞務防火牆，化風險為升級契機。
-                    </p>
-
-                    <div class="metrics-grid">
-                        <div class="metric-box">
-                            <span class="metric-num">100%合規</span>
-                            <span class="metric-label">最新勞基法規審視</span>
-                        </div>
-                        <div class="metric-box">
-                            <span class="metric-num">專家1對1</span>
-                            <span class="metric-label">實務勞資爭議對策</span>
-                        </div>
-                        <div class="metric-box">
-                            <span class="metric-num">保密安全</span>
-                            <span class="metric-label">嚴格守護企業隱私</span>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- 勞務議題與服務介紹區塊 -->
-    <section class="services-section">
-        <div class="section-container">
-            <div class="section-header">
-                <span class="section-tag">SERVICES & ISSUES</span>
-                <h3 class="section-title">貴公司目前正面臨哪些勞務困擾？</h3>
-                <p class="section-desc">我們將針對企業常見的勞資6大高風險領域，提供專業合規的檢查與建議。</p>
+            
+            <div class="col-md-6">
+              <label for="industry" class="form-label">產業類別 <span class="required-star">*</span></label>
+              <input type="text" id="industry" class="form-control" placeholder="例如：餐飲業、科技業、製造業">
             </div>
 
-            <div class="services-grid">
-                <div class="service-card">
-                    <div class="icon-box"><i class="fa-solid fa-file-signature"></i></div>
-                    <h4>離職證明與協議效力</h4>
-                    <p>自願離職證明或離職切結書條款不當，極易被認定無效，導致事後遭追討資遣費或非法解僱爭議。</p>
-                    <span class="card-feature"><i class="fa-solid fa-circle-check"></i> 協議條款合規審查</span>
-                </div>
-
-                <div class="service-card">
-                    <div class="icon-box"><i class="fa-solid fa-user-shield"></i></div>
-                    <h4>勞動檢查應對與裁罰預防</h4>
-                    <p>接獲勞工局勞檢通知？出勤紀錄與薪資明細若未符合規範，最高可面臨百萬裁罰。</p>
-                    <span class="card-feature"><i class="fa-solid fa-circle-check"></i> 勞檢核心項目檢查</span>
-                </div>
-
-                <div class="service-card">
-                    <div class="icon-box"><i class="fa-solid fa-business-time"></i></div>
-                    <h4>工時、加班費與變形工時</h4>
-                    <p>責任制認定錯誤、加班費計算基準不符規定、變形工時缺乏勞資會議同意等盲點。</p>
-                    <span class="card-feature"><i class="fa-solid fa-circle-check"></i> 排班與工時機制檢視</span>
-                </div>
-
-                <div class="service-card">
-                    <div class="icon-box"><i class="fa-solid fa-scale-balanced"></i></div>
-                    <h4>職場霸凌與性騷擾防治</h4>
-                    <p>性工法新制上路，企業若缺乏合規申訴管道與調查懲戒機制，將面臨重罰與行政裁處。</p>
-                    <span class="card-feature"><i class="fa-solid fa-circle-check"></i> 防治機制與申訴輔導</span>
-                </div>
-
-                <div class="service-card">
-                    <div class="icon-box"><i class="fa-solid fa-book-bookmark"></i></div>
-                    <h4>工作規則與勞動契約修訂</h4>
-                    <p>工作規則未核備、勞動契約缺乏保密與營業秘密保護條款，無法有效約束離職人員。</p>
-                    <span class="card-feature"><i class="fa-solid fa-circle-check"></i> 規章合規檢查</span>
-                </div>
-
-                <div class="service-card">
-                    <div class="icon-box"><i class="fa-solid fa-comments"></i></div>
-                    <h4>勞資調解與緊急爭議處置</h4>
-                    <p>收到勞工局調解開會通知單？顧問團隊即時協助擬定調解策略，化解危機。</p>
-                    <span class="card-feature"><i class="fa-solid fa-circle-check"></i> 1對1專家緊急諮詢</span>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- 表單與申請區塊 -->
-    <section id="apply-section" class="form-section">
-        <div class="section-container border-container">
-            <div class="section-header">
-                <span class="badge-pill">LIMITED TIME TRIAL</span>
-                <h3 class="section-title">「企業法律諮詢室」服務申請</h3>
-                <p class="section-desc">請填寫申請資訊，灃禾顧問團隊將於3個工作天內與您聯繫，協助排定1對1專家諮詢。</p>
+            <div class="col-md-6">
+              <label for="userName" class="form-label">聯絡人姓名 <span class="required-star">*</span></label>
+              <input type="text" id="userName" class="form-control" placeholder="王小明">
             </div>
 
-               <!-- 表單藍框 -->
-                     <div class="config-bar">
-                <div class="config-title">
-                </div>
-                <div class="config-input-group">
-                </div>
+            <div class="col-md-6">
+              <label for="jobTitle" class="form-label">職稱 <span class="required-star">*</span></label>
+              <select id="jobTitle" class="form-select">
+                <option value="" selected disabled>請選擇職稱</option>
+                <option value="負責人/高階主管">負責人 / 高階主管</option>
+                <option value="人資主管/專員">人資主管 / 專員</option>
+                <option value="法務主管/專員">法務主管 / 專員</option>
+                <option value="行政/財務部門">行政 / 財務部門</option>
+                <option value="其他">其他</option>
+              </select>
             </div>
 
-            <div class="form-card-box">
-                <div class="form-card-header">
-                    <div class="form-card-title">
-                        <i class="fa-solid fa-file"></i> 專業勞動法令「企業法律諮詢室」
-                    </div>
-                </div>
-             
-
-                <!-- 網頁表單 -->
-                <form class="builtin-form" id="consultForm">
-                    <div class="form-row">
-                        <div class="form-group">
-                            <label>1. 公司名稱<span class="req">*</span></label>
-                            <input type="text" id="companyName" class="form-control" required placeholder="XX股份有限公司">
-                        </div>
-                        <div class="form-group">
-                            <label>2. 貴公司的產業類別<span class="req">*</span></label>
-                            <input type="text" id="industry" class="form-control" required placeholder="例如:金融/電商/餐飲...">
-                        </div>
-                        <div class="form-group">
-                            <label>3. 承辦姓名<span class="req">*</span></label>
-                            <input type="text" id="userName" class="form-control" required placeholder="王大明">
-                        </div>
-                        <div class="form-group">
-                            <label for="jobTitle" class="form-label required">4.職稱</label>
-                            <select id="jobTitle" name="jobTitle" class="form-control" required>
-                                <option value="" disabled selected>請選擇職稱</option>
-                                <option value="負責人/創辦人">負責人 / 創辦人</option>
-                                <option value="董事長/總經理">董事長 / 總經理</option>
-                                <option value="高階主管/執行長">高階主管 / 執行長</option>
-                                <option value="人資主管/HR">人資主管 / HR</option>
-                                <option value="行政總務/法務">行政總務 / 法務</option>
-                                <option value="財務會計主管">財務會計主管</option>
-                                <option value="部門主管/經理">部門主管 / 經理</option>
-                                <option value="其他">其他</option>
-                            </select>
-                        </div>
-                        <div class="form-group">
-                            <label>5. 聯絡電話 / 手機<span class="req">*</span></label>
-                            <input type="tel" id="phone" class="form-control" required placeholder="例如:03-123-4567#123或0912-345-678">
-                        </div>
-                        <div class="form-group">
-                            <label>6. 電子郵件<span class="req">*</span></label>
-                            <input type="email" id="email" class="form-control" required placeholder="hr@gmail.com">
-                        </div>
-                        
-                    </div>
-
-                    <div class="form-group">
-                        <label>7. 公司規模（員工人數）<span class="req">*</span></label>
-                        <label><input type="radio" name="companySize" value="100人以下" required> 100人以下</label>
-                        <label><input type="radio" name="companySize" value="100-200人"> 100-200人</label>
-                        <label><input type="radio" name="companySize" value="200人以上"> 200人以上</label>
-                    </div>
-
-                    <div class="form-group">
-                        <label>8. 貴公司目前遇到的勞務議題與現況？(可多選) <span class="req">*</span></label>
-                        <div class="checkbox-grid" id="issuesGroup">
-                            <label class="checkbox-item"><input type="checkbox" name="issues" value="勞資爭議調解中"> <span>勞資爭議調解中</span></label>
-                            <label class="checkbox-item"><input type="checkbox" name="issues" value="工時計算/排班/加班費爭議"> <span>工時計算 / 排班 / 加班費爭議</span></label>
-                            <label class="checkbox-item"><input type="checkbox" name="issues" value="收到勞檢通知或需補件改善"> <span>收到勞檢通知或需補件改善</span></label>
-                            <label class="checkbox-item"><input type="checkbox" name="issues" value="職場霸凌/性騷擾申訴"> <span>職場霸凌 / 性騷擾申訴</span></label>
-                            <label class="checkbox-item"><input type="checkbox" name="issues" value="工作規則/勞動契約合規審查"> <span>工作規則 / 勞動契約合規審查</span></label>
-                            <label class="checkbox-item"><input type="checkbox" name="issues" value="試用期與績效考核"> <span>試用期與績效考核</span></label>
-                            <label class="checkbox-item"><input type="checkbox" name="issues" value="請假與出勤問題"> <span>請假與出勤問題</span></label>
-                            <label class="checkbox-item"><input type="checkbox" name="issues" value="解僱與資遣爭議"> <span>解僱與資遣爭議</span></label>
-                        </div>
-                    </div>
-
-                    <div class="form-group">
-                        <label>9. 具體爭議與遭遇的問題<span class="req">*</span></label>
-                        <textarea id="description" rows="3" required placeholder="例如：近期擬調動員工崗位，想確認相關程序是否合規..."></textarea>
-                    </div>
-
-                    <div class="form-group">
-                        <label>10. 貴公司過去是否曾遇到過勞動檢查或勞資調解事件</label>
-                        <label><input type="radio" name="pastExperience" value="有，曾被勞檢且有改善處分/罰金紀錄"> 有，曾被勞檢且有改善處分/罰金紀錄</label>
-                        <label><input type="radio" name="pastExperience" value="有，曾進行過勞資爭議調解"> 有，曾進行過勞資爭議調解</label>
-                        <label><input type="radio" name="pastExperience" value="無，但希望預先防範"> 無，但希望預先防範</label>
-                    </div>
-
-                    <div class="form-group">
-                        <label>11. 貴公司目前是否有配合的外部常年勞務或法律顧問</label>
-                        <label><input type="radio" name="externalConsultant" value="有，已有長期配合的勞務顧問/律師"> 有，已有長期配合的勞務顧問/律師</label>
-                        <label><input type="radio" name="externalConsultant" value="無，目前主要由內部HR / 管理層研究處置"> 無，目前主要由內部HR / 管理層研究處置</label>
-                        <label><input type="radio" name="externalConsultant" value="無，正在尋找合適的勞務顧問團隊"> 無，正在尋找合適的勞務顧問團隊</label>
-                    </div>
-
-                    <div class="form-group">
-                        <label>12. 期望諮詢日期與時間<span class="req">*</span></label>
-                        
-                        <div style="margin-bottom: 10px;">
-                            <label style="font-size: 0.9em; color: #555;">時段一</label>
-                            <div class="form-row">
-                                <input type="date" id="bookingDate1" required>
-                                <select id="bookingTime1" required>
-                                    <option value="" disabled selected>請選擇時間</option>
-                                    <option value="09:00">09:00</option>
-                                    <option value="09:30">09:30</option>
-                                    <option value="10:00">10:00</option>
-                                    <option value="10:30">10:30</option>
-                                    <option value="11:00">11:00</option>
-                                    <option value="11:30">11:30</option>
-                                    <option value="13:30">13:30</option>
-                                    <option value="14:00">14:00</option>
-                                    <option value="14:30">14:30</option>
-                                    <option value="15:00">15:00</option>
-                                    <option value="15:30">15:30</option>
-                                    <option value="16:00">16:00</option>
-                                    <option value="16:30">16:30</option>
-                                    <option value="17:00">17:00</option>
-                                    <option value="17:30">17:30</option>
-                                </select>
-                            </div>
-                        </div>
-
-                        <div style="margin-bottom: 10px;">
-                            <label style="font-size: 0.9em; color: #555;">時段二</label>
-                            <div class="form-row">
-                                <input type="date" id="bookingDate2" required>
-                                <select id="bookingTime2">
-                                    <option value="" disabled selected>請選擇時間</option>
-                                    <option value="09:00">09:00</option>
-                                    <option value="09:30">09:30</option>
-                                    <option value="10:00">10:00</option>
-                                    <option value="10:30">10:30</option>
-                                    <option value="11:00">11:00</option>
-                                    <option value="11:30">11:30</option>
-                                    <option value="13:30">13:30</option>
-                                    <option value="14:00">14:00</option>
-                                    <option value="14:30">14:30</option>
-                                    <option value="15:00">15:00</option>
-                                    <option value="15:30">15:30</option>
-                                    <option value="16:00">16:00</option>
-                                    <option value="16:30">16:30</option>
-                                    <option value="17:00">17:00</option>
-                                    <option value="17:30">17:30</option>
-                                </select>
-                            </div>
-                        </div>
-
-                        <div style="margin-bottom: 10px;">
-                            <label style="font-size: 0.9em; color: #555;">時段三</label>
-                            <div class="form-row">
-                                <input type="date" id="bookingDate3" required>
-                                <select id="bookingTime3">
-                                    <option value="" disabled selected>請選擇時間</option>
-                                    <option value="09:00">09:00</option>
-                                    <option value="09:30">09:30</option>
-                                    <option value="10:00">10:00</option>
-                                    <option value="10:30">10:30</option>
-                                    <option value="11:00">11:00</option>
-                                    <option value="11:30">11:30</option>
-                                    <option value="13:30">13:30</option>
-                                    <option value="14:00">14:00</option>
-                                    <option value="14:30">14:30</option>
-                                    <option value="15:00">15:00</option>
-                                    <option value="15:30">15:30</option>
-                                    <option value="16:00">16:00</option>
-                                    <option value="16:30">16:30</option>
-                                    <option value="17:00">17:00</option>
-                                    <option value="17:30">17:30</option>
-                                </select>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="form-group">
-                        <label class="checkbox-item consent-box">
-                            <input type="checkbox" id="consent" required>
-                            <span class="consent-text">我已閱讀本表單、瞭解蒐集之目的，並依照《個人資料保護法》同意授權相關資訊供《企業危機百科》服務使用。</span>
-                        </label>
-                    </div>
-
-                    <button type="submit" id="submitBtn" class="btn-submit">
-                        <i class="fa-solid fa-paper-plane"></i>
-                        <span>送出申請</span>
-                    </button>
-
-                    <!-- 隱藏欄位：存放抓取到的 LINE User ID -->
-                    <input type="hidden" id="clientUserId" name="clientUserId" value="">
-                </form>
+            <div class="col-md-6">
+              <label for="phone" class="form-label">聯絡電話 <span class="required-star">*</span></label>
+              <input type="tel" id="phone" class="form-control" placeholder="例如：0912345678 或 02-12345678">
             </div>
 
-            <div class="security-badges">
-                <div class="badge-item">
-                    <i class="fa-solid fa-lock"></i>
-                    <span>SSL 傳輸加密保護</span>
-                </div>
-                <div class="badge-item">
-                    <i class="fa-solid fa-user-shield"></i>
-                    <span>遵守個人資料保護法</span>
-                </div>
-                <div class="badge-item">
-                    <i class="fa-solid fa-file-contract"></i>
-                    <span>全程資訊嚴格保密</span>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- 頁尾宣告區塊 -->
-    <footer class="footer">
-        <div class="footer-container">
-            <div class="footer-col footer-info-col">
-                <h4 class="footer-heading">聯絡資訊</h4>
-                <p><i class="fa-solid fa-location-dot"></i> 桃園市桃園區經國一路65號2樓</p>
-                <p><i class="fa-solid fa-phone"></i>電話：03-357-7001</p>
-                <p><i class="fa-solid fa-file"></i> 傳真：03-357-8277</p>
-                <p><i class="fa-solid fa-envelope"></i> 信箱：<a href="mailto:service@forwardhrm.com.tw">service@forwardhrm.com.tw</a></p>
+            <div class="col-md-6">
+              <label for="email" class="form-label">電子郵件 <span class="required-star">*</span></label>
+              <input type="email" id="email" class="form-control" placeholder="example@email.com">
             </div>
 
-            <div class="footer-col footer-right-col">
-                <a href="https://page.line.me/885xpnyp?oat_content=url&openQrModal=true" target="_blank" class="line-btn">
-                    💬 加入《企業危機百科》官方 LINE 帳號
-                </a>
-                <div class="footer-copyright">
-                    <p>&copy; 澧禾集團. All rights reserved.</p>
-                    <p class="footer-keywords">勞資法令諮詢 • 勞務風險處置 • 危機管理百科</p>
-                </div>
+            <div class="col-12">
+              <label class="form-label d-block">公司規模 <span class="required-star">*</span></label>
+              <div class="form-check form-check-inline">
+                <input class="form-check-input" type="radio" name="companySize" id="size1" value="10人以下">
+                <label class="form-check-label" for="size1">10 人以下</label>
+              </div>
+              <div class="form-check form-check-inline">
+                <input class="form-check-input" type="radio" name="companySize" id="size2" value="11-30人">
+                <label class="form-check-label" for="size2">11 - 30 人</label>
+              </div>
+              <div class="form-check form-check-inline">
+                <input class="form-check-input" type="radio" name="companySize" id="size3" value="31-100人">
+                <label class="form-check-label" for="size3">31 - 100 人</label>
+              </div>
+              <div class="form-check form-check-inline">
+                <input class="form-check-input" type="radio" name="companySize" id="size4" value="100人以上">
+                <label class="form-check-label" for="size4">100 人以上</label>
+              </div>
             </div>
-        </div>
-    </footer>
+          </div>
 
-    <script src="script.js"></script>
-    <script src="https://static.line-scdn.net/liff/edge/2/sdk.js"></script>
-    <div id="successModal" class="modal-overlay" style="display: none;">
-    <div class="modal-content">
-        <div class="modal-icon">✓</div>
-        <h2>表單已成功收件！</h2>
-        <p>請點擊下方按鈕加入 / 綁定 LINE 官方帳號，以順利接收您的預約對接通知。</p>
-        <a id="lineBindBtn" href="#" class="btn-line-bind">
-            點此綁定 LINE 接收通知
-        </a>
+          <!-- 第二區塊：勞務議題諮詢 -->
+          <h4 class="section-title">二、諮詢與爭議評估內容</h4>
+          <div class="mb-4">
+            <label class="form-label d-block">遭遇的勞務議題（可複選） <span class="required-star">*</span></label>
+            <div class="row g-2">
+              <div class="col-md-6">
+                <div class="form-check">
+                  <input class="form-check-input" type="checkbox" name="issues" id="issue1" value="勞資爭議調解/訴訟風險">
+                  <label class="form-check-label" for="issue1">勞資爭議調解 / 訴訟風險</label>
+                </div>
+              </div>
+              <div class="col-md-6">
+                <div class="form-check">
+                  <input class="form-check-input" type="checkbox" name="issues" id="issue2" value="解僱/資遣/離職爭議">
+                  <label class="form-check-label" for="issue2">解僱 / 資遣 / 離職爭議</label>
+                </div>
+              </div>
+              <div class="col-md-6">
+                <div class="form-check">
+                  <input class="form-check-input" type="checkbox" name="issues" id="issue3" value="工作規則/勞動契約擬定與修訂">
+                  <label class="form-check-label" for="issue3">工作規則 / 勞動契約擬定與修訂</label>
+                </div>
+              </div>
+              <div class="col-md-6">
+                <div class="form-check">
+                  <input class="form-check-input" type="checkbox" name="issues" id="issue4" value="加班費/工資/工時計算爭議">
+                  <label class="form-check-label" for="issue4">加班費 / 工資 / 工時計算爭議</label>
+                </div>
+              </div>
+              <div class="col-md-6">
+                <div class="form-check">
+                  <input class="form-check-input" type="checkbox" name="issues" id="issue5" value="職業災害處理與補償">
+                  <label class="form-check-label" for="issue5">職業災害處理與補償</label>
+                </div>
+              </div>
+              <div class="col-md-6">
+                <div class="form-check">
+                  <input class="form-check-input" type="checkbox" name="issues" id="issue6" value="勞動檢查因應與裁罰申訴">
+                  <label class="form-check-label" for="issue6">勞動檢查因應與裁罰申訴</label>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="mb-4">
+            <label for="description" class="form-label">具體爭議與遭遇問題描述 <span class="required-star">*</span></label>
+            <textarea id="description" class="form-control" rows="4" placeholder="請簡述目前面臨的情況、員工提告或調解的訴求，以便顧問能更精準地為您評估..."></textarea>
+          </div>
+
+          <!-- 第三區塊：期望諮詢時段 -->
+          <h4 class="section-title">三、期望諮詢時段預約</h4>
+          <p class="text-muted small mb-3">請至少提供一組您方便諮詢的時段（顧問將於確認後回覆最終安排）：</p>
+          
+          <div class="row g-3 mb-3">
+            <div class="col-md-6">
+              <label for="bookingDate1" class="form-label">首選日期 <span class="required-star">*</span></label>
+              <input type="date" id="bookingDate1" class="form-control">
+            </div>
+            <div class="col-md-6">
+              <label for="bookingTime1" class="form-label">首選時間 <span class="required-star">*</span></label>
+              <select id="bookingTime1" class="form-select">
+                <option value="" selected disabled>請選擇時間區間</option>
+                <option value="09:30-11:00">09:30 - 11:00</option>
+                <option value="11:00-12:30">11:00 - 12:30</option>
+                <option value="14:00-15:30">14:00 - 15:30</option>
+                <option value="15:30-17:00">15:30 - 17:00</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="row g-3 mb-4">
+            <div class="col-md-6">
+              <label for="bookingDate2" class="form-label">次選日期（選填）</label>
+              <input type="date" id="bookingDate2" class="form-control">
+            </div>
+            <div class="col-md-6">
+              <label for="bookingTime2" class="form-label">次選時間（選填）</label>
+              <select id="bookingTime2" class="form-select">
+                <option value="" selected disabled>請選擇時間區間</option>
+                <option value="09:30-11:00">09:30 - 11:00</option>
+                <option value="11:00-12:30">11:00 - 12:30</option>
+                <option value="14:00-15:30">14:00 - 15:30</option>
+                <option value="15:30-17:00">15:30 - 17:00</option>
+              </select>
+            </div>
+          </div>
+
+          <!-- 同意條款與提交 -->
+          <div class="form-check mb-4">
+            <input class="form-check-input" type="checkbox" id="consent">
+            <label class="form-check-label ms-1" for="consent">
+              我已理解並同意上述資料僅供勞資諮詢與評估使用，顧問團隊將對資料嚴格保密。 <span class="required-star">*</span>
+            </label>
+          </div>
+
+          <div class="d-grid gap-2">
+            <button type="submit" id="submitBtn" class="btn btn-primary btn-lg">確認送出預約表單</button>
+          </div>
+
+        </form>
+      </div>
     </div>
+  </div>
 </div>
+
+<!-- JS 檔案引用 -->
+<script src="script.js"></script>
 </body>
 </html>
