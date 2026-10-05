@@ -62,6 +62,17 @@ function initFormSubmit() {
             return;
         }
 
+        // 取得電話輸入框內容
+        const phoneInput = document.getElementById('phone');
+        const phoneValue = phoneInput ? phoneInput.value.trim() : '';
+        // 驗證電話格式
+        if (!isValidTaiwanPhone(phoneValue)) {
+            alert('請輸入有效的台灣電話或手機號碼！\n例如：0912345678 或 02-12345678#123');
+            if (phoneInput) phoneInput.focus();
+            resetSubmitBtn(); // 重置按鈕狀態
+            return; // 攔截不送出
+}
+
         const getRadioValue = (name) => {
             const selected = document.querySelector(`input[name="${name}"]:checked`);
             return selected ? selected.value : '';
@@ -160,18 +171,6 @@ function isValidTaiwanPhone(phoneStr) {
     }
 
     return false;
-}
-
-// 取得電話輸入框內容
-const phoneInput = document.getElementById('phone');
-const phoneValue = phoneInput ? phoneInput.value.trim() : '';
-
-// 驗證電話格式
-if (!isValidTaiwanPhone(phoneValue)) {
-    alert('請輸入有效的台灣電話或手機號碼！\n例如：0912345678 或 02-12345678#123');
-    if (phoneInput) phoneInput.focus();
-    resetSubmitBtn(); // 重置按鈕狀態
-    return; // 攔截不送出
 }
 
 /* ----------------------------------------------------
