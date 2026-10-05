@@ -101,21 +101,35 @@ function initFormSubmit() {
         // 表單前端驗證（統一使用氣泡提示）
         // ----------------------------------------------------
 
-        // A. 驗證公司名稱
+        // 1. 驗證公司名稱
         const companyNameInput = document.getElementById('companyName');
         if (companyNameInput && !companyNameInput.value.trim()) {
             showCustomValidity(companyNameInput, '請填寫公司名稱！');
             return;
         }
 
-        // B. 驗證聯絡人姓名
-        const userNameInput = document.getElementById('userName');
-        if (userNameInput && !userNameInput.value.trim()) {
-            showCustomValidity(userNameInput, '請填寫聯絡人姓名！');
+        // 2. 驗證產業類別
+        const industryInput = document.getElementById('industry');
+        if (industryInput && !industryInput.value.trim()) {
+            showCustomValidity(industryInput, '請填寫貴公司的產業類別！');
             return;
         }
 
-        // C. 驗證聯絡電話 / 手機
+        // 3. 驗證承辦姓名
+        const userNameInput = document.getElementById('userName');
+        if (userNameInput && !userNameInput.value.trim()) {
+            showCustomValidity(userNameInput, '請填寫承辦姓名！');
+            return;
+        }
+
+        // 4. 驗證職稱
+        const jobTitleSelect = document.getElementById('jobTitle');
+        if (jobTitleSelect && !jobTitleSelect.value) {
+            showCustomValidity(jobTitleSelect, '請選擇職稱！');
+            return;
+        }
+
+        // 5. 驗證聯絡電話 / 手機
         const phoneInput = document.getElementById('phone');
         const phoneValue = phoneInput ? phoneInput.value.trim() : '';
 
@@ -123,21 +137,34 @@ function initFormSubmit() {
             showCustomValidity(phoneInput, '請填寫聯絡電話！');
             return;
         } else if (!isValidTaiwanPhone(phoneValue)) {
-            showCustomValidity(phoneInput, '請輸入有效的電話號碼（例如：0912345678 或 02-12345678#123）');
+            showCustomValidity(phoneInput, '請輸入有效的電話號碼（例如：0912345678 或 03-1234567#123）');
             return;
         }
 
-        // D. 驗證電子郵件 (如果有填寫才驗證格式)
+        // 6. 驗證電子郵件
         const emailInput = document.getElementById('email');
         const emailValue = emailInput ? emailInput.value.trim() : '';
         const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
-        if (emailValue && !emailRegex.test(emailValue)) {
+        if (!emailValue) {
+            showCustomValidity(emailInput, '請填寫電子郵件！');
+            return;
+        } else if (!emailRegex.test(emailValue)) {
             showCustomValidity(emailInput, '請輸入有效的電子郵件地址！');
             return;
         }
 
-        // E. 驗證勞務議題（多選一）
+        // 7. 驗證公司規模 (單選)
+        const companySizeSelected = document.querySelector('input[name="companySize"]:checked');
+        if (!companySizeSelected) {
+            const firstRadio = document.querySelector('input[name="companySize"]');
+            if (firstRadio) {
+                showCustomValidity(firstRadio, '請選擇公司規模！');
+            }
+            return;
+        }
+
+        // 8. 驗證勞務議題（多選一）
         const issueCheckboxes = document.querySelectorAll('input[name="issues"]');
         const selectedIssues = Array.from(issueCheckboxes).filter(cb => cb.checked).map(cb => cb.value);
 
@@ -148,10 +175,51 @@ function initFormSubmit() {
             return;
         }
 
-        // F. 驗證條款勾選 (如有條款核取方塊)
-        const agreeCheckbox = document.getElementById('agreeCheck');
-        if (agreeCheckbox && !agreeCheckbox.checked) {
-            showCustomValidity(agreeCheckbox, '如果你要繼續執行，請勾選這個核取方塊。');
+        // 9. 驗證具體爭議與遭遇的問題
+        const descriptionInput = document.getElementById('description');
+        if (descriptionInput && !descriptionInput.value.trim()) {
+            showCustomValidity(descriptionInput, '請填寫具體爭議與遭遇的問題！');
+            return;
+        }
+
+        // 12. 驗證期望諮詢日期與時間 (時段一、二、三均為必填)
+        const bookingDate1 = document.getElementById('bookingDate1');
+        const bookingTime1 = document.getElementById('bookingTime1');
+        if (bookingDate1 && !bookingDate1.value) {
+            showCustomValidity(bookingDate1, '請選擇時段一的預約日期！');
+            return;
+        }
+        if (bookingTime1 && !bookingTime1.value) {
+            showCustomValidity(bookingTime1, '請選擇時段一的預約時間！');
+            return;
+        }
+
+        const bookingDate2 = document.getElementById('bookingDate2');
+        const bookingTime2 = document.getElementById('bookingTime2');
+        if (bookingDate2 && !bookingDate2.value) {
+            showCustomValidity(bookingDate2, '請選擇時段二的預約日期！');
+            return;
+        }
+        if (bookingTime2 && !bookingTime2.value) {
+            showCustomValidity(bookingTime2, '請選擇時段二的預約時間！');
+            return;
+        }
+
+        const bookingDate3 = document.getElementById('bookingDate3');
+        const bookingTime3 = document.getElementById('bookingTime3');
+        if (bookingDate3 && !bookingDate3.value) {
+            showCustomValidity(bookingDate3, '請選擇時段三的預約日期！');
+            return;
+        }
+        if (bookingTime3 && !bookingTime3.value) {
+            showCustomValidity(bookingTime3, '請選擇時段三的預約時間！');
+            return;
+        }
+
+        // 個資同意條款勾選
+        const consentCheckbox = document.getElementById('consent');
+        if (consentCheckbox && !consentCheckbox.checked) {
+            showCustomValidity(consentCheckbox, '請勾選同意個人資料保護條款以繼續提交！');
             return;
         }
 
@@ -182,13 +250,13 @@ function initFormSubmit() {
             action: 'submitForm',
             companyName: companyNameInput?.value || '',
             userName: userNameInput?.value || '',
-            jobTitle: document.getElementById('jobTitle')?.value || '',
+            jobTitle: jobTitleSelect?.value || '',
             phone: phoneValue,
             email: emailValue,
-            industry: document.getElementById('industry')?.value || '',
+            industry: industryInput?.value || '',
             companySize: getRadioValue('companySize'),
             issues: selectedIssues.join(', '),
-            description: document.getElementById('description')?.value || '',
+            description: descriptionInput?.value || '',
             pastExperience: getRadioValue('pastExperience'),
             externalConsultant: getRadioValue('externalConsultant'),
             booking1: getBookingStr('bookingDate1', 'bookingTime1'),
