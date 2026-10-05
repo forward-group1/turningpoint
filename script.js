@@ -132,6 +132,42 @@ function initFormSubmit() {
         });
     });
 }
+/* ----------------------------------------------------
+   台灣電話 / 手機格式驗證函式
+   ---------------------------------------------------- */
+function isValidTaiwanPhone(phoneStr) {
+    if (!phoneStr) return false;
+
+    // 清除使用者輸入的空格與連字符號 (-)
+    const cleanPhone = phoneStr.trim().replace(/[\s-]/g, '');
+
+    // 1. 驗證手機格式：09 開頭且剛好 10 位數字
+    const mobileRegex = /^09\d{8}$/;
+    if (mobileRegex.test(cleanPhone)) {
+        return true;
+    }
+
+    // 2. 驗證市話格式（含可選的分機 #123 或 分機123）
+    // 區碼 02~08，總號碼 9~10 位數，可接 #/分機/ext 加上數字
+    const telRegex = /^0\d{1,2}\d{6,8}(?:(?:#|分機|ext\.?)\d{1,6})?$/i;
+    if (telRegex.test(cleanPhone)) {
+        return true;
+    }
+
+    return false;
+}
+
+// 取得電話輸入框內容
+const phoneInput = document.getElementById('phone');
+const phoneValue = phoneInput ? phoneInput.value.trim() : '';
+
+// 驗證電話格式
+if (!isValidTaiwanPhone(phoneValue)) {
+    alert('請輸入有效的台灣電話或手機號碼！\n例如：0912345678 或 02-12345678#123');
+    if (phoneInput) phoneInput.focus();
+    resetSubmitBtn(); // 重置按鈕狀態
+    return; // 攔截不送出
+}
 
 /* ----------------------------------------------------
    2. 綁定處理邏輯 (特別優化 iOS)
