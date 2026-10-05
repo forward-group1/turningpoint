@@ -3,16 +3,35 @@ const LIFF_ID = '2011796780-42NFl2WH';
 const OFFICIAL_LINE_URL = 'https://page.line.me/885xpnyp'; // 官方 LINE 連結
 
 let currentCreatedRowId = null;
-let isBoundSuccess = false; // 紀錄是否已完成綁定
+let isBoundSuccess = false;
+
+// 判斷是否為 iOS 裝置 (iPhone / iPad)
+const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
 
 document.addEventListener('DOMContentLoaded', async function() {
-    // 初始化 LIFF SDK
+    // 1. 初始化 LIFF SDK
     if (typeof liff !== 'undefined') {
         try {
             await liff.init({ liffId: LIFF_ID });
             console.log('LIFF 初始化完成');
         } catch (err) {
             console.error('LIFF Init error:', err);
+        }
+    }
+
+    // 2. 檢查 URL 是否帶有 iOS 跳轉回來的 bindRowId 參數
+    const urlParams = new URLSearchParams(window.location.search);
+    const pendingRowId = urlParams.get('bindRowId') || localStorage.getItem('pending_bind_row_id');
+
+    // 若帶有單號且已經是登入狀態（或剛授權回來）
+    if (pendingRowId && typeof liff !== 'undefined') {
+        if (liff.isLoggedIn() || urlParams.has('code')) {
+            currentCreatedRowId = pendingRowId;
+            const successModal = document.getElementById('successModal');
+            if (successModal) successModal.style.display = 'flex';
+            
+            // 自動背景執行綁定寫入並發送推播
+            await executeAutoBind(pendingRowId);
         }
     }
 
@@ -74,7 +93,6 @@ function initFormSubmit() {
             booking3: getBookingStr('bookingDate3', 'bookingTime3')
         };
 
-        // 發送表單資料給 GAS
         fetch(GAS_WEB_APP_URL, {
             method: 'POST',
             headers: { 'Content-Type': 'text/plain;charset=utf-8' },
@@ -84,7 +102,7 @@ function initFormSubmit() {
         .then(data => {
             if (data.result === 'success') {
                 currentCreatedRowId = data.rowId;
-                isBoundSuccess = false;
+                localStorage.setItem('pending_bind_row_id', currentCreatedRowId);
 
                 const bindBtn = document.getElementById('lineBindBtn');
                 if (bindBtn) {
@@ -94,14 +112,12 @@ function initFormSubmit() {
                     bindBtn.style.backgroundColor = '#4CAF50';
                     bindBtn.innerHTML = '點此綁定 LINE 接收通知';
 
-                    // 綁定點擊事件
                     bindBtn.onclick = function(evt) {
                         evt.preventDefault();
                         handleLineBindingProcess(bindBtn, currentCreatedRowId);
                     };
                 }
                 
-                // 顯示圖 1 的成功彈窗
                 const successModal = document.getElementById('successModal');
                 if (successModal) successModal.style.display = 'flex';
             } else {
@@ -118,7 +134,7 @@ function initFormSubmit() {
 }
 
 /* ----------------------------------------------------
-   2. 處理 LINE 綁定與 User ID 收集（畫面不亂跳）
+   2. 綁定處理邏輯 (特別優化 iOS)
    ---------------------------------------------------- */
 async function handleLineBindingProcess(btnElem, rowId) {
     if (!rowId) {
@@ -126,35 +142,49 @@ async function handleLineBindingProcess(btnElem, rowId) {
         return;
     }
 
-    // 階段二：如果已經綁定成功，再次點擊時才真正跳轉至官方 LINE
+    // 已綁定成功時，點擊直接前往官方 LINE
     if (isBoundSuccess) {
         window.location.href = OFFICIAL_LINE_URL;
         return;
     }
 
-    // 鎖定按鈕顯示處理中狀態
     btnElem.style.pointerEvents = 'none';
     btnElem.style.opacity = '0.85';
     btnElem.innerHTML = '⏳ 綁定處理中，請稍候...';
 
-    try {
-        if (typeof liff === 'undefined') {
-            throw new Error('LIFF SDK 載入失敗');
-        }
-
-        // 情境 A：若使用者未登入（如 Android 外部 Chrome 瀏覽器），觸發彈窗授權
+    if (typeof liff !== 'undefined') {
+        // 如果使用者尚未授權/登入
         if (!liff.isLoggedIn()) {
-            await liff.login({ botPrompt: 'aggressive' });
-            return; // 登入完畢後頁面保持
+            const cleanUrl = window.location.origin + window.location.pathname;
+            const redirectTarget = `${cleanUrl}?bindRowId=${rowId}`;
+
+            // 對於 iOS Safari：直接在當前頁面導向重定向網址，避免跳出新分頁
+            liff.login({
+                redirectUri: redirectTarget,
+                botPrompt: 'aggressive'
+            });
+            return;
         }
 
-        // 情境 B：已登入（LINE App 內建瀏覽器或已授權狀態），立刻背景抓 Profile
+        // 已授權狀態下（或 LINE App 內），直接執行背景綁定與發送推播
+        await executeAutoBind(rowId);
+    } else {
+        alert('LINE SDK 載入失敗');
+    }
+}
+
+/* ----------------------------------------------------
+   3. 背景發送 POST 給 GAS (寫入 ID + 發推播)
+   ---------------------------------------------------- */
+async function executeAutoBind(rowId) {
+    const bindBtn = document.getElementById('lineBindBtn');
+    try {
         const profile = await liff.getProfile();
         const userId = profile.userId;
 
         if (!userId) throw new Error('無法取得 LINE User ID');
 
-        // 背景發送 POST 給 GAS (寫入 Column P + 發送客戶推播 & 管理員推播)
+        // 打 POST API 給 GAS
         await fetch(GAS_WEB_APP_URL, {
             method: 'POST',
             headers: { 'Content-Type': 'text/plain;charset=utf-8' },
@@ -165,24 +195,36 @@ async function handleLineBindingProcess(btnElem, rowId) {
             })
         });
 
-        // 綁定成功狀態變更
+        // 成功後清除單號暫存
+        localStorage.removeItem('pending_bind_row_id');
+
+        // 設定完成狀態
         isBoundSuccess = true;
 
-        // 變更按鈕外觀與文字
-        btnElem.style.pointerEvents = 'auto';
-        btnElem.style.opacity = '1';
-        btnElem.style.backgroundColor = '#00B900'; // LINE 經典綠
-        btnElem.innerHTML = '✅ 綁定成功！點此前往官方 LINE';
-
+        if (bindBtn) {
+            bindBtn.style.pointerEvents = 'auto';
+            bindBtn.style.opacity = '1';
+            bindBtn.style.backgroundColor = '#00B900'; // LINE 綠色
+            bindBtn.innerHTML = '✅ 綁定成功！點此前往官方 LINE';
+            
+            bindBtn.onclick = function(e) {
+                e.preventDefault();
+                window.location.href = OFFICIAL_LINE_URL;
+            };
+        }
     } catch (err) {
-        console.error('綁定失敗:', err);
-        alert('綁定處理發生異常，請重試或點擊直接前往官方 LINE。');
-        
-        // 失敗時的退路：允許直接前往官方 LINE
+        console.error('背景綁定失敗:', err);
+        localStorage.removeItem('pending_bind_row_id');
         isBoundSuccess = true;
-        btnElem.style.pointerEvents = 'auto';
-        btnElem.style.opacity = '1';
-        btnElem.innerHTML = '點此前往官方 LINE';
+        if (bindBtn) {
+            bindBtn.style.pointerEvents = 'auto';
+            bindBtn.style.opacity = '1';
+            bindBtn.innerHTML = '點此前往官方 LINE';
+            bindBtn.onclick = function(e) {
+                e.preventDefault();
+                window.location.href = OFFICIAL_LINE_URL;
+            };
+        }
     }
 }
 
