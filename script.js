@@ -3,42 +3,66 @@ const LIFF_ID = '2011796780-42NFl2WH';
 const OFFICIAL_LINE_URL = 'https://page.line.me/885xpnyp'; // 官方 LINE 連結
 
 let currentCreatedRowId = null;
+let isProcessingBind = false; // 防止重複執行綁定
 
 document.addEventListener('DOMContentLoaded', async function() {
-    // 1. 先從網址參數或 LocalStorage 檢查是否有待綁定的單號
+    await checkAndExecuteBinding();
+    initFormSubmit();
+});
+
+// 解決 Android BFCache / 頁面喚醒不重新執行 JS 的問題
+window.addEventListener('pageshow', async function(event) {
+    if (event.persisted || (window.performance && window.performance.navigation.type === 2)) {
+        await checkAndExecuteBinding();
+    }
+});
+
+document.addEventListener('visibilitychange', async function() {
+    if (document.visibilityState === 'visible') {
+        await checkAndExecuteBinding();
+    }
+});
+
+/* ----------------------------------------------------
+   核心：檢查登入狀態與觸發自動綁定
+   ---------------------------------------------------- */
+async function checkAndExecuteBinding() {
+    if (isProcessingBind) return;
+
     const urlParams = new URLSearchParams(window.location.search);
     let bindRowId = urlParams.get('bindRowId') || localStorage.getItem('pending_bind_row_id');
 
-    // 2. 初始化 LIFF SDK (必須 await 確保完全完成)
+    if (!bindRowId) return;
+
     if (typeof liff !== 'undefined') {
         try {
-            await liff.init({ liffId: LIFF_ID });
-            console.log('LIFF 初始化完成');
+            if (!liff.id) {
+                await liff.init({ liffId: LIFF_ID });
+            }
 
-            // 3. 判斷是否剛從 LINE 授權/登入跳轉回來
-            // 如果網址有 bindRowId，或者已登入且有暫存單號
-            if (bindRowId && (liff.isLoggedIn() || urlParams.has('code'))) {
-                // 鎖定 UI 避免重複點擊
+            // 只要網址有 bindRowId，且 (已登入 或 帶有 OAuth code 參數)
+            if (liff.isLoggedIn() || urlParams.has('code')) {
+                isProcessingBind = true;
+
+                // 顯示彈窗並更新按鈕狀態
                 const successModal = document.getElementById('successModal');
                 if (successModal) successModal.style.display = 'flex';
 
                 const bindBtn = document.getElementById('lineBindBtn');
                 if (bindBtn) {
                     bindBtn.style.pointerEvents = 'none';
-                    bindBtn.innerHTML = '⏳ 處理中，正為您完成 LINE 綁定...';
+                    bindBtn.style.opacity = '0.8';
+                    bindBtn.innerHTML = '⏳ 綁定處理中，即將導向官方 LINE...';
                 }
 
-                // 執行自動綁定與跳轉
                 await autoProcessBindingAndRedirect(bindRowId);
-                return;
             }
         } catch (err) {
-            console.error('LIFF Init error:', err);
+            console.error('LIFF Check/Init error:', err);
+            isProcessingBind = false;
         }
     }
-
-    initFormSubmit();
-});
+}
 
 /* ----------------------------------------------------
    表單提交處理
@@ -150,11 +174,10 @@ function triggerLineLoginWithRowId(rowId) {
     const redirectTarget = `${cleanUrl}?bindRowId=${rowId}`;
 
     if (typeof liff !== 'undefined') {
-        // 如果已經在 LIFF 環境中且登入，直接執行綁定
         if (liff.isLoggedIn()) {
-            autoProcessBindingAndRedirect(rowId);
+            checkAndExecuteBinding();
         } else {
-            // Android 外部瀏覽器：調用 liff.login 並導回原網址帶參
+            // Android 外部瀏覽器：帶入 redirectUri 與 botPrompt
             liff.login({
                 redirectUri: redirectTarget,
                 botPrompt: 'aggressive'
@@ -171,10 +194,10 @@ function triggerLineLoginWithRowId(rowId) {
 async function autoProcessBindingAndRedirect(rowId) {
     try {
         if (!liff.isLoggedIn()) {
-            // Android 若因為非同步差遲遲未完成登入判定，給予二次重試機會
-            await new Promise(resolve => setTimeout(resolve, 500));
+            // 稍作等待以防 Android LIFF 狀態更新延遲
+            await new Promise(resolve => setTimeout(resolve, 600));
             if (!liff.isLoggedIn()) {
-                throw new Error('LINE 未授權登入');
+                throw new Error('LINE 授權尚未完備');
             }
         }
 
@@ -190,14 +213,14 @@ async function autoProcessBindingAndRedirect(rowId) {
             clientUserId: userId
         });
 
-        // 發送給 GAS
+        // 發送 POST 給 GAS
         await fetch(GAS_WEB_APP_URL, {
             method: 'POST',
             headers: { 'Content-Type': 'text/plain;charset=utf-8' },
             body: payload
         });
 
-        // 清除單號暫存
+        // 綁定成功後清除單號暫存
         localStorage.removeItem('pending_bind_row_id');
 
         const bindBtn = document.getElementById('lineBindBtn');
@@ -209,11 +232,11 @@ async function autoProcessBindingAndRedirect(rowId) {
         // 成功後自動跳轉官方 LINE 帳號
         setTimeout(() => {
             window.location.href = OFFICIAL_LINE_URL;
-        }, 1200);
+        }, 800);
 
     } catch (err) {
         console.error('自動綁定失敗:', err);
-        alert('綁定發生問題，將直接為您跳轉官方 LINE。');
+        // 若出錯仍清除暫存並自動引導至官方 LINE
         localStorage.removeItem('pending_bind_row_id');
         window.location.href = OFFICIAL_LINE_URL;
     }
