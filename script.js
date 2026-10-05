@@ -39,22 +39,16 @@ document.addEventListener('DOMContentLoaded', async function() {
 });
 
 /* ----------------------------------------------------
-   通用工具：HTML5 原生氣泡提示 (加強版 Focus 觸發)
+   通用工具：HTML5 原生氣泡提示
    ---------------------------------------------------- */
 function showCustomValidity(element, message) {
     if (!element) return;
     
-    // 1. 先讓畫面流暢捲動到該元素
-    element.scrollIntoView({ behavior: 'smooth', block: 'center' });
-    
-    // 2. 強制取得焦點 (關鍵：沒有 focus 氣泡經常跳不出來)
-    element.focus();
-
-    // 3. 設定客製化錯誤訊息並觸發瀏覽器氣泡
+    // 設定客製化錯誤訊息並觸發瀏覽器氣泡
     element.setCustomValidity(message);
     element.reportValidity();
 
-    // 4. 當使用者輸入或修改時，自動清除錯誤訊息
+    // 當使用者輸入或修改時，自動清除錯誤訊息（避免欄位被鎖死）
     const clearValidity = () => {
         element.setCustomValidity('');
         element.removeEventListener('input', clearValidity);
@@ -84,7 +78,7 @@ function isValidTaiwanPhone(phoneStr) {
         return true;
     }
 
-    // 2. 驗證市話格式：必須符合台灣合法區碼
+    // 2. 驗證市話格式：必須符合台灣合法區碼（02, 03, 037, 04, 049, 05, 06, 07, 08, 082, 0836）
     const telRegex = /^(02|03|037|04|049|05|06|07|08|082|0836)\d{6,8}(?:(?:#|分機|ext\.?)\d{1,6})?$/i;
     if (telRegex.test(cleanPhone)) {
         return true;
@@ -104,7 +98,7 @@ function initFormSubmit() {
         e.preventDefault();
 
         // ----------------------------------------------------
-        // 表單前端驗證（按順序防呆，找到第一個錯誤就聚焦跳出氣泡）
+        // 表單前端驗證（統一使用氣泡提示）
         // ----------------------------------------------------
 
         // 1. 驗證公司名稱
@@ -138,8 +132,9 @@ function initFormSubmit() {
         // 5. 驗證聯絡電話 / 手機
         const phoneInput = document.getElementById('phone');
         const phoneValue = phoneInput ? phoneInput.value.trim() : '';
-        if (!phoneInput || !phoneValue) {
-            if (phoneInput) showCustomValidity(phoneInput, '請填寫聯絡電話！');
+
+        if (!phoneValue) {
+            showCustomValidity(phoneInput, '請填寫聯絡電話！');
             return;
         } else if (!isValidTaiwanPhone(phoneValue)) {
             showCustomValidity(phoneInput, '請輸入有效的電話號碼（例如：0912345678 或 03-1234567#123）');
@@ -150,8 +145,9 @@ function initFormSubmit() {
         const emailInput = document.getElementById('email');
         const emailValue = emailInput ? emailInput.value.trim() : '';
         const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-        if (!emailInput || !emailValue) {
-            if (emailInput) showCustomValidity(emailInput, '請填寫電子郵件！');
+
+        if (!emailValue) {
+            showCustomValidity(emailInput, '請填寫電子郵件！');
             return;
         } else if (!emailRegex.test(emailValue)) {
             showCustomValidity(emailInput, '請輸入有效的電子郵件地址！');
@@ -171,6 +167,7 @@ function initFormSubmit() {
         // 8. 驗證勞務議題（多選一）
         const issueCheckboxes = document.querySelectorAll('input[name="issues"]');
         const selectedIssues = Array.from(issueCheckboxes).filter(cb => cb.checked).map(cb => cb.value);
+
         if (selectedIssues.length === 0) {
             if (issueCheckboxes.length > 0) {
                 showCustomValidity(issueCheckboxes[0], '請至少選擇一項遇到的勞務議題！');
@@ -185,7 +182,7 @@ function initFormSubmit() {
             return;
         }
 
-        // 10. 驗證期望諮詢日期與時間 (時段一、二、三均為必填)
+        // 12. 驗證期望諮詢日期與時間 (時段一、二、三均為必填)
         const bookingDate1 = document.getElementById('bookingDate1');
         const bookingTime1 = document.getElementById('bookingTime1');
         if (bookingDate1 && !bookingDate1.value) {
@@ -219,8 +216,8 @@ function initFormSubmit() {
             return;
         }
 
-        // 11. 個資同意條款勾選 (相容 consent 與 agreeCheck)
-        const consentCheckbox = document.getElementById('consent') || document.getElementById('agreeCheck');
+        // 個資同意條款勾選
+        const consentCheckbox = document.getElementById('consent');
         if (consentCheckbox && !consentCheckbox.checked) {
             showCustomValidity(consentCheckbox, '請勾選同意個人資料保護條款以繼續提交！');
             return;
@@ -316,6 +313,7 @@ async function handleLineBindingProcess(btnElem, rowId) {
         return;
     }
 
+    // 已綁定成功時，點擊直接前往官方 LINE
     if (isBoundSuccess) {
         window.location.href = OFFICIAL_LINE_URL;
         return;
@@ -326,10 +324,12 @@ async function handleLineBindingProcess(btnElem, rowId) {
     btnElem.innerHTML = '⏳ 綁定處理中，請稍候...';
 
     if (typeof liff !== 'undefined') {
+        // 如果使用者尚未授權/登入
         if (!liff.isLoggedIn()) {
             const cleanUrl = window.location.origin + window.location.pathname;
             const redirectTarget = `${cleanUrl}?bindRowId=${rowId}`;
 
+            // 對於 iOS Safari：直接在當前頁面導向重定向網址，避免跳出新分頁
             liff.login({
                 redirectUri: redirectTarget,
                 botPrompt: 'aggressive'
@@ -337,6 +337,7 @@ async function handleLineBindingProcess(btnElem, rowId) {
             return;
         }
 
+        // 已授權狀態下（或 LINE App 內），直接執行背景綁定與發送推播
         await executeAutoBind(rowId);
     } else {
         alert('LINE SDK 載入失敗');
@@ -354,6 +355,7 @@ async function executeAutoBind(rowId) {
 
         if (!userId) throw new Error('無法取得 LINE User ID');
 
+        // 打 POST API 給 GAS
         await fetch(GAS_WEB_APP_URL, {
             method: 'POST',
             headers: { 'Content-Type': 'text/plain;charset=utf-8' },
@@ -364,13 +366,16 @@ async function executeAutoBind(rowId) {
             })
         });
 
+        // 成功後清除單號暫存
         localStorage.removeItem('pending_bind_row_id');
+
+        // 設定完成狀態
         isBoundSuccess = true;
 
         if (bindBtn) {
             bindBtn.style.pointerEvents = 'auto';
             bindBtn.style.opacity = '1';
-            bindBtn.style.backgroundColor = '#00B900';
+            bindBtn.style.backgroundColor = '#00B900'; // LINE 綠色
             bindBtn.innerHTML = '✅ 綁定成功！點此前往官方 LINE';
             
             bindBtn.onclick = function(e) {
