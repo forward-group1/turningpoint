@@ -39,16 +39,22 @@ document.addEventListener('DOMContentLoaded', async function() {
 });
 
 /* ----------------------------------------------------
-   通用工具：HTML5 原生氣泡提示
+   通用工具：HTML5 原生氣泡提示 (加強版 Focus 觸發)
    ---------------------------------------------------- */
 function showCustomValidity(element, message) {
     if (!element) return;
     
-    // 設定客製化錯誤訊息並觸發瀏覽器氣泡
+    // 1. 先讓畫面流暢捲動到該元素
+    element.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    
+    // 2. 強制取得焦點 (關鍵：沒有 focus 氣泡經常跳不出來)
+    element.focus();
+
+    // 3. 設定客製化錯誤訊息並觸發瀏覽器氣泡
     element.setCustomValidity(message);
     element.reportValidity();
 
-    // 當使用者輸入或修改時，自動清除錯誤訊息
+    // 4. 當使用者輸入或修改時，自動清除錯誤訊息
     const clearValidity = () => {
         element.setCustomValidity('');
         element.removeEventListener('input', clearValidity);
@@ -98,7 +104,7 @@ function initFormSubmit() {
         e.preventDefault();
 
         // ----------------------------------------------------
-        // 表單前端驗證（按順序防呆，找到第一個錯誤就跳出氣泡）
+        // 表單前端驗證（按順序防呆，找到第一個錯誤就聚焦跳出氣泡）
         // ----------------------------------------------------
 
         // 1. 驗證公司名稱
@@ -213,7 +219,7 @@ function initFormSubmit() {
             return;
         }
 
-        // 11. 個資同意條款勾選 (檢查 id="consent" 或 id="agreeCheck")
+        // 11. 個資同意條款勾選 (相容 consent 與 agreeCheck)
         const consentCheckbox = document.getElementById('consent') || document.getElementById('agreeCheck');
         if (consentCheckbox && !consentCheckbox.checked) {
             showCustomValidity(consentCheckbox, '請勾選同意個人資料保護條款以繼續提交！');
