@@ -3,69 +3,24 @@ const LIFF_ID = '2011796780-42NFl2WH';
 const OFFICIAL_LINE_URL = 'https://page.line.me/885xpnyp'; // 官方 LINE 連結
 
 let currentCreatedRowId = null;
-let isProcessingBind = false; // 防止重複執行綁定
+let isBoundSuccess = false; // 紀錄是否已完成綁定
 
 document.addEventListener('DOMContentLoaded', async function() {
-    await checkAndExecuteBinding();
+    // 初始化 LIFF SDK
+    if (typeof liff !== 'undefined') {
+        try {
+            await liff.init({ liffId: LIFF_ID });
+            console.log('LIFF 初始化完成');
+        } catch (err) {
+            console.error('LIFF Init error:', err);
+        }
+    }
+
     initFormSubmit();
 });
 
-// 解決 Android BFCache / 頁面喚醒不重新執行 JS 的問題
-window.addEventListener('pageshow', async function(event) {
-    if (event.persisted || (window.performance && window.performance.navigation.type === 2)) {
-        await checkAndExecuteBinding();
-    }
-});
-
-document.addEventListener('visibilitychange', async function() {
-    if (document.visibilityState === 'visible') {
-        await checkAndExecuteBinding();
-    }
-});
-
 /* ----------------------------------------------------
-   核心：檢查登入狀態與觸發自動綁定
-   ---------------------------------------------------- */
-async function checkAndExecuteBinding() {
-    if (isProcessingBind) return;
-
-    const urlParams = new URLSearchParams(window.location.search);
-    let bindRowId = urlParams.get('bindRowId') || localStorage.getItem('pending_bind_row_id');
-
-    if (!bindRowId) return;
-
-    if (typeof liff !== 'undefined') {
-        try {
-            if (!liff.id) {
-                await liff.init({ liffId: LIFF_ID });
-            }
-
-            // 只要網址有 bindRowId，且 (已登入 或 帶有 OAuth code 參數)
-            if (liff.isLoggedIn() || urlParams.has('code')) {
-                isProcessingBind = true;
-
-                // 顯示彈窗並更新按鈕狀態
-                const successModal = document.getElementById('successModal');
-                if (successModal) successModal.style.display = 'flex';
-
-                const bindBtn = document.getElementById('lineBindBtn');
-                if (bindBtn) {
-                    bindBtn.style.pointerEvents = 'none';
-                    bindBtn.style.opacity = '0.8';
-                    bindBtn.innerHTML = '⏳ 綁定處理中，即將導向官方 LINE...';
-                }
-
-                await autoProcessBindingAndRedirect(bindRowId);
-            }
-        } catch (err) {
-            console.error('LIFF Check/Init error:', err);
-            isProcessingBind = false;
-        }
-    }
-}
-
-/* ----------------------------------------------------
-   表單提交處理
+   1. 表單提交處理
    ---------------------------------------------------- */
 function initFormSubmit() {
     const form = document.getElementById('consultForm');
@@ -119,6 +74,7 @@ function initFormSubmit() {
             booking3: getBookingStr('bookingDate3', 'bookingTime3')
         };
 
+        // 發送表單資料給 GAS
         fetch(GAS_WEB_APP_URL, {
             method: 'POST',
             headers: { 'Content-Type': 'text/plain;charset=utf-8' },
@@ -128,9 +84,7 @@ function initFormSubmit() {
         .then(data => {
             if (data.result === 'success') {
                 currentCreatedRowId = data.rowId;
-                
-                // 暫存單號至 LocalStorage
-                localStorage.setItem('pending_bind_row_id', currentCreatedRowId);
+                isBoundSuccess = false;
 
                 const bindBtn = document.getElementById('lineBindBtn');
                 if (bindBtn) {
@@ -140,12 +94,14 @@ function initFormSubmit() {
                     bindBtn.style.backgroundColor = '#4CAF50';
                     bindBtn.innerHTML = '點此綁定 LINE 接收通知';
 
+                    // 綁定點擊事件
                     bindBtn.onclick = function(evt) {
                         evt.preventDefault();
-                        triggerLineLoginWithRowId(currentCreatedRowId);
+                        handleLineBindingProcess(bindBtn, currentCreatedRowId);
                     };
                 }
                 
+                // 顯示圖 1 的成功彈窗
                 const successModal = document.getElementById('successModal');
                 if (successModal) successModal.style.display = 'flex';
             } else {
@@ -162,83 +118,71 @@ function initFormSubmit() {
 }
 
 /* ----------------------------------------------------
-   觸發 LINE 登入與加好友提示
+   2. 處理 LINE 綁定與 User ID 收集（畫面不亂跳）
    ---------------------------------------------------- */
-function triggerLineLoginWithRowId(rowId) {
+async function handleLineBindingProcess(btnElem, rowId) {
     if (!rowId) {
         alert('找不到預約單號，請重新提交表單');
         return;
     }
 
-    const cleanUrl = window.location.origin + window.location.pathname;
-    const redirectTarget = `${cleanUrl}?bindRowId=${rowId}`;
-
-    if (typeof liff !== 'undefined') {
-        if (liff.isLoggedIn()) {
-            checkAndExecuteBinding();
-        } else {
-            // Android 外部瀏覽器：帶入 redirectUri 與 botPrompt
-            liff.login({
-                redirectUri: redirectTarget,
-                botPrompt: 'aggressive'
-            });
-        }
-    } else {
-        alert('LINE SDK 載入失敗，請重新整理頁面');
+    // 階段二：如果已經綁定成功，再次點擊時才真正跳轉至官方 LINE
+    if (isBoundSuccess) {
+        window.location.href = OFFICIAL_LINE_URL;
+        return;
     }
-}
 
-/* ----------------------------------------------------
-   登入跳轉回來後，自動背景發送 POST 並跳轉官方 LINE
-   ---------------------------------------------------- */
-async function autoProcessBindingAndRedirect(rowId) {
+    // 鎖定按鈕顯示處理中狀態
+    btnElem.style.pointerEvents = 'none';
+    btnElem.style.opacity = '0.85';
+    btnElem.innerHTML = '⏳ 綁定處理中，請稍候...';
+
     try {
-        if (!liff.isLoggedIn()) {
-            // 稍作等待以防 Android LIFF 狀態更新延遲
-            await new Promise(resolve => setTimeout(resolve, 600));
-            if (!liff.isLoggedIn()) {
-                throw new Error('LINE 授權尚未完備');
-            }
+        if (typeof liff === 'undefined') {
+            throw new Error('LIFF SDK 載入失敗');
         }
 
-        // 取得 Profile (包含 userId)
+        // 情境 A：若使用者未登入（如 Android 外部 Chrome 瀏覽器），觸發彈窗授權
+        if (!liff.isLoggedIn()) {
+            await liff.login({ botPrompt: 'aggressive' });
+            return; // 登入完畢後頁面保持
+        }
+
+        // 情境 B：已登入（LINE App 內建瀏覽器或已授權狀態），立刻背景抓 Profile
         const profile = await liff.getProfile();
         const userId = profile.userId;
 
         if (!userId) throw new Error('無法取得 LINE User ID');
 
-        const payload = JSON.stringify({
-            action: 'bindLine',
-            rowId: rowId,
-            clientUserId: userId
-        });
-
-        // 發送 POST 給 GAS
+        // 背景發送 POST 給 GAS (寫入 Column P + 發送客戶推播 & 管理員推播)
         await fetch(GAS_WEB_APP_URL, {
             method: 'POST',
             headers: { 'Content-Type': 'text/plain;charset=utf-8' },
-            body: payload
+            body: JSON.stringify({
+                action: 'bindLine',
+                rowId: rowId,
+                clientUserId: userId
+            })
         });
 
-        // 綁定成功後清除單號暫存
-        localStorage.removeItem('pending_bind_row_id');
+        // 綁定成功狀態變更
+        isBoundSuccess = true;
 
-        const bindBtn = document.getElementById('lineBindBtn');
-        if (bindBtn) {
-            bindBtn.style.backgroundColor = '#1DB954';
-            bindBtn.innerHTML = '✅ 綁定成功！正為您開啟官方 LINE...';
-        }
-
-        // 成功後自動跳轉官方 LINE 帳號
-        setTimeout(() => {
-            window.location.href = OFFICIAL_LINE_URL;
-        }, 800);
+        // 變更按鈕外觀與文字
+        btnElem.style.pointerEvents = 'auto';
+        btnElem.style.opacity = '1';
+        btnElem.style.backgroundColor = '#00B900'; // LINE 經典綠
+        btnElem.innerHTML = '✅ 綁定成功！點此前往官方 LINE';
 
     } catch (err) {
-        console.error('自動綁定失敗:', err);
-        // 若出錯仍清除暫存並自動引導至官方 LINE
-        localStorage.removeItem('pending_bind_row_id');
-        window.location.href = OFFICIAL_LINE_URL;
+        console.error('綁定失敗:', err);
+        alert('綁定處理發生異常，請重試或點擊直接前往官方 LINE。');
+        
+        // 失敗時的退路：允許直接前往官方 LINE
+        isBoundSuccess = true;
+        btnElem.style.pointerEvents = 'auto';
+        btnElem.style.opacity = '1';
+        btnElem.innerHTML = '點此前往官方 LINE';
     }
 }
 
