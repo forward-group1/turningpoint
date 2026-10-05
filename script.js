@@ -39,6 +39,55 @@ document.addEventListener('DOMContentLoaded', async function() {
 });
 
 /* ----------------------------------------------------
+   通用工具：HTML5 原生氣泡提示
+   ---------------------------------------------------- */
+function showCustomValidity(element, message) {
+    if (!element) return;
+    
+    // 設定客製化錯誤訊息並觸發瀏覽器氣泡
+    element.setCustomValidity(message);
+    element.reportValidity();
+
+    // 當使用者輸入或修改時，自動清除錯誤訊息（避免欄位被鎖死）
+    const clearValidity = () => {
+        element.setCustomValidity('');
+        element.removeEventListener('input', clearValidity);
+        element.removeEventListener('change', clearValidity);
+    };
+    element.addEventListener('input', clearValidity);
+    element.addEventListener('change', clearValidity);
+}
+
+/* ----------------------------------------------------
+   台灣電話 / 手機格式驗證函式
+   ---------------------------------------------------- */
+function isValidTaiwanPhone(phoneStr) {
+    if (!phoneStr) return false;
+
+    // 清除空格與連線
+    const cleanPhone = phoneStr.trim().replace(/[\s-]/g, '');
+
+    // 0. 防呆：不允許全是相同數字（例如 0000000000、0900000000、0911111111）
+    if (/^(\d)\1+$/.test(cleanPhone.split('#')[0].split('分機')[0])) {
+        return false;
+    }
+
+    // 1. 驗證手機格式：09 開頭且總共 10 位數字 (09XX-XXX-XXX)
+    const mobileRegex = /^09\d{8}$/;
+    if (mobileRegex.test(cleanPhone)) {
+        return true;
+    }
+
+    // 2. 驗證市話格式：必須符合台灣合法區碼（02, 03, 037, 04, 049, 05, 06, 07, 08, 082, 0836）
+    const telRegex = /^(02|03|037|04|049|05|06|07|08|082|0836)\d{6,8}(?:(?:#|分機|ext\.?)\d{1,6})?$/i;
+    if (telRegex.test(cleanPhone)) {
+        return true;
+    }
+
+    return false;
+}
+
+/* ----------------------------------------------------
    1. 表單提交處理
    ---------------------------------------------------- */
 function initFormSubmit() {
@@ -48,30 +97,73 @@ function initFormSubmit() {
     form.addEventListener('submit', function(e) {
         e.preventDefault();
 
+        // ----------------------------------------------------
+        // 表單前端驗證（統一使用氣泡提示）
+        // ----------------------------------------------------
+
+        // A. 驗證公司名稱
+        const companyNameInput = document.getElementById('companyName');
+        if (companyNameInput && !companyNameInput.value.trim()) {
+            showCustomValidity(companyNameInput, '請填寫公司名稱！');
+            return;
+        }
+
+        // B. 驗證聯絡人姓名
+        const userNameInput = document.getElementById('userName');
+        if (userNameInput && !userNameInput.value.trim()) {
+            showCustomValidity(userNameInput, '請填寫聯絡人姓名！');
+            return;
+        }
+
+        // C. 驗證聯絡電話 / 手機
+        const phoneInput = document.getElementById('phone');
+        const phoneValue = phoneInput ? phoneInput.value.trim() : '';
+
+        if (!phoneValue) {
+            showCustomValidity(phoneInput, '請填寫聯絡電話！');
+            return;
+        } else if (!isValidTaiwanPhone(phoneValue)) {
+            showCustomValidity(phoneInput, '請輸入有效的電話號碼（例如：0912345678 或 02-12345678#123）');
+            return;
+        }
+
+        // D. 驗證電子郵件 (如果有填寫才驗證格式)
+        const emailInput = document.getElementById('email');
+        const emailValue = emailInput ? emailInput.value.trim() : '';
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+        if (emailValue && !emailRegex.test(emailValue)) {
+            showCustomValidity(emailInput, '請輸入有效的電子郵件地址！');
+            return;
+        }
+
+        // E. 驗證勞務議題（多選一）
+        const issueCheckboxes = document.querySelectorAll('input[name="issues"]');
+        const selectedIssues = Array.from(issueCheckboxes).filter(cb => cb.checked).map(cb => cb.value);
+
+        if (selectedIssues.length === 0) {
+            if (issueCheckboxes.length > 0) {
+                showCustomValidity(issueCheckboxes[0], '請至少選擇一項遇到的勞務議題！');
+            }
+            return;
+        }
+
+        // F. 驗證條款勾選 (如有條款核取方塊)
+        const agreeCheckbox = document.getElementById('agreeCheck');
+        if (agreeCheckbox && !agreeCheckbox.checked) {
+            showCustomValidity(agreeCheckbox, '如果你要繼續執行，請勾選這個核取方塊。');
+            return;
+        }
+
+        // ----------------------------------------------------
+        // 通過驗證，開始送出表單
+        // ----------------------------------------------------
         const submitBtn = document.getElementById('submitBtn');
         if (submitBtn) {
             submitBtn.disabled = true;
             const btnSpan = submitBtn.querySelector('span') || submitBtn;
             btnSpan.innerText = '資料處理中...';
         }
-
-        let selectedIssues = Array.from(document.querySelectorAll('input[name="issues"]:checked')).map(cb => cb.value);
-        if (selectedIssues.length === 0) {
-            alert('請至少選擇一項遇到的勞務議題！');
-            resetSubmitBtn();
-            return;
-        }
-
-        // 取得電話輸入框內容
-        const phoneInput = document.getElementById('phone');
-        const phoneValue = phoneInput ? phoneInput.value.trim() : '';
-        // 驗證電話格式
-        if (!isValidTaiwanPhone(phoneValue)) {
-            alert('請輸入有效的台灣電話或手機號碼！\n例如：0912345678 或 02-12345678#123');
-            if (phoneInput) phoneInput.focus();
-            resetSubmitBtn(); // 重置按鈕狀態
-            return; // 攔截不送出
-}
 
         const getRadioValue = (name) => {
             const selected = document.querySelector(`input[name="${name}"]:checked`);
@@ -88,11 +180,11 @@ function initFormSubmit() {
 
         const formData = {
             action: 'submitForm',
-            companyName: document.getElementById('companyName')?.value || '',
-            userName: document.getElementById('userName')?.value || '',
+            companyName: companyNameInput?.value || '',
+            userName: userNameInput?.value || '',
             jobTitle: document.getElementById('jobTitle')?.value || '',
-            phone: document.getElementById('phone')?.value || '',
-            email: document.getElementById('email')?.value || '',
+            phone: phoneValue,
+            email: emailValue,
             industry: document.getElementById('industry')?.value || '',
             companySize: getRadioValue('companySize'),
             issues: selectedIssues.join(', '),
@@ -142,35 +234,6 @@ function initFormSubmit() {
             resetSubmitBtn();
         });
     });
-}
-/* ----------------------------------------------------
-   台灣電話 / 手機格式驗證函式
-   ---------------------------------------------------- */
-function isValidTaiwanPhone(phoneStr) {
-    if (!phoneStr) return false;
-
-    // 清除空格與連線
-    const cleanPhone = phoneStr.trim().replace(/[\s-]/g, '');
-
-    // 0. 防呆：不允許全是相同數字（例如 0000000000、0900000000、0911111111）
-    if (/^(\d)\1+$/.test(cleanPhone.split('#')[0].split('分機')[0])) {
-        return false;
-    }
-
-    // 1. 驗證手機格式：09 開頭且總共 10 位數字 (09XX-XXX-XXX)
-    const mobileRegex = /^09\d{8}$/;
-    if (mobileRegex.test(cleanPhone)) {
-        return true;
-    }
-
-    // 2. 驗證市話格式：必須符合台灣合法區碼（02, 03, 037, 04, 049, 05, 06, 07, 08, 082, 0836）
-    // 區碼02/03/04/05/06/07/08 後面接 7~8 位數；037/049/082/0836 後面接 6~7 位數
-    const telRegex = /^(02|03|037|04|049|05|06|07|08|082|0836)\d{6,8}(?:(?:#|分機|ext\.?)\d{1,6})?$/i;
-    if (telRegex.test(cleanPhone)) {
-        return true;
-    }
-
-    return false;
 }
 
 /* ----------------------------------------------------
