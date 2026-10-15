@@ -871,10 +871,10 @@ select.form-control option[value=""] {
 }
 
 /* ====================================================
-   預約時段響應式排版設定
+   預約時段響應式排版設定（優化間距版）
    ==================================================== */
 .booking-slot-group {
-    margin-bottom: 12px;
+    margin-bottom: 20px; /* 👈 增加各個時段群組之間的上下距離（原本是 12px） */
 }
 
 .slot-label {
@@ -882,13 +882,13 @@ select.form-control option[value=""] {
     color: #555;
     font-weight: bold;
     display: block;
-    margin-bottom: 4px;
+    margin-bottom: 6px; /* 👈 增加標籤與輸入框的距離 */
 }
 
 /* 電腦版預設：左右並排，各佔 50% */
 .booking-form-row {
     display: flex;
-    gap: 10px;
+    gap: 15px; /* 👈 增加電腦版左右框的間距 */
     width: 100%;
 }
 
@@ -903,7 +903,7 @@ select.form-control option[value=""] {
 @media (max-width: 600px) {
     .booking-form-row {
         flex-direction: column;
-        gap: 8px;
+        gap: 10px; /* 👈 增加手機版上下日期框與時間框的間距（讓它們不再黏在一起） */
     }
 
     .booking-form-row input,
