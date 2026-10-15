@@ -302,7 +302,7 @@ function initFormSubmit() {
 }
 
 /* ----------------------------------------------------
-   2. 綁定處理邏輯 (特別優化 iOS)
+   2. 綁定處理邏輯 (觸發強效加好友提示)
    ---------------------------------------------------- */
 async function handleLineBindingProcess(btnElem, rowId) {
     if (!rowId) {
@@ -320,23 +320,24 @@ async function handleLineBindingProcess(btnElem, rowId) {
     btnElem.innerHTML = '⏳ 綁定處理中，請稍候...';
 
     if (typeof liff !== 'undefined') {
+        // 若尚未登入，觸發包含強制加好友的 OAuth 授權流程
         if (!liff.isLoggedIn()) {
             const cleanUrl = window.location.origin + window.location.pathname;
             const redirectTarget = `${cleanUrl}?bindRowId=${rowId}`;
 
             liff.login({
                 redirectUri: redirectTarget,
-                botPrompt: 'aggressive'
+                botPrompt: 'aggressive' // 👈 強制在 LINE 驗證畫面跳出加好友勾選
             });
             return;
         }
 
+        // 已授權狀態下直接背景綁定並發推播
         await executeAutoBind(rowId);
     } else {
         alert('LINE SDK 載入失敗');
     }
 }
-
 /* ----------------------------------------------------
    3. 背景發送 POST 給 GAS (寫入 ID + 發推播)
    ---------------------------------------------------- */
