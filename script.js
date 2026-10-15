@@ -302,7 +302,7 @@ function initFormSubmit() {
 }
 
 /* ----------------------------------------------------
-   2. 綁定處理邏輯 (含好友狀態自動檢查與自動補發)
+   2. 綁定處理邏輯 (特別優化 iOS)
    ---------------------------------------------------- */
 async function handleLineBindingProcess(btnElem, rowId) {
     if (!rowId) {
@@ -320,11 +320,10 @@ async function handleLineBindingProcess(btnElem, rowId) {
     btnElem.innerHTML = '⏳ 綁定處理中，請稍候...';
 
     if (typeof liff !== 'undefined') {
-        const cleanUrl = window.location.origin + window.location.pathname;
-        const redirectTarget = `${cleanUrl}?bindRowId=${rowId}`;
-
-        // 1. 若尚未登入，直接發起包含 Aggressive 的登入流程
         if (!liff.isLoggedIn()) {
+            const cleanUrl = window.location.origin + window.location.pathname;
+            const redirectTarget = `${cleanUrl}?bindRowId=${rowId}`;
+
             liff.login({
                 redirectUri: redirectTarget,
                 botPrompt: 'aggressive'
@@ -332,23 +331,6 @@ async function handleLineBindingProcess(btnElem, rowId) {
             return;
         }
 
-        // 2. 若已經登入，檢查使用者目前是否「已經加入官方帳號好友」
-        try {
-            const friendship = await liff.getFriendship();
-            
-            if (!friendship.friendFlag) {
-                // 如果還不是好友，強制觸發登入頁面跳出「加好友」選項！
-                liff.login({
-                    redirectUri: redirectTarget,
-                    botPrompt: 'aggressive'
-                });
-                return;
-            }
-        } catch (fErr) {
-            console.warn('無法取得好友狀態，繼續執行綁定:', fErr);
-        }
-
-        // 3. 確定是好友且已登入，執行背景寫入與發送推播
         await executeAutoBind(rowId);
     } else {
         alert('LINE SDK 載入失敗');
