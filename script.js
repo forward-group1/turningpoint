@@ -42,7 +42,7 @@ document.addEventListener('DOMContentLoaded', async function() {
 });
 
 /* ----------------------------------------------------
-   日期選擇器初始化：鎖定過去、今天與六日（直接呈現灰色不可選）
+   日期選擇器初始化：跨平台強制使用 Flatpickr 月曆
    ---------------------------------------------------- */
 function setupDatePickerPicker() {
     // 取得明天的日期
@@ -59,7 +59,7 @@ function setupDatePickerPicker() {
                 return (date.getDay() === 0 || date.getDay() === 6);
             }
         ],
-        disableMobile: "true"       // 強制在手機版上使用 Flatpickr 精美月曆（避免被手機預設月曆覆蓋）
+        disableMobile: true         // 強制禁止調用手機原生月曆
     };
 
     ['bookingDate1', 'bookingDate2', 'bookingDate3'].forEach(id => {
