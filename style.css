@@ -869,3 +869,45 @@ select.form-control option[value=""] {
 .btn-line-bind:hover {
     background-color: #05b34c;
 }
+
+/* ====================================================
+   預約時段響應式排版設定
+   ==================================================== */
+.booking-slot-group {
+    margin-bottom: 12px;
+}
+
+.slot-label {
+    font-size: 0.9em;
+    color: #555;
+    font-weight: bold;
+    display: block;
+    margin-bottom: 4px;
+}
+
+/* 電腦版預設：左右並排，各佔 50% */
+.booking-form-row {
+    display: flex;
+    gap: 10px;
+    width: 100%;
+}
+
+.booking-form-row input,
+.booking-form-row select {
+    flex: 1;
+    width: 50%;
+    min-width: 0;
+}
+
+/* 手機版自動切換：當螢幕寬度小於 600px 時，改為上下單欄排列 */
+@media (max-width: 600px) {
+    .booking-form-row {
+        flex-direction: column;
+        gap: 8px;
+    }
+
+    .booking-form-row input,
+    .booking-form-row select {
+        width: 100%;
+    }
+}
