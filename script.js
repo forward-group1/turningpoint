@@ -9,6 +9,9 @@ let isBoundSuccess = false;
 const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
 
 document.addEventListener('DOMContentLoaded', async function() {
+    // 0. 初始化日期選擇器：禁用「今天、過去日期、週六、週日」
+    setupDatePickerPicker();
+
     // 1. 初始化 LIFF SDK
     if (typeof liff !== 'undefined') {
         try {
@@ -39,6 +42,35 @@ document.addEventListener('DOMContentLoaded', async function() {
 });
 
 /* ----------------------------------------------------
+   日期選擇器初始化：鎖定過去、今天與六日（直接呈現灰色不可選）
+   ---------------------------------------------------- */
+function setupDatePickerPicker() {
+    // 取得明天的日期
+    const tomorrow = new Date();
+    tomorrow.setDate(tomorrow.getDate() + 1);
+
+    const datePickerConfig = {
+        locale: 'zh_tw',            // 繁體中文
+        dateFormat: 'Y-m-d',        // 日期格式
+        minDate: tomorrow,          // 最小可選日期為「明天」（今天與過去自動禁選）
+        disable: [
+            function(date) {
+                // 回傳 true 代表該日期要禁選 (0: 星期日, 6: 星期六)
+                return (date.getDay() === 0 || date.getDay() === 6);
+            }
+        ],
+        disableMobile: "true"       // 強制在手機版上使用 Flatpickr 精美月曆（避免被手機預設月曆覆蓋）
+    };
+
+    ['bookingDate1', 'bookingDate2', 'bookingDate3'].forEach(id => {
+        const elem = document.getElementById(id);
+        if (elem && typeof flatpickr !== 'undefined') {
+            flatpickr(elem, datePickerConfig);
+        }
+    });
+}
+
+/* ----------------------------------------------------
    通用工具：HTML5 原生氣泡提示
    ---------------------------------------------------- */
 function showCustomValidity(element, message) {
@@ -59,26 +91,54 @@ function showCustomValidity(element, message) {
 }
 
 /* ----------------------------------------------------
+   日期驗證核心函式 (雙重防呆驗證)
+   ---------------------------------------------------- */
+function validateBookingDate(dateInput, slotName) {
+    if (!dateInput) return false;
+    
+    const rawVal = dateInput.value;
+    if (!rawVal) {
+        showCustomValidity(dateInput, `請選擇${slotName}的預約日期！`);
+        return false;
+    }
+
+    const selectedDate = new Date(rawVal + 'T00:00:00');
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+
+    // 1. 驗證不能選擇「今天」或「過去的日期」
+    if (selectedDate <= today) {
+        showCustomValidity(dateInput, `${slotName}的日期不可選擇「今天」或「過去日期」，請選擇明天之後的預約日期！`);
+        return false;
+    }
+
+    // 2. 驗證不能選擇「假日（星期六 / 星期日）」
+    const dayOfWeek = selectedDate.getDay();
+    if (dayOfWeek === 0 || dayOfWeek === 6) {
+        showCustomValidity(dateInput, `${slotName}選擇的日期為週末假日，請選擇平工作日（週一至週五）！`);
+        return false;
+    }
+
+    return true;
+}
+
+/* ----------------------------------------------------
    台灣電話 / 手機格式驗證函式
    ---------------------------------------------------- */
 function isValidTaiwanPhone(phoneStr) {
     if (!phoneStr) return false;
 
-    // 清除空格與連線
     const cleanPhone = phoneStr.trim().replace(/[\s-]/g, '');
 
-    // 0. 防呆：不允許全是相同數字（例如 0000000000、0900000000、0911111111）
     if (/^(\d)\1+$/.test(cleanPhone.split('#')[0].split('分機')[0])) {
         return false;
     }
 
-    // 1. 驗證手機格式：09 開頭且總共 10 位數字 (09XX-XXX-XXX)
     const mobileRegex = /^09\d{8}$/;
     if (mobileRegex.test(cleanPhone)) {
         return true;
     }
 
-    // 2. 驗證市話格式：必須符合台灣合法區碼
     const telRegex = /^(02|03|037|04|049|05|06|07|08|082|0836)\d{6,8}(?:(?:#|分機|ext\.?)\d{1,6})?$/i;
     if (telRegex.test(cleanPhone)) {
         return true;
@@ -96,10 +156,6 @@ function initFormSubmit() {
 
     form.addEventListener('submit', function(e) {
         e.preventDefault();
-
-        // ----------------------------------------------------
-        // 表單前端驗證（按順序防呆，找到第一個錯誤就跳出氣泡）
-        // ----------------------------------------------------
 
         // 1. 驗證公司名稱
         const companyNameInput = document.getElementById('companyName');
@@ -182,10 +238,7 @@ function initFormSubmit() {
         // 10. 驗證期望諮詢日期與時間 (時段一、二、三均為必填)
         const bookingDate1 = document.getElementById('bookingDate1');
         const bookingTime1 = document.getElementById('bookingTime1');
-        if (bookingDate1 && !bookingDate1.value) {
-            showCustomValidity(bookingDate1, '請選擇時段一的預約日期！');
-            return;
-        }
+        if (!validateBookingDate(bookingDate1, '時段一')) return;
         if (bookingTime1 && !bookingTime1.value) {
             showCustomValidity(bookingTime1, '請選擇時段一的預約時間！');
             return;
@@ -193,10 +246,7 @@ function initFormSubmit() {
 
         const bookingDate2 = document.getElementById('bookingDate2');
         const bookingTime2 = document.getElementById('bookingTime2');
-        if (bookingDate2 && !bookingDate2.value) {
-            showCustomValidity(bookingDate2, '請選擇時段二的預約日期！');
-            return;
-        }
+        if (!validateBookingDate(bookingDate2, '時段二')) return;
         if (bookingTime2 && !bookingTime2.value) {
             showCustomValidity(bookingTime2, '請選擇時段二的預約時間！');
             return;
@@ -204,25 +254,20 @@ function initFormSubmit() {
 
         const bookingDate3 = document.getElementById('bookingDate3');
         const bookingTime3 = document.getElementById('bookingTime3');
-        if (bookingDate3 && !bookingDate3.value) {
-            showCustomValidity(bookingDate3, '請選擇時段三的預約日期！');
-            return;
-        }
+        if (!validateBookingDate(bookingDate3, '時段三')) return;
         if (bookingTime3 && !bookingTime3.value) {
             showCustomValidity(bookingTime3, '請選擇時段三的預約時間！');
             return;
         }
 
-        // 11. 個資同意條款勾選 (檢查 id="consent" 或 id="agreeCheck")
+        // 11. 個資同意條款勾選
         const consentCheckbox = document.getElementById('consent') || document.getElementById('agreeCheck');
         if (consentCheckbox && !consentCheckbox.checked) {
             showCustomValidity(consentCheckbox, '請勾選同意個人資料保護條款以繼續提交！');
             return;
         }
 
-        // ----------------------------------------------------
-        // 通過驗證，開始送出表單
-        // ----------------------------------------------------
+        // 送出表單
         const submitBtn = document.getElementById('submitBtn');
         if (submitBtn) {
             submitBtn.disabled = true;
