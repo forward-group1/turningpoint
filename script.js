@@ -1,6 +1,6 @@
 const GAS_WEB_APP_URL = 'https://script.google.com/macros/s/AKfycby8NlePGVKzMRI3enrV8fI8xndRowhWXUBY5nMrHkTPQXH0AK2N4KIssQMtyM0N0envkg/exec';
 const LIFF_ID = '2011796780-42NFl2WH'; 
-const OFFICIAL_LINE_URL = 'https://line.me/R/ti/p/@885xpnyp'; // 官方 LINE 連結
+const OFFICIAL_LINE_URL = 'https://line.me/R/oaMessage/@885xpnyp/'; // 官方 LINE 連結
 
 let currentCreatedRowId = null;
 let isBoundSuccess = false;
