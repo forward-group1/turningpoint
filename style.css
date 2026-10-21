@@ -911,3 +911,90 @@ select.form-control option[value=""] {
         width: 100%;
     }
 }
+
+/* 第 8 項：四格大框選取卡片網格 */
+.category-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+    gap: 15px;
+    margin-top: 10px;
+}
+
+/* 個別卡片容器 */
+.category-card {
+    position: relative;
+    display: block;
+    cursor: pointer;
+}
+
+/* 隱藏原生 checkbox */
+.category-card input[type="checkbox"] {
+    position: absolute;
+    opacity: 0;
+    width: 0;
+    height: 0;
+}
+
+/* 卡片預設樣式 */
+.category-card .card-content {
+    background: #f8f9fa;
+    border: 2px solid #e9ecef;
+    border-radius: 10px;
+    padding: 16px 20px;
+    transition: all 0.2s ease-in-out;
+}
+
+/* 圖示與標題 */
+.category-card .card-icon {
+    font-size: 20px;
+    color: #495057;
+    margin-bottom: 8px;
+}
+
+.category-card .card-title {
+    font-size: 16px;
+    font-weight: 700;
+    color: #212529;
+    margin-bottom: 6px;
+}
+
+.category-card .card-desc {
+    font-size: 13px;
+    color: #6c757d;
+    line-height: 1.4;
+}
+
+/* Hover 效果 */
+.category-card:hover .card-content {
+    border-color: #adb5bd;
+    background: #f1f3f5;
+}
+
+/* 勾選/選取後的樣式 (切換成高亮藍邊與淺藍背景) */
+.category-card input[type="checkbox"]:checked + .card-content {
+    border-color: #1a365d;
+    background-color: #f0f4f9;
+    box-shadow: 0 4px 10px rgba(26, 54, 93, 0.1);
+}
+
+.category-card input[type="checkbox"]:checked + .card-content .card-icon,
+.category-card input[type="checkbox"]:checked + .card-content .card-title {
+    color: #1a365d;
+}
+
+/* 直排 Radio 樣式 */
+.radio-stack {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin-top: 8px;
+}
+
+.radio-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    cursor: pointer;
+    font-size: 15px;
+    color: #333;
+}
