@@ -212,8 +212,8 @@ function initFormSubmit() {
             return;
         }
 
-        // 8. 驗證希望協助解決的問題（對應新的四格卡片複選框：helpIssues）
-        const helpIssueCheckboxes = document.querySelectorAll('inputname="helpIssues"]');
+        // 8. 驗證希望協助解決的問題（四格大卡片複選框：helpIssues）
+        const helpIssueCheckboxes = document.querySelectorAll('input[name="helpIssues"]');
         const selectedHelpIssues = Array.from(document.querySelectorAll('input[name="helpIssues"]:checked')).map(cb => cb.value);
         if (selectedHelpIssues.length === 0) {
             if (helpIssueCheckboxes.length > 0) {
@@ -321,9 +321,9 @@ function initFormSubmit() {
             email: emailValue,
             industry: industryInput?.value || '',
             companySize: getRadioValue('companySize'),
-            issues: selectedHelpIssues.join(', '), // 對應新的 8 項複選結果
+            issues: selectedHelpIssues.join(', '), // 將第 8 項複選結果合併打包
             description: descriptionInput?.value || '',
-            urgency: getRadioValue('urgency'),     // 對應新增的急迫程度
+            urgency: getRadioValue('urgency'),     // 打包第 10 項急迫程度
             pastExperience: getRadioValue('pastExperience'),
             externalConsultant: getRadioValue('externalConsultant'),
             booking1: getBookingStr('bookingDate1', 'bookingTime1'),
