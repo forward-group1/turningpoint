@@ -154,7 +154,7 @@ function isValidTaiwanPhone(phoneStr) {
 }
 
 /* ----------------------------------------------------
-   1. 表單提交處理
+   1. 表單提交處理（全面統一使用瀏覽器原生提示泡泡）
    ---------------------------------------------------- */
 function initFormSubmit() {
     const form = document.getElementById('consultForm');
@@ -224,7 +224,7 @@ function initFormSubmit() {
             return;
         }
 
-       // 8. 主要需求驗證 (複選：mainNeeds)
+        // 8. 驗證主要需求（複選：mainNeeds） -> 改用圖二泡泡提示
         const selectedMainNeeds = Array.from(document.querySelectorAll('input[name="mainNeeds"]:checked')).map(cb => {
             if (cb.value === '其他') {
                 const customText = document.getElementById('otherNeedText').value.trim();
@@ -234,21 +234,23 @@ function initFormSubmit() {
         });
 
         if (selectedMainNeeds.length === 0) {
-            alert('請至少勾選一項「8. 主要需求」！');
             const firstNeed = document.querySelector('input[name="mainNeeds"]');
-            if (firstNeed) { firstNeed.focus(); firstNeed.scrollIntoView({ behavior: 'smooth', block: 'center' }); }
+            if (firstNeed) {
+                showCustomValidity(firstNeed, '請至少勾選一項「8. 主要需求」！');
+            }
             return;
         }
 
-        // 9. 希望協助解決的問題驗證 (四格卡片：helpIssues)
+        // 9. 驗證希望協助解決的問題（四格大卡片複選框：helpIssues） -> 改用圖二泡泡提示
         const selectedHelpIssues = Array.from(document.querySelectorAll('input[name="helpIssues"]:checked')).map(cb => cb.value);
         if (selectedHelpIssues.length === 0) {
-            alert('請至少選擇一項「9. 希望協助解決的問題」！');
             const firstIssue = document.querySelector('input[name="helpIssues"]');
-            if (firstIssue) { firstIssue.scrollIntoView({ behavior: 'smooth', block: 'center' }); }
+            if (firstIssue) {
+                showCustomValidity(firstIssue, '請至少選擇一項「9. 希望協助解決的問題」！');
+            }
             return;
         }
-        
+
         // 10. 驗證具體爭議與遭遇的問題
         const descriptionInput = document.getElementById('description');
         if (descriptionInput && !descriptionInput.value.trim()) {
@@ -256,7 +258,20 @@ function initFormSubmit() {
             return;
         }
 
-        // 11. 期望諮詢日期與時間驗證 (時段一、二、三皆為必填)
+        // 11. 驗證需求急迫程度 (單選題：urgency)
+        const urgencySelected = document.querySelector('input[name="urgency"]:checked');
+        if (!urgencySelected) {
+            const firstUrgency = document.querySelector('input[name="urgency"]');
+            if (firstUrgency) {
+                showCustomValidity(firstUrgency, '請選擇需求急迫程度！');
+            }
+            return;
+        }
+
+        // 12. 驗證過去勞檢經驗（非必填，若有選則略過）
+        // 13. 外部顧問配合狀態（非必填，若有選則略過）
+
+        // 14. 驗證期望諮詢日期與時間 (時段一、二、三均為必填)
         const bookingDate1 = document.getElementById('bookingDate1');
         const bookingTime1 = document.getElementById('bookingTime1');
         if (!validateBookingDate(bookingDate1, '時段一')) return;
@@ -280,8 +295,8 @@ function initFormSubmit() {
             showCustomValidity(bookingTime3, '請選擇時段三的預約時間！');
             return;
         }
-        
-        // 12. 個資同意條款勾選
+
+        // 最後個資同意條款勾選
         const consentCheckbox = document.getElementById('consent');
         if (consentCheckbox && !consentCheckbox.checked) {
             showCustomValidity(consentCheckbox, '請勾選同意個人資料保護條款以繼續提交！');
@@ -295,11 +310,6 @@ function initFormSubmit() {
             const btnSpan = submitBtn.querySelector('span') || submitBtn;
             btnSpan.innerText = '資料處理中...';
         }
-
-        const getRadioValue = (name) => {
-            const selected = document.querySelector(`input[name="${name}"]:checked`);
-            return selected ? selected.value : '';
-        };
 
         const getBookingStr = (dateId, timeId) => {
             const dElem = document.getElementById(dateId);
@@ -317,10 +327,13 @@ function initFormSubmit() {
             phone: phoneValue,
             email: emailValue,
             industry: industryInput?.value || '',
-            companySize: getRadioValue('companySize'),
-            mainNeeds: selectedMainNeeds.join(', '), // 將第 8 項主要需求合併打包
-            issues: selectedHelpIssues.join(', '),     // 將第 9 項希望協助解決的問題合併打包
+            companySize: document.querySelector('input[name="companySize"]:checked')?.value || '',
+            mainNeeds: selectedMainNeeds.join(', '), 
+            issues: selectedHelpIssues.join(', '),     
             description: descriptionInput?.value || '',
+            urgency: document.querySelector('input[name="urgency"]:checked')?.value || '',
+            pastExperience: document.querySelector('input[name="pastExperience"]:checked')?.value || '',
+            externalConsultant: document.querySelector('input[name="externalConsultant"]:checked')?.value || '',
             booking1: getBookingStr('bookingDate1', 'bookingTime1'),
             booking2: getBookingStr('bookingDate2', 'bookingTime2'),
             booking3: getBookingStr('bookingDate3', 'bookingTime3')
