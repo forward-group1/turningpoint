@@ -12,7 +12,19 @@ document.addEventListener('DOMContentLoaded', async function() {
     // 0. 初始化日期選擇器：禁用「今天、過去日期、週六、週日」
     setupDatePickerPicker();
 
-    // 1. 初始化 LIFF SDK
+    // 1. 綁定「其他」選項連動顯示/隱藏自訂輸入框的事件
+    const otherCheckbox = document.getElementById('otherNeedCheckbox');
+    const otherInputContainer = document.getElementById('otherNeedInputContainer');
+    if (otherCheckbox && otherInputContainer) {
+        otherCheckbox.addEventListener('change', function() {
+            otherInputContainer.style.display = this.checked ? 'block' : 'none';
+            if (!this.checked) {
+                document.getElementById('otherNeedText').value = '';
+            }
+        });
+    }
+
+    // 2. 初始化 LIFF SDK
     if (typeof liff !== 'undefined') {
         try {
             await liff.init({ liffId: LIFF_ID });
@@ -22,7 +34,7 @@ document.addEventListener('DOMContentLoaded', async function() {
         }
     }
 
-    // 2. 檢查 URL 是否帶有 iOS 跳轉回來的 bindRowId 參數
+    // 3. 檢查 URL 是否帶有 iOS 跳轉回來的 bindRowId 參數
     const urlParams = new URLSearchParams(window.location.search);
     const pendingRowId = urlParams.get('bindRowId') || localStorage.getItem('pending_bind_row_id');
 
@@ -212,7 +224,24 @@ function initFormSubmit() {
             return;
         }
 
-        // 8. 驗證希望協助解決的問題（四格大卡片複選框：helpIssues）
+        // 8. 驗證主要需求（新增複選框：mainNeeds，含「其他」自訂輸入驗證）
+        const mainNeedsCheckboxes = document.querySelectorAll('input[name="mainNeeds"]');
+        const selectedMainNeeds = Array.from(document.querySelectorAll('input[name="mainNeeds"]:checked')).map(cb => {
+            if (cb.value === '其他') {
+                const customText = document.getElementById('otherNeedText').value.trim();
+                return customText ? `其他：${customText}` : '其他';
+            }
+            return cb.value;
+        });
+
+        if (selectedMainNeeds.length === 0) {
+            if (mainNeedsCheckboxes.length > 0) {
+                showCustomValidity(mainNeedsCheckboxes[0], '請至少勾選一項主要需求！');
+            }
+            return;
+        }
+
+        // 9. 驗證希望協助解決的問題（四格大卡片複選框：helpIssues）
         const helpIssueCheckboxes = document.querySelectorAll('input[name="helpIssues"]');
         const selectedHelpIssues = Array.from(document.querySelectorAll('input[name="helpIssues"]:checked')).map(cb => cb.value);
         if (selectedHelpIssues.length === 0) {
@@ -222,44 +251,14 @@ function initFormSubmit() {
             return;
         }
 
-        // 9. 驗證具體爭議與遭遇的問題
+        // 10. 驗證具體爭議與遭遇的問題
         const descriptionInput = document.getElementById('description');
         if (descriptionInput && !descriptionInput.value.trim()) {
             showCustomValidity(descriptionInput, '請填寫具體爭議與遭遇的問題！');
             return;
         }
 
-        // 10. 驗證需求急迫程度 (新增的單選題：urgency)
-        const urgencySelected = document.querySelector('input[name="urgency"]:checked');
-        if (!urgencySelected) {
-            const firstUrgency = document.querySelector('input[name="urgency"]');
-            if (firstUrgency) {
-                showCustomValidity(firstUrgency, '請選擇需求急迫程度！');
-            }
-            return;
-        }
-
-        // 11. 驗證過去勞檢經驗
-        const pastExpSelected = document.querySelector('input[name="pastExperience"]:checked');
-        if (!pastExpSelected) {
-            const firstPast = document.querySelector('input[name="pastExperience"]');
-            if (firstPast) {
-                showCustomValidity(firstPast, '請選擇過去是否曾遇到勞動檢查或勞調事件！');
-            }
-            return;
-        }
-
-        // 12. 驗證外部顧問配合狀態
-        const extConsultantSelected = document.querySelector('input[name="externalConsultant"]:checked');
-        if (!extConsultantSelected) {
-            const firstExt = document.querySelector('input[name="externalConsultant"]');
-            if (firstExt) {
-                showCustomValidity(firstExt, '請選擇是否有配合的外部常年勞務或法律顧問！');
-            }
-            return;
-        }
-
-        // 13. 驗證期望諮詢日期與時間 (時段一、二、三均為必填)
+        // 11. 驗證期望諮詢日期與時間 (時段一、二、三均為必填)
         const bookingDate1 = document.getElementById('bookingDate1');
         const bookingTime1 = document.getElementById('bookingTime1');
         if (!validateBookingDate(bookingDate1, '時段一')) return;
@@ -284,7 +283,7 @@ function initFormSubmit() {
             return;
         }
 
-        // 14. 個資同意條款勾選
+        // 12. 個資同意條款勾選
         const consentCheckbox = document.getElementById('consent');
         if (consentCheckbox && !consentCheckbox.checked) {
             showCustomValidity(consentCheckbox, '請勾選同意個人資料保護條款以繼續提交！');
@@ -321,11 +320,9 @@ function initFormSubmit() {
             email: emailValue,
             industry: industryInput?.value || '',
             companySize: getRadioValue('companySize'),
-            issues: selectedHelpIssues.join(', '), // 將第 8 項複選結果合併打包
+            mainNeeds: selectedMainNeeds.join(', '), // 將第 8 項主要需求合併打包
+            issues: selectedHelpIssues.join(', '),     // 將第 9 項希望協助解決的問題合併打包
             description: descriptionInput?.value || '',
-            urgency: getRadioValue('urgency'),     // 打包第 10 項急迫程度
-            pastExperience: getRadioValue('pastExperience'),
-            externalConsultant: getRadioValue('externalConsultant'),
             booking1: getBookingStr('bookingDate1', 'bookingTime1'),
             booking2: getBookingStr('bookingDate2', 'bookingTime2'),
             booking3: getBookingStr('bookingDate3', 'bookingTime3')
