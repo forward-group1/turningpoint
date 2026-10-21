@@ -495,7 +495,7 @@ select.form-control {
     gap: 16px;          /* 卡片與卡片間的間隔 */
     margin-top: 25px;   /* 上方與按鈕的距離 */
     margin-bottom: 25px;/* 下方與頁尾的距離 */
-    padding: 0 4px;     /* 👈 加上微小的左右安全內距，避免死貼左右邊緣 */
+    padding: 0 16px;     /* 👈 加上微小的左右安全內距，避免死貼左右邊緣 */
 }
 
 .badge-item {
