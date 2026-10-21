@@ -45,17 +45,15 @@ document.addEventListener('DOMContentLoaded', async function() {
    日期選擇器初始化：跨平台強制使用 Flatpickr 月曆
    ---------------------------------------------------- */
 function setupDatePickerPicker() {
-    // 取得明天的日期
     const tomorrow = new Date();
     tomorrow.setDate(tomorrow.getDate() + 1);
 
     const datePickerConfig = {
         locale: 'zh_tw',            // 繁體中文
         dateFormat: 'Y-m-d',        // 日期格式
-        minDate: tomorrow,          // 最小可選日期為「明天」（今天與過去自動禁選）
+        minDate: tomorrow,          // 最小可選日期為「明天」
         disable: [
             function(date) {
-                // 回傳 true 代表該日期要禁選 (0: 星期日, 6: 星期六)
                 return (date.getDay() === 0 || date.getDay() === 6);
             }
         ],
@@ -76,11 +74,9 @@ function setupDatePickerPicker() {
 function showCustomValidity(element, message) {
     if (!element) return;
     
-    // 設定客製化錯誤訊息並觸發瀏覽器氣泡
     element.setCustomValidity(message);
     element.reportValidity();
 
-    // 當使用者輸入或修改時，自動清除錯誤訊息
     const clearValidity = () => {
         element.setCustomValidity('');
         element.removeEventListener('input', clearValidity);
@@ -106,13 +102,11 @@ function validateBookingDate(dateInput, slotName) {
     const today = new Date();
     today.setHours(0, 0, 0, 0);
 
-    // 1. 驗證不能選擇「今天」或「過去的日期」
     if (selectedDate <= today) {
         showCustomValidity(dateInput, `${slotName}的日期不可選擇「今天」或「過去日期」，請選擇明天之後的預約日期！`);
         return false;
     }
 
-    // 2. 驗證不能選擇「假日（星期六 / 星期日）」
     const dayOfWeek = selectedDate.getDay();
     if (dayOfWeek === 0 || dayOfWeek === 6) {
         showCustomValidity(dateInput, `${slotName}選擇的日期為週末假日，請選擇平工作日（週一至週五）！`);
@@ -218,12 +212,12 @@ function initFormSubmit() {
             return;
         }
 
-        // 8. 驗證勞務議題（多選一）
-        const issueCheckboxes = document.querySelectorAll('input[name="issues"]');
-        const selectedIssues = Array.from(issueCheckboxes).filter(cb => cb.checked).map(cb => cb.value);
-        if (selectedIssues.length === 0) {
-            if (issueCheckboxes.length > 0) {
-                showCustomValidity(issueCheckboxes[0], '請至少選擇一項遇到的勞務議題！');
+        // 8. 驗證希望協助解決的問題（對應新的四格卡片複選框：helpIssues）
+        const helpIssueCheckboxes = document.querySelectorAll('inputname="helpIssues"]');
+        const selectedHelpIssues = Array.from(document.querySelectorAll('input[name="helpIssues"]:checked')).map(cb => cb.value);
+        if (selectedHelpIssues.length === 0) {
+            if (helpIssueCheckboxes.length > 0) {
+                showCustomValidity(helpIssueCheckboxes[0], '請至少選擇一項希望協助解決的問題！');
             }
             return;
         }
@@ -235,7 +229,37 @@ function initFormSubmit() {
             return;
         }
 
-        // 10. 驗證期望諮詢日期與時間 (時段一、二、三均為必填)
+        // 10. 驗證需求急迫程度 (新增的單選題：urgency)
+        const urgencySelected = document.querySelector('input[name="urgency"]:checked');
+        if (!urgencySelected) {
+            const firstUrgency = document.querySelector('input[name="urgency"]');
+            if (firstUrgency) {
+                showCustomValidity(firstUrgency, '請選擇需求急迫程度！');
+            }
+            return;
+        }
+
+        // 11. 驗證過去勞檢經驗
+        const pastExpSelected = document.querySelector('input[name="pastExperience"]:checked');
+        if (!pastExpSelected) {
+            const firstPast = document.querySelector('input[name="pastExperience"]');
+            if (firstPast) {
+                showCustomValidity(firstPast, '請選擇過去是否曾遇到勞動檢查或勞調事件！');
+            }
+            return;
+        }
+
+        // 12. 驗證外部顧問配合狀態
+        const extConsultantSelected = document.querySelector('input[name="externalConsultant"]:checked');
+        if (!extConsultantSelected) {
+            const firstExt = document.querySelector('input[name="externalConsultant"]');
+            if (firstExt) {
+                showCustomValidity(firstExt, '請選擇是否有配合的外部常年勞務或法律顧問！');
+            }
+            return;
+        }
+
+        // 13. 驗證期望諮詢日期與時間 (時段一、二、三均為必填)
         const bookingDate1 = document.getElementById('bookingDate1');
         const bookingTime1 = document.getElementById('bookingTime1');
         if (!validateBookingDate(bookingDate1, '時段一')) return;
@@ -260,14 +284,14 @@ function initFormSubmit() {
             return;
         }
 
-        // 11. 個資同意條款勾選
-        const consentCheckbox = document.getElementById('consent') || document.getElementById('agreeCheck');
+        // 14. 個資同意條款勾選
+        const consentCheckbox = document.getElementById('consent');
         if (consentCheckbox && !consentCheckbox.checked) {
             showCustomValidity(consentCheckbox, '請勾選同意個人資料保護條款以繼續提交！');
             return;
         }
 
-        // 送出表單
+        // 送出按鈕狀態鎖定
         const submitBtn = document.getElementById('submitBtn');
         if (submitBtn) {
             submitBtn.disabled = true;
@@ -297,8 +321,9 @@ function initFormSubmit() {
             email: emailValue,
             industry: industryInput?.value || '',
             companySize: getRadioValue('companySize'),
-            issues: selectedIssues.join(', '),
+            issues: selectedHelpIssues.join(', '), // 對應新的 8 項複選結果
             description: descriptionInput?.value || '',
+            urgency: getRadioValue('urgency'),     // 對應新增的急迫程度
             pastExperience: getRadioValue('pastExperience'),
             externalConsultant: getRadioValue('externalConsultant'),
             booking1: getBookingStr('bookingDate1', 'bookingTime1'),
@@ -347,7 +372,7 @@ function initFormSubmit() {
 }
 
 /* ----------------------------------------------------
-   2. 綁定處理邏輯
+   2. 綁定處理邏輯 (含好友狀態檢查與強效提示)
    ---------------------------------------------------- */
 async function handleLineBindingProcess(btnElem, rowId) {
     if (!rowId) {
@@ -365,15 +390,28 @@ async function handleLineBindingProcess(btnElem, rowId) {
     btnElem.innerHTML = '⏳ 綁定處理中，請稍候...';
 
     if (typeof liff !== 'undefined') {
-        if (!liff.isLoggedIn()) {
-            const cleanUrl = window.location.origin + window.location.pathname;
-            const redirectTarget = `${cleanUrl}?bindRowId=${rowId}`;
+        const cleanUrl = window.location.origin + window.location.pathname;
+        const redirectTarget = `${cleanUrl}?bindRowId=${rowId}`;
 
+        if (!liff.isLoggedIn()) {
             liff.login({
                 redirectUri: redirectTarget,
                 botPrompt: 'aggressive'
             });
             return;
+        }
+
+        try {
+            const friendship = await liff.getFriendship();
+            if (!friendship.friendFlag) {
+                liff.login({
+                    redirectUri: redirectTarget,
+                    botPrompt: 'aggressive'
+                });
+                return;
+            }
+        } catch (fErr) {
+            console.warn('無法取得好友狀態，繼續執行綁定:', fErr);
         }
 
         await executeAutoBind(rowId);
