@@ -21,7 +21,7 @@
 </head>
 <body>
 
-    <!-- 頂部導航列區塊 -->
+    <!-- 頂部導航列區塊（維持您原本響應式左右兩側對齊與原始字體結構） -->
     <header class="navbar">
         <div class="nav-container">
             <div class="brand-logo-group">
@@ -185,7 +185,7 @@
                     </div>
                 </div>
 
-                <!-- 8. 主要需求 (可複選，含其他與自填輸入框) -->
+                <!-- 8. 主要需求 (可複選，含「其他」以及與第 10 項相同的大型文字輸入框) -->
                 <div class="form-group">
                     <label>8. 主要需求【可複選】<span class="req">*</span></label>
                     <div style="display: flex; flex-direction: column; gap: 8px; margin-top: 6px;">
@@ -194,9 +194,9 @@
                         <label style="display: flex; align-items: center; gap: 8px; cursor: pointer;"><input type="checkbox" name="mainNeeds" value="企業管理制度"> 企業管理制度</label>
                         <label style="display: flex; align-items: center; gap: 8px; cursor: pointer;"><input type="checkbox" name="mainNeeds" id="otherNeedCheckbox" value="其他"> 其他</label>
                     </div>
-                    <!-- 點選其他時顯示的自訂輸入框 -->
-                    <div id="otherNeedInputContainer" style="display: none; margin-top: 8px;">
-                        <input type="text" id="otherNeedText" class="form-control" placeholder="請填寫您的其他需求...">
+                    <!-- 點選其他時顯示的與第 10 項相同的大型文字輸入框 -->
+                    <div id="otherNeedInputContainer" style="display: none; margin-top: 10px;">
+                        <textarea id="otherNeedText" rows="3" placeholder="請詳細填寫您的其他需求..." style="width: 100% !important; height: 100px !important; resize: none !important; overflow-y: auto !important; padding: 12px; box-sizing: border-box; border: 1px solid var(--gray-200); border-radius: var(--radius-sm); outline: none;"></textarea>
                     </div>
                 </div>
 
