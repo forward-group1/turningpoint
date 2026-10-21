@@ -146,7 +146,10 @@ function isValidTaiwanPhone(phoneStr) {
 }
 
 /* ----------------------------------------------------
-   1. 表單提交處理（1-14題全面統一使用瀏覽器原生提示泡泡）
+   1. 表單提交處理
+   ---------------------------------------------------- */
+/* ----------------------------------------------------
+   1. 表單提交處理（1-14題全面穩定顯示瀏覽器原生橘色氣泡）
    ---------------------------------------------------- */
 function initFormSubmit() {
     const form = document.getElementById('consultForm');
@@ -160,9 +163,9 @@ function initFormSubmit() {
         if (!companyNameInput || !companyNameInput.value.trim()) {
             if (companyNameInput) {
                 companyNameInput.setCustomValidity('請填寫公司名稱！');
-                companyNameInput.reportValidity();
                 companyNameInput.focus();
                 companyNameInput.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                companyNameInput.reportValidity();
             }
             return;
         } else {
@@ -174,9 +177,9 @@ function initFormSubmit() {
         if (!industryInput || !industryInput.value.trim()) {
             if (industryInput) {
                 industryInput.setCustomValidity('請填寫貴公司的產業類別！');
-                industryInput.reportValidity();
                 industryInput.focus();
                 industryInput.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                industryInput.reportValidity();
             }
             return;
         } else {
@@ -188,9 +191,9 @@ function initFormSubmit() {
         if (!userNameInput || !userNameInput.value.trim()) {
             if (userNameInput) {
                 userNameInput.setCustomValidity('請填寫承辦姓名！');
-                userNameInput.reportValidity();
                 userNameInput.focus();
                 userNameInput.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                userNameInput.reportValidity();
             }
             return;
         } else {
@@ -202,9 +205,9 @@ function initFormSubmit() {
         if (!jobTitleSelect || !jobTitleSelect.value) {
             if (jobTitleSelect) {
                 jobTitleSelect.setCustomValidity('請選擇職稱！');
-                jobTitleSelect.reportValidity();
                 jobTitleSelect.focus();
                 jobTitleSelect.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                jobTitleSelect.reportValidity();
             }
             return;
         } else {
@@ -217,17 +220,17 @@ function initFormSubmit() {
         if (!phoneInput || !phoneValue) {
             if (phoneInput) {
                 phoneInput.setCustomValidity('請填寫聯絡電話！');
-                phoneInput.reportValidity();
                 phoneInput.focus();
                 phoneInput.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                phoneInput.reportValidity();
             }
             return;
         } else if (!isValidTaiwanPhone(phoneValue)) {
             if (phoneInput) {
                 phoneInput.setCustomValidity('請輸入有效的電話號碼（例如：0912345678 或 03-1234567#123）');
-                phoneInput.reportValidity();
                 phoneInput.focus();
                 phoneInput.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                phoneInput.reportValidity();
             }
             return;
         } else {
@@ -241,17 +244,17 @@ function initFormSubmit() {
         if (!emailInput || !emailValue) {
             if (emailInput) {
                 emailInput.setCustomValidity('請填寫電子郵件！');
-                emailInput.reportValidity();
                 emailInput.focus();
                 emailInput.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                emailInput.reportValidity();
             }
             return;
         } else if (!emailRegex.test(emailValue)) {
             if (emailInput) {
                 emailInput.setCustomValidity('請輸入有效的電子郵件地址！');
-                emailInput.reportValidity();
                 emailInput.focus();
                 emailInput.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                emailInput.reportValidity();
             }
             return;
         } else {
@@ -259,24 +262,21 @@ function initFormSubmit() {
         }
 
         // 7. 公司規模驗證 (單選)
-        const companySizeRadios = document.querySelectorAll('input[name="companySize"]');
         const companySizeSelected = document.querySelector('input[name="companySize"]:checked');
+        const companySizeAnchor = document.getElementById('companySizeAnchor');
         if (!companySizeSelected) {
-            const firstRadio = document.querySelector('input[name="companySize"]');
-            if (firstRadio) {
-                companySizeRadios.forEach(r => r.setCustomValidity('')); // 先清空其他
-                firstRadio.setCustomValidity('請選擇公司規模！');
-                firstRadio.reportValidity();
-                firstRadio.focus();
-                firstRadio.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            if (companySizeAnchor) {
+                companySizeAnchor.focus();
+                companySizeAnchor.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                companySizeAnchor.setCustomValidity('請選擇公司規模！');
+                companySizeAnchor.reportValidity();
             }
             return;
         } else {
-            companySizeRadios.forEach(r => r.setCustomValidity(''));
+            if (companySizeAnchor) companySizeAnchor.setCustomValidity('');
         }
 
         // 8. 主要需求驗證 (複選：mainNeeds)
-        const mainNeedsCheckboxes = document.querySelectorAll('input[name="mainNeeds"]');
         const selectedMainNeeds = Array.from(document.querySelectorAll('input[name="mainNeeds"]:checked')).map(cb => {
             if (cb.value === '其他') {
                 const customText = document.getElementById('otherNeedText').value.trim();
@@ -284,35 +284,32 @@ function initFormSubmit() {
             }
             return cb.value;
         });
+        const mainNeedsAnchor = document.getElementById('mainNeedsAnchor');
         if (selectedMainNeeds.length === 0) {
-            const firstNeed = document.querySelector('input[name="mainNeeds"]');
-            if (firstNeed) {
-                mainNeedsCheckboxes.forEach(cb => cb.setCustomValidity(''));
-                firstNeed.setCustomValidity('請至少勾選一項「8. 主要需求」！');
-                firstNeed.reportValidity();
-                firstNeed.focus();
-                firstNeed.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            if (mainNeedsAnchor) {
+                mainNeedsAnchor.focus();
+                mainNeedsAnchor.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                mainNeedsAnchor.setCustomValidity('請至少勾選一項「8. 主要需求」！');
+                mainNeedsAnchor.reportValidity();
             }
             return;
         } else {
-            mainNeedsCheckboxes.forEach(cb => cb.setCustomValidity(''));
+            if (mainNeedsAnchor) mainNeedsAnchor.setCustomValidity('');
         }
 
         // 9. 希望協助解決的問題驗證 (四格卡片複選：helpIssues)
-        const helpIssuesCheckboxes = document.querySelectorAll('input[name="helpIssues"]');
         const selectedHelpIssues = Array.from(document.querySelectorAll('input[name="helpIssues"]:checked')).map(cb => cb.value);
+        const helpIssuesAnchor = document.getElementById('helpIssuesAnchor');
         if (selectedHelpIssues.length === 0) {
-            const firstIssue = document.querySelector('input[name="helpIssues"]');
-            if (firstIssue) {
-                helpIssuesCheckboxes.forEach(cb => cb.setCustomValidity(''));
-                firstIssue.setCustomValidity('請至少選擇一項「9. 希望協助解決的問題」！');
-                firstIssue.reportValidity();
-                firstIssue.focus();
-                firstIssue.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            if (helpIssuesAnchor) {
+                helpIssuesAnchor.focus();
+                helpIssuesAnchor.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                helpIssuesAnchor.setCustomValidity('請至少選擇一項「9. 希望協助解決的問題」！');
+                helpIssuesAnchor.reportValidity();
             }
             return;
         } else {
-            helpIssuesCheckboxes.forEach(cb => cb.setCustomValidity(''));
+            if (helpIssuesAnchor) helpIssuesAnchor.setCustomValidity('');
         }
 
         // 10. 具體爭議與遭遇的問題驗證
@@ -320,9 +317,9 @@ function initFormSubmit() {
         if (!descriptionInput || !descriptionInput.value.trim()) {
             if (descriptionInput) {
                 descriptionInput.setCustomValidity('請填寫具體爭議與遭遇的問題！');
-                descriptionInput.reportValidity();
                 descriptionInput.focus();
                 descriptionInput.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                descriptionInput.reportValidity();
             }
             return;
         } else {
@@ -330,20 +327,18 @@ function initFormSubmit() {
         }
 
         // 11. 需求急迫程度驗證 (單選：urgency)
-        const urgencyRadios = document.querySelectorAll('input[name="urgency"]');
         const urgencySelected = document.querySelector('input[name="urgency"]:checked');
+        const urgencyAnchor = document.getElementById('urgencyAnchor') || document.querySelector('input[name="urgency"]');
         if (!urgencySelected) {
-            const firstUrgency = document.querySelector('input[name="urgency"]');
-            if (firstUrgency) {
-                urgencyRadios.forEach(r => r.setCustomValidity(''));
-                firstUrgency.setCustomValidity('請選擇需求急迫程度！');
-                firstUrgency.reportValidity();
-                firstUrgency.focus();
-                firstUrgency.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            if (urgencyAnchor) {
+                urgencyAnchor.focus();
+                urgencyAnchor.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                urgencyAnchor.setCustomValidity('請選擇需求急迫程度！');
+                urgencyAnchor.reportValidity();
             }
             return;
         } else {
-            urgencyRadios.forEach(r => r.setCustomValidity(''));
+            document.querySelectorAll('input[name="urgency"]').forEach(r => r.setCustomValidity(''));
         }
 
         // 14. 期望諮詢日期與時間驗證 (時段一、二、三)
@@ -352,9 +347,9 @@ function initFormSubmit() {
         if (!validateBookingDate(bookingDate1, '時段一')) return;
         if (bookingTime1 && !bookingTime1.value) {
             bookingTime1.setCustomValidity('請選擇時段一的預約時間！');
-            bookingTime1.reportValidity();
             bookingTime1.focus();
             bookingTime1.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            bookingTime1.reportValidity();
             return;
         } else if (bookingTime1) {
             bookingTime1.setCustomValidity('');
@@ -365,9 +360,9 @@ function initFormSubmit() {
         if (!validateBookingDate(bookingDate2, '時段二')) return;
         if (bookingTime2 && !bookingTime2.value) {
             bookingTime2.setCustomValidity('請選擇時段二的預約時間！');
-            bookingTime2.reportValidity();
             bookingTime2.focus();
             bookingTime2.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            bookingTime2.reportValidity();
             return;
         } else if (bookingTime2) {
             bookingTime2.setCustomValidity('');
@@ -378,9 +373,9 @@ function initFormSubmit() {
         if (!validateBookingDate(bookingDate3, '時段三')) return;
         if (bookingTime3 && !bookingTime3.value) {
             bookingTime3.setCustomValidity('請選擇時段三的預約時間！');
-            bookingTime3.reportValidity();
             bookingTime3.focus();
             bookingTime3.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            bookingTime3.reportValidity();
             return;
         } else if (bookingTime3) {
             bookingTime3.setCustomValidity('');
@@ -389,8 +384,8 @@ function initFormSubmit() {
         // 同意條款勾選驗證
         const consentCheckbox = document.getElementById('consent');
         if (consentCheckbox && !consentCheckbox.checked) {
-            consentCheckbox.scrollIntoView({ behavior: 'smooth', block: 'center' });
             consentCheckbox.focus();
+            consentCheckbox.scrollIntoView({ behavior: 'smooth', block: 'center' });
             consentCheckbox.setCustomValidity('請勾選同意個人資料保護條款以繼續提交！');
             consentCheckbox.reportValidity();
             return;
