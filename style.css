@@ -318,16 +318,20 @@ body {
 }
 
 .subtitle-badge-box {
-    display: inline-block;
+    display: block; /* 從 inline-block 改為 block 才能吃滿容器寬度 */
+    width: 100%;    /* 讓它撐開到與上方標題容器同寬 */
+    max-width: 420px; /* 限制最大寬度，避免在電腦版被拉得太長（可依需求微調數值） */
+    margin: 14px auto 8px auto; /* 置中對齊 */
     background-color: var(--navy-900);
     color: #ffffff;
     font-size: 15px;
     font-weight: 500;
-    padding: 8px 22px;
+    padding: 10px 22px;
     border-radius: 30px;
-    margin: 14px 0 8px 0;
     box-shadow: 0 3px 8px rgba(26, 54, 93, 0.2);
     letter-spacing: 0.5px;
+    line-height: 1.6;
+    text-align: center; /* 確保文字置中 */
 }
 
 /* 左欄淺藍、右欄淺黃背景色設定 */
