@@ -6,7 +6,6 @@ html {
 }
 
 :root {
-    /* 色彩系統：海軍藍系列與品牌橘色 Accent */
     --navy-950: #0a1426;
     --navy-900: #18395e;
     --navy-800: #1c355e;
@@ -21,11 +20,9 @@ html {
     --gray-600: #475569;
     --gray-800: #1e293b;
 
-    /* 字型定義 */
     --font-serif: 'Noto Serif TC', serif;
     --font-sans: 'Noto Sans TC', sans-serif;
 
-    /* 圓角與陰影 */
     --radius-sm: 6px;
     --radius-md: 10px;
     --radius-lg: 16px;
@@ -34,16 +31,19 @@ html {
 }
 
 /* ========================================== */
-/* 全局初始化 (Reset & Base Styles)          */
+/* 全局初始化 (強制全部採用無襯線字體，解決x的襯線問題 - 標記 1, 3) */
 /* ========================================== */
-* {
+*, *::before, *::after {
     box-sizing: border-box;
     margin: 0;
     padding: 0;
 }
 
+body, h1, h2, h3, h4, h5, h6, p, span, a, label, input, select, textarea {
+    font-family: var(--font-sans) !important;
+}
+
 body {
-    font-family: var(--font-sans);
     background-color: var(--light-bg);
     color: var(--gray-800);
     line-height: 1.6;
@@ -69,7 +69,7 @@ body {
 }
 
 .nav-container {
-    max-width: 100%;
+    max-width: 1200px;
     width: 100%;
     margin: 0 auto;
     padding: 0 20px;
@@ -88,10 +88,9 @@ body {
     width: 44px;
     height: 44px;
     flex-shrink: 0;
-    margin-top: -20px;
 }
 
-.logo-img, .logo-svg-lg, .logo-svg-sm {
+.logo-img {
     width: 150%;
     height: 150%;
     object-fit: contain;
@@ -124,20 +123,6 @@ body {
     color: var(--gray-600);
     font-size: clamp(0.55rem, 2vw, 0.75rem);
     white-space: nowrap;
-}
-
-.nav-actions {
-    display: flex;
-    align-items: center;
-    gap: 16px;
-}
-
-.badge-trust {
-    font-size: 13px;
-    color: var(--navy-900);
-    display: flex;
-    align-items: center;
-    gap: 6px;
 }
 
 .btn-cta {
@@ -227,28 +212,6 @@ body {
     box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
 }
 
-.brand-card-frame::before {
-    content: '';
-    position: absolute;
-    top: -5px;
-    left: -5px;
-    width: 14px;
-    height: 14px;
-    border-top: 2.5px solid var(--navy-900);
-    border-left: 2.5px solid var(--navy-900);
-}
-
-.brand-card-frame::after {
-    content: '';
-    position: absolute;
-    bottom: -5px;
-    right: -5px;
-    width: 14px;
-    height: 14px;
-    border-bottom: 2.5px solid var(--navy-900);
-    border-right: 2.5px solid var(--navy-900);
-}
-
 .card-content {
     display: flex;
     flex-direction: column;
@@ -261,20 +224,6 @@ body {
     width: 100%;
     height: auto;
     margin: 0 auto;
-}
-
-.card-tp {
-    font-size: 11px;
-    font-weight: 700;
-    letter-spacing: 2px;
-    color: var(--navy-800);
-}
-
-.card-title {
-    font-family: var(--font-serif);
-    font-size: 22px;
-    font-weight: 900;
-    margin: 4px 0;
 }
 
 .card-divider {
@@ -308,7 +257,6 @@ body {
 }
 
 .hero-headline {
-    font-family: var(--font-serif);
     font-size: 32px;
     line-height: 1.35;
     margin-bottom: 16px;
@@ -323,7 +271,6 @@ body {
 
 .highlight-text {
     color: var(--amber-accent);
-    position: relative;
 }
 
 .hero-description {
@@ -338,7 +285,6 @@ body {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
     gap: 12px;
-    margin-bottom: 24px;
 }
 
 .metric-box {
@@ -359,15 +305,6 @@ body {
 .metric-label {
     font-size: 11px;
     color: var(--gray-400);
-}
-
-.slogan-bar {
-    font-family: var(--font-serif);
-    font-size: 14px;
-    color: var(--gray-200);
-    letter-spacing: 2px;
-    border-left: 3px solid var(--amber-accent);
-    padding-left: 12px;
 }
 
 /* ========================================== */
@@ -400,16 +337,32 @@ body {
 }
 
 .section-title {
-    font-family: var(--font-serif);
     font-size: 28px;
     color: var(--navy-900);
     font-weight: 700;
 }
 
+/* 標記 5：字距與大小調整 */
 .section-desc {
-    font-size: 14px;
+    font-size: 14.5px;
     color: var(--gray-600);
-    margin-top: 8px;
+    margin-top: 10px;
+    line-height: 1.6;
+    letter-spacing: 0.8px;
+}
+
+/* 標記 4：藍色背景框與白字標籤 */
+.subtitle-badge-box {
+    display: inline-block;
+    background-color: var(--navy-900);
+    color: #ffffff;
+    font-size: 15px;
+    font-weight: 500;
+    padding: 8px 22px;
+    border-radius: 30px;
+    margin: 14px 0 8px 0;
+    box-shadow: 0 3px 8px rgba(26, 54, 93, 0.2);
+    letter-spacing: 0.5px;
 }
 
 .services-grid {
@@ -470,24 +423,12 @@ body {
 /* ========================================== */
 /* 表單區塊樣式 (Form Section)                */
 /* ========================================== */
-.config-bar {
-    background: var(--navy-900);
-    color: var(--white);
-    padding: 14px 20px;
-    border-radius: var(--radius-md) var(--radius-md) 0 0;
-    display: flex;
-    flex-wrap: wrap;
-    align-items: center;
-    justify-content: space-between;
-    gap: 12px;
-}
-
 .form-card-box {
-    background: var(--light-bg);
+    background: var(--white);
     border: 1px solid var(--gray-200);
-    border-top: none;
-    border-radius: 0 0 var(--radius-md) var(--radius-md);
-    padding: 24px;
+    border-radius: var(--radius-md);
+    padding: 30px;
+    box-shadow: var(--shadow-md);
 }
 
 .form-card-header {
@@ -500,37 +441,21 @@ body {
 }
 
 .form-card-title {
-    font-size: 14px;
+    font-size: 15px;
     font-weight: 700;
     color: var(--navy-900);
-}
-
-.iframe-container iframe {
-    width: 100%;
-    height: 700px;
-    background: var(--white);
-    border-radius: var(--radius-sm);
-    border: 1px solid var(--gray-200);
-}
-
-.builtin-form {
-    background: var(--white);
-    padding: 24px;
-    border-radius: var(--radius-sm);
-    border: 1px solid var(--gray-200);
-}
-
-.info-alert {
-    background: rgba(20, 40, 75, 0.05);
-    border-left: 4px solid var(--navy-900);
-    padding: 10px 14px;
-    border-radius: 4px;
-    font-size: 12px;
-    color: var(--navy-900);
-    margin-bottom: 20px;
     display: flex;
-    gap: 8px;
     align-items: center;
+    gap: 8px;
+}
+
+/* 標記 6：表單上方的藍色裝飾飾條 */
+.styled-form-box {
+    background: var(--white);
+    border-radius: var(--radius-sm);
+    border: 1px solid var(--gray-200);
+    border-top: 6px solid var(--navy-900) !important;
+    padding: 28px;
 }
 
 .form-row {
@@ -547,12 +472,12 @@ body {
 }
 
 .form-group {
-    margin-bottom: 16px;
+    margin-bottom: 20px;
 }
 
 .form-group label {
     display: block;
-    font-size: 16px;
+    font-size: 15px;
     font-weight: 700;
     color: var(--navy-900);
     margin-bottom: 6px;
@@ -588,7 +513,7 @@ select.form-control {
     -webkit-appearance: none;
     -moz-appearance: none;
     appearance: none;
-    background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%20666666' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><polyline points='6 9 12 15 18 9'></polyline></svg>");
+    background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%23666666' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><polyline points='6 9 12 15 18 9'></polyline></svg>");
     background-repeat: no-repeat;
     background-position: right 14px center;
     background-size: 16px;
@@ -603,18 +528,16 @@ select.form-control {
     box-shadow: 0 0 0 3px rgba(24, 57, 94, 0.15);
 }
 
-select.form-control:invalid,
-select.form-control option[value=""] {
-    color: #888888;
-}
-
 .form-group textarea {
     width: 100% !important;
-    height: 100px !important;     
+    height: 100px !important;      
     resize: none !important;      
     overflow-y: auto !important; 
     padding: 12px;
     box-sizing: border-box;
+    border: 1px solid var(--gray-200);
+    border-radius: var(--radius-sm);
+    outline: none;
 }
 
 .checkbox-grid {
@@ -623,28 +546,13 @@ select.form-control option[value=""] {
     gap: 8px;
 }
 
-@media (min-width: 600px) {
-    .checkbox-grid {
-        grid-template-columns: 1fr 1fr;
-    }
-}
-
-.checkbox-item {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    font-size: 12px;
-    color: var(--gray-800);
-    padding: 8px;
-    border: 1px solid var(--gray-100);
-    border-radius: 4px;
-    cursor: pointer;
-}
-
 .consent-box {
     border: none;
     padding: 0;
     align-items: flex-start;
+    display: flex;
+    gap: 8px;
+    cursor: pointer;
 }
 
 .consent-text {
@@ -657,10 +565,10 @@ select.form-control option[value=""] {
     width: 100%;
     background: var(--navy-900);
     color: var(--white);
-    padding: 12px;
+    padding: 14px;
     border: none;
     border-radius: var(--radius-sm);
-    font-size: 14px;
+    font-size: 15px;
     font-weight: 700;
     cursor: pointer;
     display: flex;
@@ -679,7 +587,6 @@ select.form-control option[value=""] {
     grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
     gap: 13px;
     margin-top: 24px;
-    transform: translateY(-13px);
 }
 
 .badge-item {
@@ -782,23 +689,13 @@ select.form-control option[value=""] {
         justify-content: space-between;
         align-items: flex-start;
     }
-
     .footer-col {
         flex: 1;
         margin-top: 20px;
     }
-
     .footer-right-col {
         align-items: flex-end;
         text-align: right;
-    }
-
-    .footer-heading {
-        margin-left: 0;
-    }
-
-    .footer-right-col .footer-heading {
-        margin-right: 0;
     }
 }
 
@@ -870,11 +767,9 @@ select.form-control option[value=""] {
     background-color: #05b34c;
 }
 
-/* ====================================================
-   預約時段響應式排版設定（優化間距版）
-   ==================================================== */
+/* 預約時段排版 */
 .booking-slot-group {
-    margin-bottom: 20px; /* 👈 增加各個時段群組之間的上下距離（原本是 12px） */
+    margin-bottom: 20px;
 }
 
 .slot-label {
@@ -882,13 +777,12 @@ select.form-control option[value=""] {
     color: #555;
     font-weight: bold;
     display: block;
-    margin-bottom: 6px; /* 👈 增加標籤與輸入框的距離 */
+    margin-bottom: 6px;
 }
 
-/* 電腦版預設：左右並排，各佔 50% */
 .booking-form-row {
     display: flex;
-    gap: 15px; /* 👈 增加電腦版左右框的間距 */
+    gap: 15px;
     width: 100%;
 }
 
@@ -899,35 +793,33 @@ select.form-control option[value=""] {
     min-width: 0;
 }
 
-/* 手機版自動切換：當螢幕寬度小於 600px 時，改為上下單欄排列 */
 @media (max-width: 600px) {
     .booking-form-row {
         flex-direction: column;
-        gap: 10px; /* 👈 增加手機版上下日期框與時間框的間距（讓它們不再黏在一起） */
+        gap: 10px;
     }
-
     .booking-form-row input,
     .booking-form-row select {
         width: 100%;
     }
 }
 
-/* 第 8 項：四格大框選取卡片網格 */
+/* ========================================== */
+/* 圖三：第 8 項四格大框卡片統一大小與整齊排版 */
+/* ========================================== */
 .category-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
     gap: 15px;
     margin-top: 10px;
 }
 
-/* 個別卡片容器 */
 .category-card {
     position: relative;
-    display: block;
+    display: flex;
     cursor: pointer;
 }
 
-/* 隱藏原生 checkbox */
 .category-card input[type="checkbox"] {
     position: absolute;
     opacity: 0;
@@ -935,16 +827,19 @@ select.form-control option[value=""] {
     height: 0;
 }
 
-/* 卡片預設樣式 */
+/* 強制所有卡片高矮一致 (height: 100%) */
 .category-card .card-content {
     background: #f8f9fa;
     border: 2px solid #e9ecef;
     border-radius: 10px;
-    padding: 16px 20px;
+    padding: 20px;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
     transition: all 0.2s ease-in-out;
 }
 
-/* 圖示與標題 */
 .category-card .card-icon {
     font-size: 20px;
     color: #495057;
@@ -964,30 +859,28 @@ select.form-control option[value=""] {
     line-height: 1.4;
 }
 
-/* Hover 效果 */
 .category-card:hover .card-content {
     border-color: #adb5bd;
     background: #f1f3f5;
 }
 
-/* 勾選/選取後的樣式 (切換成高亮藍邊與淺藍背景) */
 .category-card input[type="checkbox"]:checked + .card-content {
-    border-color: #1a365d;
+    border-color: var(--navy-900);
     background-color: #f0f4f9;
     box-shadow: 0 4px 10px rgba(26, 54, 93, 0.1);
 }
 
 .category-card input[type="checkbox"]:checked + .card-content .card-icon,
 .category-card input[type="checkbox"]:checked + .card-content .card-title {
-    color: #1a365d;
+    color: var(--navy-900);
 }
 
-/* 直排 Radio 樣式 */
+/* Radio 按鈕群組排列 */
 .radio-stack {
     display: flex;
     flex-direction: column;
-    gap: 10px;
-    margin-top: 8px;
+    gap: 8px;
+    margin-top: 6px;
 }
 
 .radio-item {
@@ -995,6 +888,15 @@ select.form-control option[value=""] {
     align-items: center;
     gap: 8px;
     cursor: pointer;
-    font-size: 15px;
+    font-size: 14px;
     color: #333;
+    padding: 8px 12px;
+    background: #f8f9fa;
+    border: 1px solid #e9ecef;
+    border-radius: var(--radius-sm);
+    transition: background 0.2s;
+}
+
+.radio-item:hover {
+    background: #f1f3f5;
 }
