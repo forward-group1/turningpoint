@@ -318,20 +318,20 @@ body {
 }
 
 .subtitle-badge-box {
-    display: block; /* 從 inline-block 改為 block 才能吃滿容器寬度 */
-    width: 100%;    /* 讓它撐開到與上方標題容器同寬 */
-    max-width: 420px; /* 限制最大寬度，避免在電腦版被拉得太長（可依需求微調數值） */
-    margin: 14px auto 8px auto; /* 置中對齊 */
+    display: block;
+    width: 100%;
+    max-width: 440px;
+    margin: 14px auto 8px auto;
     background-color: var(--navy-900);
     color: #ffffff;
     font-size: 15px;
     font-weight: 500;
-    padding: 10px 22px;
+    padding: 12px 24px;
     border-radius: 30px;
     box-shadow: 0 3px 8px rgba(26, 54, 93, 0.2);
-    letter-spacing: 0.5px;
-    line-height: 1.6;
-    text-align: center; /* 確保文字置中 */
+    letter-spacing: 2.5px; /* 👈 刻意拉開字與字之間的寬度，更有質感 */
+    line-height: 1.8;      /* 👈 兩行之間的距離拉開，呼吸感更好 */
+    text-align: center;
 }
 
 /* 左欄淺藍、右欄淺黃背景色設定 */
@@ -801,13 +801,13 @@ select.form-control {
 }
 
 .feature-badge {
-    background-color: var(--navy-900); /* 使用您原本的深藍色背景（或換成其他喜愛的顏色） */
-    color: #ffffff;                    /* 文字顏色為白色 */
-    font-size: clamp(16px, 2.5vw, 22px); /* 響應式字體大小，手機與電腦都會好看 */
+    background-color: var(--navy-900);
+    color: #ffffff;
+    font-size: clamp(16px, 2.5vw, 22px);
     font-weight: 700;
-    padding: 10px 20px;                /* 內距，營造出方格/膠囊的厚實感 */
-    border-radius: 8px;                /* 圓角大小（若要全圓弧可改為 30px） */
-    box-shadow: 0 4px 10px rgba(24, 57, 94, 0.15); /* 柔和陰影 */
-    letter-spacing: 0.5px;
+    padding: 10px 24px;
+    border-radius: 50px; /* 👈 數值調大，讓左右兩端呈現完美半圓形膠囊 */
+    box-shadow: 0 4px 10px rgba(24, 57, 94, 0.15);
+    letter-spacing: 1px;
     white-space: nowrap;
 }
