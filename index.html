@@ -1,31 +1,22 @@
 <!DOCTYPE html>
 <html lang="zh-TW">
 <head>
-    <!-- 設定字元集編碼為 UTF-8 -->
     <meta charset="UTF-8">
-    <!-- 設定響應式網頁（RWD）螢幕縮放比例 -->
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <!-- 網頁標題 -->
     <title>企業危機百科—讓我們一起。洞察危機，迎向轉機。</title>
     
-    <!-- 引入 Google Fonts 中文字型 -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@300;400;500;700&family=Noto+Serif+TC:wght@600;700;900&display=swap" rel="stylesheet">
     
-    <!-- 引入 FontAwesome 圖示庫 -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
-    <!-- 引入外部自訂 CSS 樣式檔 -->
     <link rel="stylesheet" href="style.css">
 
-    <!-- Flatpickr CSS 樣式 -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
-    <!-- Flatpickr JS 與繁體中文語系 -->
     <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
     <script src="https://cdn.jsdelivr.net/npm/flatpickr/dist/l10n/zh-tw.js"></script>
 
-    <!-- LINE LIFF SDK -->
     <script src="https://static.line-scdn.net/liff/edge/2/sdk.js"></script>
 </head>
 <body>
@@ -82,7 +73,6 @@
                         讓問題不只被解決，更能逐步建立完善的管理機制。
                     </p>
 
-                    <!-- 按鈕1 -->
                     <div class="hero-action-box" style="margin-top: 20px;">
                         <a href="#apply-section" class="btn-cta" style="display: inline-flex; align-items: center; gap: 8px; background-color: #ff7f00; color: #fff; padding: 12px 24px; border-radius: 30px; text-decoration: none; font-weight: bold;">
                             <span>預約顧問線上諮詢</span>
@@ -98,13 +88,10 @@
     <section class="services-section">
         <div class="section-container">
             <div class="section-header">
-                <!-- 標題 -->
                 <h3 class="section-title" style="font-size: 28px; font-weight: 700;">企業需求導向 x 顧問1對1 x 100%合規</h3>
             </div>
 
-            <!-- 兩欄式服務對照卡片 -->
             <div class="services-grid" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 30px; margin-top: 30px;">
-                <!-- 左欄：企業勞資顧問 -->
                 <div class="service-card" style="padding: 30px; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.05);">
                     <div class="icon-box" style="color: #1a365d; font-size: 28px; margin-bottom: 15px;"><i class="fa-solid fa-scale-balanced"></i></div>
                     <h4 style="font-size: 20px; font-weight: bold; margin-bottom: 10px;">企業勞資顧問</h4>
@@ -118,7 +105,6 @@
                     </ul>
                 </div>
 
-                <!-- 右欄：企業管理顧問 -->
                 <div class="service-card" style="padding: 30px; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.05);">
                     <div class="icon-box" style="color: #c05621; font-size: 28px; margin-bottom: 15px;"><i class="fa-solid fa-user-gear"></i></div>
                     <h4 style="font-size: 20px; font-weight: bold; margin-bottom: 10px;">企業管理顧問</h4>
@@ -135,7 +121,7 @@
         </div>
     </section>
     
-    <!-- 表單與申請區塊  -->
+    <!-- 表單與申請區塊 -->
     <section id="apply-section" class="form-section">
         <div class="section-container border-container">
             <div class="section-header">
@@ -151,7 +137,7 @@
                 </p>
             </div>
 
-            <!-- 網頁表單 -->
+            <!-- 網頁表單 (上方藍色裝飾加粗至 16px) -->
             <form class="builtin-form styled-form-box" id="consultForm">
                 <div class="form-row">
                     <div class="form-group">
@@ -199,26 +185,14 @@
                     </div>
                 </div>
 
-                <!-- 8. 主要需求 (新增：可複選，包含法遵、勞資法令、企業管理制度、其他及自訂輸入框) -->
+                <!-- 8. 主要需求 (可複選，含其他與自填輸入框) -->
                 <div class="form-group">
                     <label>8. 主要需求【可複選】<span class="req">*</span></label>
-                    <div class="radio-stack">
-                        <label class="radio-item">
-                            <input type="checkbox" name="mainNeeds" value="法遵"> 
-                            <span>法遵</span>
-                        </label>
-                        <label class="radio-item">
-                            <input type="checkbox" name="mainNeeds" value="勞資法令"> 
-                            <span>勞資法令</span>
-                        </label>
-                        <label class="radio-item">
-                            <input type="checkbox" name="mainNeeds" value="企業管理制度"> 
-                            <span>企業管理制度</span>
-                        </label>
-                        <label class="radio-item">
-                            <input type="checkbox" name="mainNeeds" id="otherNeedCheckbox" value="其他"> 
-                            <span>其他</span>
-                        </label>
+                    <div style="display: flex; flex-direction: column; gap: 8px; margin-top: 6px;">
+                        <label style="display: flex; align-items: center; gap: 8px; cursor: pointer;"><input type="checkbox" name="mainNeeds" value="法尊"> 法尊</label>
+                        <label style="display: flex; align-items: center; gap: 8px; cursor: pointer;"><input type="checkbox" name="mainNeeds" value="勞資法令"> 勞資法令</label>
+                        <label style="display: flex; align-items: center; gap: 8px; cursor: pointer;"><input type="checkbox" name="mainNeeds" value="企業管理制度"> 企業管理制度</label>
+                        <label style="display: flex; align-items: center; gap: 8px; cursor: pointer;"><input type="checkbox" name="mainNeeds" id="otherNeedCheckbox" value="其他"> 其他</label>
                     </div>
                     <!-- 點選其他時顯示的自訂輸入框 -->
                     <div id="otherNeedInputContainer" style="display: none; margin-top: 8px;">
@@ -226,7 +200,7 @@
                     </div>
                 </div>
 
-                <!-- 9. 希望協助解決的問題 -->
+                <!-- 9. 希望協助解決的問題 (四格卡片) -->
                 <div class="form-group">
                     <label>9. 希望協助解決的問題【可複選】<span class="req">*</span></label>
                     <div class="category-grid">
@@ -272,45 +246,9 @@
                     <label>10. 具體爭議與遭遇的問題<span class="req">*</span></label>
                     <textarea id="description" rows="3" placeholder="例如：近期擬調動員工崗位，想確認相關程序是否合規..."></textarea>
                 </div>
-                
-                <div class="form-group">
-                    <label>11. 需求急迫程度<span class="req">*</span></label>
-                    <div class="radio-stack">
-                        <label class="radio-item">
-                            <input type="radio" name="urgency" value="急需處理（已有爭議、申訴或期限）">
-                            <span>急需處理（已有爭議、申訴或期限）</span>
-                        </label>
-                        <label class="radio-item">
-                            <input type="radio" name="urgency" value="近期規劃（希望近期啟動）">
-                            <span>近期規劃（希望近期啟動）</span>
-                        </label>
-                        <label class="radio-item">
-                            <input type="radio" name="urgency" value="一般需求（先了解方向）">
-                            <span>一般需求（先了解方向）</span>
-                        </label>
-                    </div>
-                </div>
 
                 <div class="form-group">
-                    <label>12. 貴公司過去是否曾遇到過勞動檢查或勞資調解事件</label>
-                    <div class="radio-stack">
-                        <label class="radio-item"><input type="radio" name="pastExperience" value="有，曾被勞檢且有改善處分/罰金紀錄"> <span>有，曾被勞檢且有改善處分/罰金紀錄</span></label>
-                        <label class="radio-item"><input type="radio" name="pastExperience" value="有，曾進行過勞資爭議調解"> <span>有，曾進行過勞資爭議調解</span></label>
-                        <label class="radio-item"><input type="radio" name="pastExperience" value="無，但希望預先防範"> <span>無，但希望預先防範</span></label>
-                    </div>
-                </div>
-
-                <div class="form-group">
-                    <label>13. 貴公司目前是否有配合的外部常年勞務或法律顧問</label>
-                    <div class="radio-stack">
-                        <label class="radio-item"><input type="radio" name="externalConsultant" value="有，已有長期配合的勞務顧問/律師"> <span>有，已有長期配合的勞務顧問/律師</span></label>
-                        <label class="radio-item"><input type="radio" name="externalConsultant" value="無，目前主要由內部HR / 管理層研究處置"> <span>無，目前主要由內部HR / 管理層研究處置</span></label>
-                        <label class="radio-item"><input type="radio" name="externalConsultant" value="無，正在尋找合適的勞務顧問團隊"> <span>無，正在尋找合適的勞務顧問團隊</span></label>
-                    </div>
-                </div>
-
-                <div class="form-group">
-                    <label>14. 期望諮詢日期與時間<span class="req">*</span></label>
+                    <label>11. 期望諮詢日期與時間<span class="req">*</span></label>
                     
                     <!-- 時段一 -->
                     <div class="booking-slot-group">
@@ -403,7 +341,6 @@
                     <span>送出申請</span>
                 </button>
 
-                <!-- 隱藏欄位：存放抓取到的 LINE User ID -->
                 <input type="hidden" id="clientUserId" name="clientUserId" value="">
             </form>
         </div>
@@ -459,7 +396,6 @@
         </div>
     </div>
 
-    <!-- 引入主要腳本 -->
     <script src="script.js"></script>
 </body>
 </html>
