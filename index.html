@@ -137,7 +137,7 @@
                 </p>
             </div>
 
-            <!-- 網頁表單 (上方藍色裝飾加粗至 16px) -->
+            <!-- 網頁表單 -->
             <form class="builtin-form styled-form-box" id="consultForm">
                 <div class="form-row">
                     <div class="form-group">
@@ -248,7 +248,43 @@
                 </div>
 
                 <div class="form-group">
-                    <label>11. 期望諮詢日期與時間<span class="req">*</span></label>
+                    <label>11. 需求急迫程度<span class="req">*</span></label>
+                    <div class="radio-stack">
+                        <label class="radio-item">
+                            <input type="radio" name="urgency" value="急需處理（已有爭議、申訴或期限）">
+                            <span>急需處理（已有爭議、申訴或期限）</span>
+                        </label>
+                        <label class="radio-item">
+                            <input type="radio" name="urgency" value="近期規劃（希望近期啟動）">
+                            <span>近期規劃（希望近期啟動）</span>
+                        </label>
+                        <label class="radio-item">
+                            <input type="radio" name="urgency" value="一般需求（先了解方向）">
+                            <span>一般需求（先了解方向）</span>
+                        </label>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label>12. 貴公司過去是否曾遇到過勞動檢查或勞資調解事件</label>
+                    <div class="radio-stack">
+                        <label class="radio-item"><input type="radio" name="pastExperience" value="有，曾被勞檢且有改善處分/罰金紀錄"> <span>有，曾被勞檢且有改善處分/罰金紀錄</span></label>
+                        <label class="radio-item"><input type="radio" name="pastExperience" value="有，曾進行過勞資爭議調解"> <span>有，曾進行過勞資爭議調解</span></label>
+                        <label class="radio-item"><input type="radio" name="pastExperience" value="無，但希望預先防範"> <span>無，但希望預先防範</span></label>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label>13. 貴公司目前是否有配合的外部常年勞務或法律顧問</label>
+                    <div class="radio-stack">
+                        <label class="radio-item"><input type="radio" name="externalConsultant" value="有，已有長期配合的勞務顧問/律師"> <span>有，已有長期配合的勞務顧問/律師</span></label>
+                        <label class="radio-item"><input type="radio" name="externalConsultant" value="無，目前主要由內部HR / 管理層研究處置"> <span>無，目前主要由內部HR / 管理層研究處置</span></label>
+                        <label class="radio-item"><input type="radio" name="externalConsultant" value="無，正在尋找合適的勞務顧問團隊"> <span>無，正在尋找合適的勞務顧問團隊</span></label>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label>14. 期望諮詢日期與時間<span class="req">*</span></label>
                     
                     <!-- 時段一 -->
                     <div class="booking-slot-group">
