@@ -342,3 +342,76 @@ body {
     padding: 30px;
     border-radius: 12px;
     box-shadow:
+/* ========================================== */
+/* 🛠️ 第 9 題四格卡片排版修復樣式               */
+/* ========================================== */
+.category-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    gap: 15px;
+    margin-top: 10px;
+    align-items: stretch;
+}
+
+.category-card {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    cursor: pointer;
+}
+
+/* 將原本外露的核取方塊隱藏，改由點擊整個卡片外框來控制 */
+.category-card input[type="checkbox"] {
+    position: absolute;
+    opacity: 0;
+    width: 0;
+    height: 0;
+}
+
+.category-card .card-content {
+    background: #f8f9fa;
+    border: 2px solid #e9ecef;
+    border-radius: 10px;
+    padding: 20px;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    transition: all 0.2s ease-in-out;
+}
+
+.category-card .card-icon {
+    font-size: 20px;
+    color: #495057;
+    margin-bottom: 8px;
+}
+
+.category-card .card-title {
+    font-size: 16px;
+    font-weight: 700;
+    color: #212529;
+    margin-bottom: 6px;
+}
+
+.category-card .card-desc {
+    font-size: 13px;
+    color: #6c757d;
+    line-height: 1.4;
+}
+
+.category-card:hover .card-content {
+    border-color: #adb5bd;
+    background: #f1f3f5;
+}
+
+.category-card input[type="checkbox"]:checked + .card-content {
+    border-color: var(--navy-900);
+    background-color: #f0f4f9;
+    box-shadow: 0 4px 10px rgba(26, 54, 93, 0.1);
+}
+
+.category-card input[type="checkbox"]:checked + .card-content .card-icon,
+.category-card input[type="checkbox"]:checked + .card-content .card-title {
+    color: var(--navy-900);
+}
