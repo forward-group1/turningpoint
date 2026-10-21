@@ -299,12 +299,6 @@ function initFormSubmit() {
             return;
         }
 
-        // 10. 具體爭議與遭遇的問題驗證
-        const descriptionInput = document.getElementById('description');
-        if (!descriptionInput || !descriptionInput.value.trim()) {
-            showFieldError(descriptionInput, '請填寫具體爭議與遭遇的問題！');
-            return;
-        }
 
         // 11. 需求急迫程度驗證 (單選：urgency)
         const urgencySelected = document.querySelector('input[name="urgency"]:checked');
