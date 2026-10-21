@@ -259,6 +259,7 @@ function initFormSubmit() {
         }
 
         // 7. 公司規模驗證 (單選)
+        const companySizeRadios = document.querySelectorAll('input[name="companySize"]');
         const companySizeSelected = document.querySelector('input[name="companySize"]:checked');
         if (!companySizeSelected) {
             const firstRadio = document.querySelector('input[name="companySize"]');
@@ -269,10 +270,11 @@ function initFormSubmit() {
             }
             return;
         } else {
-            document.querySelectorAll('input[name="companySize"]').forEach(r => r.setCustomValidity(''));
+            companySizeRadios.forEach(r => r.setCustomValidity(''));
         }
 
         // 8. 主要需求驗證 (複選：mainNeeds)
+        const mainNeedsCheckboxes = document.querySelectorAll('input[name="mainNeeds"]');
         const selectedMainNeeds = Array.from(document.querySelectorAll('input[name="mainNeeds"]:checked')).map(cb => {
             if (cb.value === '其他') {
                 const customText = document.getElementById('otherNeedText').value.trim();
@@ -289,10 +291,11 @@ function initFormSubmit() {
             }
             return;
         } else {
-            document.querySelectorAll('input[name="mainNeeds"]').forEach(cb => cb.setCustomValidity(''));
+            mainNeedsCheckboxes.forEach(cb => cb.setCustomValidity(''));
         }
 
         // 9. 希望協助解決的問題驗證 (四格卡片複選：helpIssues)
+        const helpIssuesCheckboxes = document.querySelectorAll('input[name="helpIssues"]');
         const selectedHelpIssues = Array.from(document.querySelectorAll('input[name="helpIssues"]:checked')).map(cb => cb.value);
         if (selectedHelpIssues.length === 0) {
             const firstIssue = document.querySelector('input[name="helpIssues"]');
@@ -303,7 +306,7 @@ function initFormSubmit() {
             }
             return;
         } else {
-            document.querySelectorAll('input[name="helpIssues"]').forEach(cb => cb.setCustomValidity(''));
+            helpIssuesCheckboxes.forEach(cb => cb.setCustomValidity(''));
         }
 
         // 10. 具體爭議與遭遇的問題驗證
@@ -321,6 +324,7 @@ function initFormSubmit() {
         }
 
         // 11. 需求急迫程度驗證 (單選：urgency)
+        const urgencyRadios = document.querySelectorAll('input[name="urgency"]');
         const urgencySelected = document.querySelector('input[name="urgency"]:checked');
         if (!urgencySelected) {
             const firstUrgency = document.querySelector('input[name="urgency"]');
@@ -331,7 +335,7 @@ function initFormSubmit() {
             }
             return;
         } else {
-            document.querySelectorAll('input[name="urgency"]').forEach(r => r.setCustomValidity(''));
+            urgencyRadios.forEach(r => r.setCustomValidity(''));
         }
 
         // 14. 期望諮詢日期與時間驗證 (時段一、二、三)
