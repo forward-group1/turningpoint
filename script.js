@@ -264,10 +264,10 @@ function initFormSubmit() {
         if (!companySizeSelected) {
             const firstRadio = document.querySelector('input[name="companySize"]');
             if (firstRadio) {
+                firstRadio.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                firstRadio.focus();
                 firstRadio.setCustomValidity('請選擇公司規模！');
                 firstRadio.reportValidity();
-                firstRadio.focus();
-                firstRadio.scrollIntoView({ behavior: 'smooth', block: 'center' });
             }
             return;
         } else {
@@ -286,10 +286,10 @@ function initFormSubmit() {
         if (selectedMainNeeds.length === 0) {
             const firstNeed = document.querySelector('input[name="mainNeeds"]');
             if (firstNeed) {
+                firstNeed.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                firstNeed.focus();
                 firstNeed.setCustomValidity('請至少勾選一項「8. 主要需求」！');
                 firstNeed.reportValidity();
-                firstNeed.focus();
-                firstNeed.scrollIntoView({ behavior: 'smooth', block: 'center' });
             }
             return;
         } else {
@@ -302,10 +302,10 @@ function initFormSubmit() {
         if (selectedHelpIssues.length === 0) {
             const firstIssue = document.querySelector('input[name="helpIssues"]');
             if (firstIssue) {
+                firstIssue.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                firstIssue.focus();
                 firstIssue.setCustomValidity('請至少選擇一項「9. 希望協助解決的問題」！');
                 firstIssue.reportValidity();
-                firstIssue.focus();
-                firstIssue.scrollIntoView({ behavior: 'smooth', block: 'center' });
             }
             return;
         } else {
@@ -332,10 +332,10 @@ function initFormSubmit() {
         if (!urgencySelected) {
             const firstUrgency = document.querySelector('input[name="urgency"]');
             if (firstUrgency) {
+                firstUrgency.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                firstUrgency.focus();
                 firstUrgency.setCustomValidity('請選擇需求急迫程度！');
                 firstUrgency.reportValidity();
-                firstUrgency.focus();
-                firstUrgency.scrollIntoView({ behavior: 'smooth', block: 'center' });
             }
             return;
         } else {
@@ -385,10 +385,10 @@ function initFormSubmit() {
         // 同意條款勾選驗證
         const consentCheckbox = document.getElementById('consent');
         if (consentCheckbox && !consentCheckbox.checked) {
+            consentCheckbox.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            consentCheckbox.focus();
             consentCheckbox.setCustomValidity('請勾選同意個人資料保護條款以繼續提交！');
             consentCheckbox.reportValidity();
-            consentCheckbox.focus();
-            consentCheckbox.scrollIntoView({ behavior: 'smooth', block: 'center' });
             return;
         } else if (consentCheckbox) {
             consentCheckbox.setCustomValidity('');
@@ -469,7 +469,6 @@ function initFormSubmit() {
         });
     });
 }
-
 /* ----------------------------------------------------
    2. 綁定處理邏輯 (含好友狀態檢查與強效提示)
    ---------------------------------------------------- */
