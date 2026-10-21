@@ -492,16 +492,18 @@ select.form-control {
 .security-badges {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-    gap: 16px;          /* 卡片與卡片間的間隔 */
-    margin-top: 25px;   /* 上方與按鈕的距離 */
-    margin-bottom: 25px;/* 下方與頁尾的距離 */
-    padding: 16px;     /* 👈 加上微小的左右安全內距，避免死貼左右邊緣 */
+    gap: 16px;
+    width: 100%;
+    max-width: 800px; /* 👈 請設為跟上面 .styled-form-box 或 .form-section 相同的最大寬度 */
+    margin: 32px auto 40px auto; /* 👈 上下留白，左右 auto 自動置中對齊 */
+    padding: 0 20px;
+    box-sizing: border-box;
 }
 
 .badge-item {
-    background: var(--light-bg);
+    background: #ffffff; /* 如果在灰色背景上，可改為純白背景增添質感 */
     border: 1px solid var(--gray-200);
-    padding: 14px 16px; /* 👈 增加內部上下左右的留白，讓格子看起來更飽滿舒適 */
+    padding: 14px 16px;
     border-radius: var(--radius-sm);
     font-size: 13px;
     color: var(--gray-600);
@@ -509,7 +511,7 @@ select.form-control {
     align-items: center;
     justify-content: center;
     gap: 10px;
-    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.02); /* 👈 加上微弱的陰影增加質感 */
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.03);
 }
 
 .badge-item i {
