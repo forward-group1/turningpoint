@@ -160,18 +160,14 @@ function initFormSubmit() {
     const form = document.getElementById('consultForm');
     if (!form) return;
 
-    // 清除自訂錯誤訊息的輔助函式
-    const clearCustomValidity = (elements) => {
-        elements.forEach(el => el.setCustomValidity(''));
-    };
-
     form.addEventListener('submit', function(e) {
         e.preventDefault();
 
         // 1. 公司名稱驗證
         const companyNameInput = document.getElementById('companyName');
-        if (companyNameInput) companyNameInput.setCustomValidity('');
-        if (!companyNameInput || !companyNameInput.value.trim()) {
+        if (companyNameInput && companyNameInput.value.trim()) {
+            companyNameInput.setCustomValidity('');
+        } else {
             if (companyNameInput) {
                 companyNameInput.setCustomValidity('請填寫公司名稱！');
                 companyNameInput.reportValidity();
@@ -182,8 +178,9 @@ function initFormSubmit() {
 
         // 2. 產業類別驗證
         const industryInput = document.getElementById('industry');
-        if (industryInput) industryInput.setCustomValidity('');
-        if (!industryInput || !industryInput.value.trim()) {
+        if (industryInput && industryInput.value.trim()) {
+            industryInput.setCustomValidity('');
+        } else {
             if (industryInput) {
                 industryInput.setCustomValidity('請填寫貴公司的產業類別！');
                 industryInput.reportValidity();
@@ -194,8 +191,9 @@ function initFormSubmit() {
 
         // 3. 承辦姓名驗證
         const userNameInput = document.getElementById('userName');
-        if (userNameInput) userNameInput.setCustomValidity('');
-        if (!userNameInput || !userNameInput.value.trim()) {
+        if (userNameInput && userNameInput.value.trim()) {
+            userNameInput.setCustomValidity('');
+        } else {
             if (userNameInput) {
                 userNameInput.setCustomValidity('請填寫承辦姓名！');
                 userNameInput.reportValidity();
@@ -206,8 +204,9 @@ function initFormSubmit() {
 
         // 4. 職稱驗證
         const jobTitleSelect = document.getElementById('jobTitle');
-        if (jobTitleSelect) jobTitleSelect.setCustomValidity('');
-        if (!jobTitleSelect || !jobTitleSelect.value) {
+        if (jobTitleSelect && jobTitleSelect.value) {
+            jobTitleSelect.setCustomValidity('');
+        } else {
             if (jobTitleSelect) {
                 jobTitleSelect.setCustomValidity('請選擇職稱！');
                 jobTitleSelect.reportValidity();
@@ -234,6 +233,8 @@ function initFormSubmit() {
                 phoneInput.focus();
             }
             return;
+        } else {
+            if (phoneInput) phoneInput.setCustomValidity('');
         }
 
         // 6. 電子郵件驗證
@@ -255,6 +256,8 @@ function initFormSubmit() {
                 emailInput.focus();
             }
             return;
+        } else {
+            if (emailInput) emailInput.setCustomValidity('');
         }
 
         // 7. 公司規模驗證 (單選)
@@ -271,7 +274,7 @@ function initFormSubmit() {
             return;
         }
 
-        // 8. 主要需求驗證 (複選：mainNeeds) -> 完美支援泡泡提示
+        // 8. 主要需求驗證 (複選：mainNeeds)
         const mainNeedsCheckboxes = document.querySelectorAll('input[name="mainNeeds"]');
         const selectedMainNeeds = Array.from(document.querySelectorAll('input[name="mainNeeds"]:checked')).map(cb => {
             if (cb.value === '其他') {
@@ -291,7 +294,7 @@ function initFormSubmit() {
             return;
         }
 
-        // 9. 希望協助解決的問題驗證 (四格卡片複選：helpIssues) -> 完美支援泡泡提示
+        // 9. 希望協助解決的問題驗證 (四格卡片複選：helpIssues)
         const helpIssuesCheckboxes = document.querySelectorAll('input[name="helpIssues"]');
         const selectedHelpIssues = Array.from(document.querySelectorAll('input[name="helpIssues"]:checked')).map(cb => cb.value);
         helpIssuesCheckboxes.forEach(cb => cb.setCustomValidity(''));
@@ -307,11 +310,14 @@ function initFormSubmit() {
 
         // 10. 具體爭議與遭遇的問題驗證
         const descriptionInput = document.getElementById('description');
-        if (descriptionInput) descriptionInput.setCustomValidity('');
-        if (descriptionInput && !descriptionInput.value.trim()) {
-            descriptionInput.setCustomValidity('請填寫具體爭議與遭遇的問題！');
-            descriptionInput.reportValidity();
-            descriptionInput.focus();
+        if (descriptionInput && descriptionInput.value.trim()) {
+            descriptionInput.setCustomValidity('');
+        } else {
+            if (descriptionInput) {
+                descriptionInput.setCustomValidity('請填寫具體爭議與遭遇的問題！');
+                descriptionInput.reportValidity();
+                descriptionInput.focus();
+            }
             return;
         }
 
