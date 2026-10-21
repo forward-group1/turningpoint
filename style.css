@@ -492,25 +492,28 @@ select.form-control {
 .security-badges {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-    gap: 13px;
-    margin-top: 24px;
+    gap: 16px;          /* 👈 增加左右卡片之間的間隔 */
+    margin-top: 32px;   /* 👈 增加與上方表單/按鈕的距離 */
+    margin-bottom: 40px;/* 👈 增加下方與深藍色頁尾的距離（不再緊貼） */
 }
 
 .badge-item {
     background: var(--light-bg);
     border: 1px solid var(--gray-200);
-    padding: 10px;
+    padding: 14px 16px; /* 👈 增加內部上下左右的留白，讓格子看起來更飽滿舒適 */
     border-radius: var(--radius-sm);
-    font-size: 12px;
+    font-size: 13px;
     color: var(--gray-600);
     display: flex;
     align-items: center;
     justify-content: center;
-    gap: 8px;
+    gap: 10px;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.02); /* 👈 加上微弱的陰影增加質感 */
 }
 
 .badge-item i {
     color: var(--navy-900);
+    font-size: 15px;
 }
 
 /* 頁尾與彈窗 */
