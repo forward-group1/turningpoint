@@ -50,7 +50,7 @@
         </div>
     </header>
 
-    <!-- 主視覺 Banner 區塊 (對應標記 1) -->
+    <!-- 主視覺 Banner 區塊 -->
     <section class="hero-section">
         <div class="hero-bg-pattern"></div>
         <div class="hero-container">
@@ -139,14 +139,23 @@
     <section id="apply-section" class="form-section">
         <div class="section-container border-container">
             <div class="section-header">
-                <!-- 標題 -->
+                <!-- 標記 3：標題字體統一 -->
                 <h3 class="section-title">預約企業顧問諮詢</h3>
-                <div class="badge-pill" style="font-size: 18px; font-weight: bold; color: #1a365d; margin: 10px 0;">先說明您遇到的問題，其他交給我們協助釐清</div>
-                <p class="section-desc">請填寫以下資訊，提交後將由專員於 3 個工作天內與您聯繫。<br>了解企業需求並協助安排 1 對 1 線上顧問諮詢。</p>
+                
+                <!-- 標記 4：深藍色背景框與白字 -->
+                <div class="subtitle-badge-box">
+                    先說明您遇到的問題，其他交給我們協助釐清
+                </div>
+                
+                <!-- 標記 5：字距與大小調整 -->
+                <p class="section-desc">
+                    請填寫以下資訊，提交後將由專員於 3 個工作天內與您聯繫。<br>
+                    了解企業需求並協助安排 1 對 1 線上顧問諮詢。
+                </p>
             </div>
 
-            <!-- 網頁表單 -->
-            <form class="builtin-form" id="consultForm">
+            <!-- 網頁表單 (標記 6：上方加入藍色裝飾飾條) -->
+            <form class="builtin-form styled-form-box" id="consultForm">
                 <div class="form-row">
                     <div class="form-group">
                         <label>1. 公司名稱<span class="req">*</span></label>
@@ -186,10 +195,14 @@
 
                 <div class="form-group">
                     <label>7. 公司規模（員工人數）<span class="req">*</span></label>
-                    <label><input type="radio" name="companySize" value="100人以下"> 100人以下</label>
-                    <label><input type="radio" name="companySize" value="100-200人"> 100-200人</label>
-                    <label><input type="radio" name="companySize" value="200人以上"> 200人以上</label>
+                    <div class="radio-stack">
+                        <label class="radio-item"><input type="radio" name="companySize" value="100人以下"> <span>100人以下</span></label>
+                        <label class="radio-item"><input type="radio" name="companySize" value="100-200人"> <span>100-200人</span></label>
+                        <label class="radio-item"><input type="radio" name="companySize" value="200人以上"> <span>200人以上</span></label>
+                    </div>
                 </div>
+
+                <!-- 8. 希望協助解決的問題 (四格卡片統一大小) -->
                 <div class="form-group">
                     <label>8. 希望協助解決的問題【勾選 可複選】<span class="req">*</span></label>
                     <div class="category-grid">
@@ -256,16 +269,20 @@
 
                 <div class="form-group">
                     <label>11. 貴公司過去是否曾遇到過勞動檢查或勞資調解事件</label>
-                    <label><input type="radio" name="pastExperience" value="有，曾被勞檢且有改善處分/罰金紀錄"> 有，曾被勞檢且有改善處分/罰金紀錄</label>
-                    <label><input type="radio" name="pastExperience" value="有，曾進行過勞資爭議調解"> 有，曾進行過勞資爭議調解</label>
-                    <label><input type="radio" name="pastExperience" value="無，但希望預先防範"> 無，但希望預先防範</label>
+                    <div class="radio-stack">
+                        <label class="radio-item"><input type="radio" name="pastExperience" value="有，曾被勞檢且有改善處分/罰金紀錄"> <span>有，曾被勞檢且有改善處分/罰金紀錄</span></label>
+                        <label class="radio-item"><input type="radio" name="pastExperience" value="有，曾進行過勞資爭議調解"> <span>有，曾進行過勞資爭議調解</span></label>
+                        <label class="radio-item"><input type="radio" name="pastExperience" value="無，但希望預先防範"> <span>無，但希望預先防範</span></label>
+                    </div>
                 </div>
 
                 <div class="form-group">
                     <label>12. 貴公司目前是否有配合的外部常年勞務或法律顧問</label>
-                    <label><input type="radio" name="externalConsultant" value="有，已有長期配合的勞務顧問/律師"> 有，已有長期配合的勞務顧問/律師</label>
-                    <label><input type="radio" name="externalConsultant" value="無，目前主要由內部HR / 管理層研究處置"> 無，目前主要由內部HR / 管理層研究處置</label>
-                    <label><input type="radio" name="externalConsultant" value="無，正在尋找合適的勞務顧問團隊"> 無，正在尋找合適的勞務顧問團隊</label>
+                    <div class="radio-stack">
+                        <label class="radio-item"><input type="radio" name="externalConsultant" value="有，已有長期配合的勞務顧問/律師"> <span>有，已有長期配合的勞務顧問/律師</span></label>
+                        <label class="radio-item"><input type="radio" name="externalConsultant" value="無，目前主要由內部HR / 管理層研究處置"> <span>無，目前主要由內部HR / 管理層研究處置</span></label>
+                        <label class="radio-item"><input type="radio" name="externalConsultant" value="無，正在尋找合適的勞務顧問團隊"> <span>無，正在尋找合適的勞務顧問團隊</span></label>
+                    </div>
                 </div>
 
                 <div class="form-group">
