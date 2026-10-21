@@ -160,71 +160,119 @@ function initFormSubmit() {
     const form = document.getElementById('consultForm');
     if (!form) return;
 
+    // 清除自訂錯誤訊息的輔助函式
+    const clearCustomValidity = (elements) => {
+        elements.forEach(el => el.setCustomValidity(''));
+    };
+
     form.addEventListener('submit', function(e) {
         e.preventDefault();
 
-        // 1. 驗證公司名稱
+        // 1. 公司名稱驗證
         const companyNameInput = document.getElementById('companyName');
-        if (companyNameInput && !companyNameInput.value.trim()) {
-            showCustomValidity(companyNameInput, '請填寫公司名稱！');
-            return;
-        }
-
-        // 2. 驗證產業類別
-        const industryInput = document.getElementById('industry');
-        if (industryInput && !industryInput.value.trim()) {
-            showCustomValidity(industryInput, '請填寫貴公司的產業類別！');
-            return;
-        }
-
-        // 3. 驗證承辦姓名
-        const userNameInput = document.getElementById('userName');
-        if (userNameInput && !userNameInput.value.trim()) {
-            showCustomValidity(userNameInput, '請填寫承辦姓名！');
-            return;
-        }
-
-        // 4. 驗證職稱
-        const jobTitleSelect = document.getElementById('jobTitle');
-        if (jobTitleSelect && !jobTitleSelect.value) {
-            showCustomValidity(jobTitleSelect, '請選擇職稱！');
-            return;
-        }
-
-        // 5. 驗證聯絡電話 / 手機
-        const phoneInput = document.getElementById('phone');
-        const phoneValue = phoneInput ? phoneInput.value.trim() : '';
-        if (!phoneInput || !phoneValue) {
-            if (phoneInput) showCustomValidity(phoneInput, '請填寫聯絡電話！');
-            return;
-        } else if (!isValidTaiwanPhone(phoneValue)) {
-            showCustomValidity(phoneInput, '請輸入有效的電話號碼（例如：0912345678 或 03-1234567#123）');
-            return;
-        }
-
-        // 6. 驗證電子郵件
-        const emailInput = document.getElementById('email');
-        const emailValue = emailInput ? emailInput.value.trim() : '';
-        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-        if (!emailInput || !emailValue) {
-            if (emailInput) showCustomValidity(emailInput, '請填寫電子郵件！');
-            return;
-        } else if (!emailRegex.test(emailValue)) {
-            showCustomValidity(emailInput, '請輸入有效的電子郵件地址！');
-            return;
-        }
-
-        // 7. 驗證公司規模 (單選)
-        const companySizeSelected = document.querySelector('input[name="companySize"]:checked');
-        if (!companySizeSelected) {
-            const firstRadio = document.querySelector('input[name="companySize"]');
-            if (firstRadio) {
-                showCustomValidity(firstRadio, '請選擇公司規模！');
+        if (companyNameInput) companyNameInput.setCustomValidity('');
+        if (!companyNameInput || !companyNameInput.value.trim()) {
+            if (companyNameInput) {
+                companyNameInput.setCustomValidity('請填寫公司名稱！');
+                companyNameInput.reportValidity();
+                companyNameInput.focus();
             }
             return;
         }
 
-        // 8. 驗證主要需求（複選：mainNeeds） -> 改用圖二泡泡提示
+        // 2. 產業類別驗證
+        const industryInput = document.getElementById('industry');
+        if (industryInput) industryInput.setCustomValidity('');
+        if (!industryInput || !industryInput.value.trim()) {
+            if (industryInput) {
+                industryInput.setCustomValidity('請填寫貴公司的產業類別！');
+                industryInput.reportValidity();
+                industryInput.focus();
+            }
+            return;
+        }
+
+        // 3. 承辦姓名驗證
+        const userNameInput = document.getElementById('userName');
+        if (userNameInput) userNameInput.setCustomValidity('');
+        if (!userNameInput || !userNameInput.value.trim()) {
+            if (userNameInput) {
+                userNameInput.setCustomValidity('請填寫承辦姓名！');
+                userNameInput.reportValidity();
+                userNameInput.focus();
+            }
+            return;
+        }
+
+        // 4. 職稱驗證
+        const jobTitleSelect = document.getElementById('jobTitle');
+        if (jobTitleSelect) jobTitleSelect.setCustomValidity('');
+        if (!jobTitleSelect || !jobTitleSelect.value) {
+            if (jobTitleSelect) {
+                jobTitleSelect.setCustomValidity('請選擇職稱！');
+                jobTitleSelect.reportValidity();
+                jobTitleSelect.focus();
+            }
+            return;
+        }
+
+        // 5. 聯絡電話驗證
+        const phoneInput = document.getElementById('phone');
+        const phoneValue = phoneInput ? phoneInput.value.trim() : '';
+        if (phoneInput) phoneInput.setCustomValidity('');
+        if (!phoneInput || !phoneValue) {
+            if (phoneInput) {
+                phoneInput.setCustomValidity('請填寫聯絡電話！');
+                phoneInput.reportValidity();
+                phoneInput.focus();
+            }
+            return;
+        } else if (!isValidTaiwanPhone(phoneValue)) {
+            if (phoneInput) {
+                phoneInput.setCustomValidity('請輸入有效的電話號碼（例如：0912345678 或 03-1234567#123）');
+                phoneInput.reportValidity();
+                phoneInput.focus();
+            }
+            return;
+        }
+
+        // 6. 電子郵件驗證
+        const emailInput = document.getElementById('email');
+        const emailValue = emailInput ? emailInput.value.trim() : '';
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        if (emailInput) emailInput.setCustomValidity('');
+        if (!emailInput || !emailValue) {
+            if (emailInput) {
+                emailInput.setCustomValidity('請填寫電子郵件！');
+                emailInput.reportValidity();
+                emailInput.focus();
+            }
+            return;
+        } else if (!emailRegex.test(emailValue)) {
+            if (emailInput) {
+                emailInput.setCustomValidity('請輸入有效的電子郵件地址！');
+                emailInput.reportValidity();
+                emailInput.focus();
+            }
+            return;
+        }
+
+        // 7. 公司規模驗證 (單選)
+        const companySizeRadios = document.querySelectorAll('input[name="companySize"]');
+        const companySizeSelected = document.querySelector('input[name="companySize"]:checked');
+        companySizeRadios.forEach(r => r.setCustomValidity(''));
+        if (!companySizeSelected) {
+            const firstRadio = document.querySelector('input[name="companySize"]');
+            if (firstRadio) {
+                firstRadio.setCustomValidity('請選擇公司規模！');
+                firstRadio.reportValidity();
+                firstRadio.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            }
+            return;
+        }
+
+        // 8. 主要需求驗證 (複選：mainNeeds) -> 完美支援泡泡提示
+        const mainNeedsCheckboxes = document.querySelectorAll('input[name="mainNeeds"]');
         const selectedMainNeeds = Array.from(document.querySelectorAll('input[name="mainNeeds"]:checked')).map(cb => {
             if (cb.value === '其他') {
                 const customText = document.getElementById('otherNeedText').value.trim();
@@ -232,78 +280,103 @@ function initFormSubmit() {
             }
             return cb.value;
         });
-
+        mainNeedsCheckboxes.forEach(cb => cb.setCustomValidity(''));
         if (selectedMainNeeds.length === 0) {
             const firstNeed = document.querySelector('input[name="mainNeeds"]');
             if (firstNeed) {
-                showCustomValidity(firstNeed, '請至少勾選一項「8. 主要需求」！');
+                firstNeed.setCustomValidity('請至少勾選一項「8. 主要需求」！');
+                firstNeed.reportValidity();
+                firstNeed.scrollIntoView({ behavior: 'smooth', block: 'center' });
             }
             return;
         }
 
-        // 9. 驗證希望協助解決的問題（四格大卡片複選框：helpIssues） -> 改用圖二泡泡提示
+        // 9. 希望協助解決的問題驗證 (四格卡片複選：helpIssues) -> 完美支援泡泡提示
+        const helpIssuesCheckboxes = document.querySelectorAll('input[name="helpIssues"]');
         const selectedHelpIssues = Array.from(document.querySelectorAll('input[name="helpIssues"]:checked')).map(cb => cb.value);
+        helpIssuesCheckboxes.forEach(cb => cb.setCustomValidity(''));
         if (selectedHelpIssues.length === 0) {
             const firstIssue = document.querySelector('input[name="helpIssues"]');
             if (firstIssue) {
-                showCustomValidity(firstIssue, '請至少選擇一項「9. 希望協助解決的問題」！');
+                firstIssue.setCustomValidity('請至少選擇一項「9. 希望協助解決的問題」！');
+                firstIssue.reportValidity();
+                firstIssue.scrollIntoView({ behavior: 'smooth', block: 'center' });
             }
             return;
         }
 
-        // 10. 驗證具體爭議與遭遇的問題
+        // 10. 具體爭議與遭遇的問題驗證
         const descriptionInput = document.getElementById('description');
+        if (descriptionInput) descriptionInput.setCustomValidity('');
         if (descriptionInput && !descriptionInput.value.trim()) {
-            showCustomValidity(descriptionInput, '請填寫具體爭議與遭遇的問題！');
+            descriptionInput.setCustomValidity('請填寫具體爭議與遭遇的問題！');
+            descriptionInput.reportValidity();
+            descriptionInput.focus();
             return;
         }
 
-        // 11. 驗證需求急迫程度 (單選題：urgency)
+        // 11. 需求急迫程度驗證 (單選：urgency)
+        const urgencyRadios = document.querySelectorAll('input[name="urgency"]');
         const urgencySelected = document.querySelector('input[name="urgency"]:checked');
+        urgencyRadios.forEach(r => r.setCustomValidity(''));
         if (!urgencySelected) {
             const firstUrgency = document.querySelector('input[name="urgency"]');
             if (firstUrgency) {
-                showCustomValidity(firstUrgency, '請選擇需求急迫程度！');
+                firstUrgency.setCustomValidity('請選擇需求急迫程度！');
+                firstUrgency.reportValidity();
+                firstUrgency.scrollIntoView({ behavior: 'smooth', block: 'center' });
             }
             return;
         }
 
-        // 12. 驗證過去勞檢經驗（非必填，若有選則略過）
-        // 13. 外部顧問配合狀態（非必填，若有選則略過）
-
-        // 14. 驗證期望諮詢日期與時間 (時段一、二、三均為必填)
+        // 14. 期望諮詢日期與時間驗證 (時段一、二、三)
         const bookingDate1 = document.getElementById('bookingDate1');
         const bookingTime1 = document.getElementById('bookingTime1');
+        if (bookingDate1) bookingDate1.setCustomValidity('');
+        if (bookingTime1) bookingTime1.setCustomValidity('');
         if (!validateBookingDate(bookingDate1, '時段一')) return;
         if (bookingTime1 && !bookingTime1.value) {
-            showCustomValidity(bookingTime1, '請選擇時段一的預約時間！');
+            bookingTime1.setCustomValidity('請選擇時段一的預約時間！');
+            bookingTime1.reportValidity();
+            bookingTime1.focus();
             return;
         }
 
         const bookingDate2 = document.getElementById('bookingDate2');
         const bookingTime2 = document.getElementById('bookingTime2');
+        if (bookingDate2) bookingDate2.setCustomValidity('');
+        if (bookingTime2) bookingTime2.setCustomValidity('');
         if (!validateBookingDate(bookingDate2, '時段二')) return;
         if (bookingTime2 && !bookingTime2.value) {
-            showCustomValidity(bookingTime2, '請選擇時段二的預約時間！');
+            bookingTime2.setCustomValidity('請選擇時段二的預約時間！');
+            bookingTime2.reportValidity();
+            bookingTime2.focus();
             return;
         }
 
         const bookingDate3 = document.getElementById('bookingDate3');
         const bookingTime3 = document.getElementById('bookingTime3');
+        if (bookingDate3) bookingDate3.setCustomValidity('');
+        if (bookingTime3) bookingTime3.setCustomValidity('');
         if (!validateBookingDate(bookingDate3, '時段三')) return;
         if (bookingTime3 && !bookingTime3.value) {
-            showCustomValidity(bookingTime3, '請選擇時段三的預約時間！');
+            bookingTime3.setCustomValidity('請選擇時段三的預約時間！');
+            bookingTime3.reportValidity();
+            bookingTime3.focus();
             return;
         }
 
-        // 最後個資同意條款勾選
+        // 同意條款驗證
         const consentCheckbox = document.getElementById('consent');
+        if (consentCheckbox) consentCheckbox.setCustomValidity('');
         if (consentCheckbox && !consentCheckbox.checked) {
-            showCustomValidity(consentCheckbox, '請勾選同意個人資料保護條款以繼續提交！');
+            consentCheckbox.setCustomValidity('請勾選同意個人資料保護條款以繼續提交！');
+            consentCheckbox.reportValidity();
+            consentCheckbox.scrollIntoView({ behavior: 'smooth', block: 'center' });
             return;
         }
 
-        // 送出按鈕狀態鎖定
+        // 鎖定送出按鈕
         const submitBtn = document.getElementById('submitBtn');
         if (submitBtn) {
             submitBtn.disabled = true;
