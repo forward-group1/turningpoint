@@ -31,7 +31,7 @@ html {
 }
 
 /* ========================================== */
-/* 全局初始化 (強制全部採用無襯線字體，解決x的襯線問題 - 標記 1, 3) */
+/* 全局初始化 (強制全部採用無襯線字體)        */
 /* ========================================== */
 *, *::before, *::after {
     box-sizing: border-box;
@@ -281,32 +281,6 @@ body {
     line-height: 1.7;
 }
 
-.metrics-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
-    gap: 12px;
-}
-
-.metric-box {
-    background: rgba(28, 53, 94, 0.8);
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    padding: 12px;
-    border-radius: var(--radius-sm);
-    display: flex;
-    flex-direction: column;
-}
-
-.metric-num {
-    font-size: 16px;
-    font-weight: 700;
-    color: var(--amber-accent);
-}
-
-.metric-label {
-    font-size: 11px;
-    color: var(--gray-400);
-}
-
 /* ========================================== */
 /* 服務與議題介紹區塊樣式 (Services Section)   */
 /* ========================================== */
@@ -327,22 +301,12 @@ body {
     margin: 0 auto 40px;
 }
 
-.section-tag {
-    font-size: 13px;
-    font-weight: 700;
-    letter-spacing: 2px;
-    color: var(--amber-accent);
-    display: block;
-    margin-bottom: 6px;
-}
-
 .section-title {
     font-size: 28px;
     color: var(--navy-900);
     font-weight: 700;
 }
 
-/* 標記 5：字距與大小調整 */
 .section-desc {
     font-size: 14.5px;
     color: var(--gray-600);
@@ -351,7 +315,6 @@ body {
     letter-spacing: 0.8px;
 }
 
-/* 標記 4：藍色背景框與白字標籤 */
 .subtitle-badge-box {
     display: inline-block;
     background-color: var(--navy-900);
@@ -367,57 +330,32 @@ body {
 
 .services-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-    gap: 20px;
+    grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+    gap: 30px;
+    margin-top: 30px;
+}
+
+/* 圖一：左右兩欄服務卡片專屬背景色設定 */
+.service-card:nth-child(1) {
+    background: #f0f4f9 !important; /* 淺藍色背景 */
+    border: 1px solid #d0e1fd !important;
+}
+
+.service-card:nth-child(2) {
+    background: #fdfaf3 !important; /* 淺黃/暖米色背景 */
+    border: 1px solid #fcefc9 !important;
 }
 
 .service-card {
-    background: var(--white);
-    padding: 24px;
-    border-radius: var(--radius-md);
-    border: 1px solid var(--gray-200);
-    box-shadow: var(--shadow-md);
+    padding: 30px;
+    border-radius: 12px;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.05);
     transition: transform 0.2s ease, box-shadow 0.2s ease;
 }
 
 .service-card:hover {
     transform: translateY(-3px);
     box-shadow: var(--shadow-lg);
-}
-
-.icon-box {
-    width: 44px;
-    height: 44px;
-    background: rgba(20, 40, 75, 0.06);
-    color: var(--navy-900);
-    border-radius: var(--radius-sm);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 18px;
-    margin-bottom: 16px;
-}
-
-.service-card h4 {
-    font-size: 16px;
-    color: var(--navy-900);
-    margin-bottom: 8px;
-}
-
-.service-card p {
-    font-size: 13px;
-    color: var(--gray-600);
-    margin-bottom: 16px;
-    line-height: 1.6;
-}
-
-.card-feature {
-    font-size: 12px;
-    font-weight: 600;
-    color: var(--amber-accent);
-    display: flex;
-    align-items: center;
-    gap: 6px;
 }
 
 /* ========================================== */
@@ -431,30 +369,12 @@ body {
     box-shadow: var(--shadow-md);
 }
 
-.form-card-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 20px;
-    padding-bottom: 12px;
-    border-bottom: 1px solid var(--gray-200);
-}
-
-.form-card-title {
-    font-size: 15px;
-    font-weight: 700;
-    color: var(--navy-900);
-    display: flex;
-    align-items: center;
-    gap: 8px;
-}
-
-/* 標記 6：表單上方的藍色裝飾飾條 */
+/* 圖一：表單上方藍色裝飾飾條加粗至 10px */
 .styled-form-box {
     background: var(--white);
     border-radius: var(--radius-sm);
     border: 1px solid var(--gray-200);
-    border-top: 6px solid var(--navy-900) !important;
+    border-top: 10px solid var(--navy-900) !important; 
     padding: 28px;
 }
 
@@ -538,12 +458,6 @@ select.form-control {
     border: 1px solid var(--gray-200);
     border-radius: var(--radius-sm);
     outline: none;
-}
-
-.checkbox-grid {
-    display: grid;
-    grid-template-columns: 1fr;
-    gap: 8px;
 }
 
 .consent-box {
@@ -805,18 +719,20 @@ select.form-control {
 }
 
 /* ========================================== */
-/* 圖三：第 8 項四格大框卡片統一大小與整齊排版 */
+/* 圖二：第 8 項四格大卡片強制等高與整齊對齊   */
 /* ========================================== */
 .category-grid {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
     gap: 15px;
     margin-top: 10px;
+    align-items: stretch; /* 確保每一列的卡片自動撐開成相同高度 */
 }
 
 .category-card {
     position: relative;
     display: flex;
+    flex-direction: column;
     cursor: pointer;
 }
 
@@ -834,6 +750,7 @@ select.form-control {
     border-radius: 10px;
     padding: 20px;
     width: 100%;
+    height: 100%; /* 填滿父層容器高度 */
     display: flex;
     flex-direction: column;
     justify-content: flex-start;
