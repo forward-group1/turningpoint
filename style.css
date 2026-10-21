@@ -90,8 +90,8 @@ body {
 
 /* 獨立控制導航列 Logo 大小：高度 50px，與旁邊字體完美搭配 */
 .navbar .logo-img {
-    max-height: 60px !important;
-    max-width: 60px !important;
+    max-height: 65px !important;
+    max-width: 65px !important;
     width: auto !important;
     height: auto !important;
     object-fit: contain;
