@@ -747,3 +747,63 @@ select.form-control {
 }
 
 .category-card .card-title {
+    font-size: 16px;
+    font-weight: 700;
+    color: #212529;
+    margin-bottom: 6px;
+}
+
+.category-card .card-desc {
+    font-size: 13px;
+    color: #6c757d;
+    line-height: 1.4;
+}
+
+.category-card:hover .card-content {
+    border-color: #adb5bd;
+    background: #f1f3f5;
+}
+
+.category-card input[type="checkbox"]:checked + .card-content {
+    border-color: var(--navy-900);
+    background-color: #f0f4f9;
+    box-shadow: 0 4px 10px rgba(26, 54, 93, 0.1);
+}
+
+.category-card input[type="checkbox"]:checked + .card-content .card-icon,
+.category-card input[type="checkbox"]:checked + .card-content .card-title {
+    color: var(--navy-900);
+}
+
+/* ========================================== */
+/* 📱 僅在手機版隱藏主視覺 Logo 方格            */
+/* ========================================== */
+@media (max-width: 768px) {
+    .visual-card-wrapper {
+        display: none !important;
+    }
+}
+
+/* ========================================== */
+/* 🏷️ 三個獨立有底色標籤（膠囊樣式）排版      */
+/* ========================================== */
+.feature-badges-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 12px; /* 標籤之間的間距 */
+    margin-top: 10px;
+}
+
+.feature-badge {
+    background-color: var(--navy-900); /* 使用您原本的深藍色背景（或換成其他喜愛的顏色） */
+    color: #ffffff;                    /* 文字顏色為白色 */
+    font-size: clamp(16px, 2.5vw, 22px); /* 響應式字體大小，手機與電腦都會好看 */
+    font-weight: 700;
+    padding: 10px 20px;                /* 內距，營造出方格/膠囊的厚實感 */
+    border-radius: 8px;                /* 圓角大小（若要全圓弧可改為 30px） */
+    box-shadow: 0 4px 10px rgba(24, 57, 94, 0.15); /* 柔和陰影 */
+    letter-spacing: 0.5px;
+    white-space: nowrap;
+}
