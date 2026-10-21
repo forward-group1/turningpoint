@@ -80,17 +80,17 @@ body {
 }
 
 .navbar .logo-mark {
-    width: 56px;
-    height: 56px;
+    width: 52px;
+    height: 52px;
     display: flex;
     align-items: center;
     justify-content: center;
     flex-shrink: 0;
 }
 
-/* 嚴格限制導航列 Logo 大小，絕不爆版 */
+/* 獨立控制導航列 Logo 大小：高度 50px，與旁邊字體完美搭配 */
 .navbar .logo-img {
-    max-height: 52px !important;
+    max-height: 50px !important;
     max-width: 52px !important;
     width: auto !important;
     height: auto !important;
@@ -218,8 +218,9 @@ body {
     text-align: center;
 }
 
-.card-content .logo-img {
-    max-height: 130px !important;
+/* 獨立控制主視覺卡片內 Logo 大小：維持大方醒目尺寸 */
+.brand-card-frame .logo-img {
+    max-height: 140px !important;
     max-width: 180px !important;
     width: auto !important;
     height: auto !important;
