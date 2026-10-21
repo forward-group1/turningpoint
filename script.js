@@ -136,7 +136,7 @@ function isValidTaiwanPhone(phoneStr) {
 }
 
 /* ----------------------------------------------------
-   🔥 核心：自定義精準提示氣泡與滑動定位系統
+   🔥 核心：自定義精準提示氣泡與滑動定位系統（柔和高質感邊框）
    ---------------------------------------------------- */
 function showFieldError(element, message) {
     if (!element) return;
@@ -193,13 +193,13 @@ function showFieldError(element, message) {
         tooltip.style.transform = 'translateX(-50%) translateY(0)';
     });
 
-    // 4. 替該欄位加上短暫的紅框高亮閃爍效果
+    // 4. 替該欄位加上柔和且不刺眼的琥珀色高亮效果
     const originalBorder = element.style.border;
     const originalBoxShadow = element.style.boxShadow;
-    element.style.border = '2px solid #ff4d4d';
-    element.style.boxShadow = '0 0 10px rgba(255, 77, 77, 0.5)';
+    element.style.border = '2px solid #e28743'; // 柔和的橘棕色
+    element.style.boxShadow = '0 0 8px rgba(226, 135, 67, 0.35)'; // 溫和的光暈
 
-    // 3秒後自動淡出移除氣泡與高亮
+    // 3.5秒後自動淡出移除氣泡與高亮
     setTimeout(() => {
         tooltip.style.opacity = '0';
         tooltip.style.transform = 'translateX(-50%) translateY(-20px)';
@@ -208,7 +208,6 @@ function showFieldError(element, message) {
         element.style.boxShadow = originalBoxShadow;
     }, 3500);
 }
-
 /* ----------------------------------------------------
    1. 表單提交處理
    ---------------------------------------------------- */
