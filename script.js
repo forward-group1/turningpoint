@@ -81,24 +81,6 @@ function setupDatePickerPicker() {
 }
 
 /* ----------------------------------------------------
-   通用工具：HTML5 原生氣泡提示
-   ---------------------------------------------------- */
-function showCustomValidity(element, message) {
-    if (!element) return;
-    
-    element.setCustomValidity(message);
-    element.reportValidity();
-
-    const clearValidity = () => {
-        element.setCustomValidity('');
-        element.removeEventListener('input', clearValidity);
-        element.removeEventListener('change', clearValidity);
-    };
-    element.addEventListener('input', clearValidity);
-    element.addEventListener('change', clearValidity);
-}
-
-/* ----------------------------------------------------
    日期驗證核心函式 (雙重防呆驗證)
    ---------------------------------------------------- */
 function validateBookingDate(dateInput, slotName) {
@@ -106,7 +88,10 @@ function validateBookingDate(dateInput, slotName) {
     
     const rawVal = dateInput.value;
     if (!rawVal) {
-        showCustomValidity(dateInput, `請選擇${slotName}的預約日期！`);
+        dateInput.setCustomValidity(`請選擇${slotName}的預約日期！`);
+        dateInput.reportValidity();
+        dateInput.focus();
+        dateInput.scrollIntoView({ behavior: 'smooth', block: 'center' });
         return false;
     }
 
@@ -115,16 +100,23 @@ function validateBookingDate(dateInput, slotName) {
     today.setHours(0, 0, 0, 0);
 
     if (selectedDate <= today) {
-        showCustomValidity(dateInput, `${slotName}的日期不可選擇「今天」或「過去日期」，請選擇明天之後的預約日期！`);
+        dateInput.setCustomValidity(`${slotName}的日期不可選擇「今天」或「過去日期」，請選擇明天之後的預約日期！`);
+        dateInput.reportValidity();
+        dateInput.focus();
+        dateInput.scrollIntoView({ behavior: 'smooth', block: 'center' });
         return false;
     }
 
     const dayOfWeek = selectedDate.getDay();
     if (dayOfWeek === 0 || dayOfWeek === 6) {
-        showCustomValidity(dateInput, `${slotName}選擇的日期為週末假日，請選擇平工作日（週一至週五）！`);
+        dateInput.setCustomValidity(`${slotName}選擇的日期為週末假日，請選擇平工作日（週一至週五）！`);
+        dateInput.reportValidity();
+        dateInput.focus();
+        dateInput.scrollIntoView({ behavior: 'smooth', block: 'center' });
         return false;
     }
 
+    dateInput.setCustomValidity('');
     return true;
 }
 
@@ -154,7 +146,7 @@ function isValidTaiwanPhone(phoneStr) {
 }
 
 /* ----------------------------------------------------
-   1. 表單提交處理（完美解決卡在第一格、依序向下檢查與泡泡提示）
+   1. 表單提交處理
    ---------------------------------------------------- */
 function initFormSubmit() {
     const form = document.getElementById('consultForm');
