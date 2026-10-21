@@ -48,7 +48,9 @@ body {
     display: none !important; 
 }
 
-/* 頂部導航列 */
+/* ========================================== */
+/* 頂部導航列 (修復響應式貼齊、垂直置中與 Logo 大小) */
+/* ========================================== */
 .navbar {
     background: var(--white);
     border-bottom: 1px solid var(--gray-200);
@@ -62,29 +64,34 @@ body {
 }
 
 .nav-container {
-    max-width: 100% !important; /* 讓左右兩側隨視窗大小貼齊 */
+    max-width: 100% !important; 
     width: 100%;
     margin: 0 auto;
-    padding: 0 30px;
+    padding: 0 30px; /* 隨視窗大小左右貼齊 */
     display: flex;
     justify-content: space-between;
     align-items: center;
 }
 
-.navbar .logo-mark {
-    width: 44px;
-    height: 44px;
-}
-
 .brand-logo-group {
     display: flex;
-    align-items: center !important; /* 垂直置中對齊 */
-    gap: 20px;
+    align-items: center !important; /* Logo 與文字群組完美垂直置中 */
+    gap: 16px;
 }
 
+.navbar .logo-mark {
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+}
+
+/* 嚴格限制導航列 Logo 大小，絕不爆版 */
 .navbar .logo-img {
-    max-height: 40px !important;  /* 強制限制導航列 Logo 最大高度 */
-    max-width: 44px !important;   /* 強制限制導航列 Logo 最大寬度 */
+    max-height: 36px !important;
+    max-width: 36px !important;
     width: auto !important;
     height: auto !important;
     object-fit: contain;
@@ -94,6 +101,7 @@ body {
 .brand-names {
     display: flex;
     flex-direction: column;
+    justify-content: center;
 }
 
 .tp-sub {
@@ -104,12 +112,13 @@ body {
     white-space: nowrap;
 }
 
+/* 3. 標題「企業危機百科」改回有襯線字體 */
 .brand-title {
     font-family: var(--font-serif) !important;
     font-weight: 700;
     color: var(--navy-900);
     line-height: 1.1;
-    font-size: clamp(1.1rem, 4vw, 1.6rem);
+    font-size: clamp(1.1rem, 4vw, 1.5rem);
     white-space: nowrap;
 }
 
@@ -210,8 +219,8 @@ body {
 }
 
 .card-content .logo-img {
-    max-height: 80px !important;
-    max-width: 120px !important;
+    max-height: 70px !important;
+    max-width: 100px !important;
     width: auto !important;
     height: auto !important;
     object-fit: contain;
@@ -291,7 +300,9 @@ body {
     margin: 0 auto 40px;
 }
 
+/* 4. 區塊大標題維持黑體 (無襯線) */
 .section-title {
+    font-family: var(--font-sans) !important;
     font-size: 28px;
     color: var(--navy-900);
     font-weight: 700;
@@ -429,6 +440,12 @@ select.form-control {
     border: 1px solid var(--gray-200);
     border-radius: var(--radius-sm);
     outline: none;
+}
+
+/* 專門控制第 8 項「其他」的小型輸入框高度，避免被全域 textarea 蓋過 */
+#otherNeedText {
+    height: 48px !important;
+    min-height: 48px !important;
 }
 
 .consent-box {
