@@ -224,8 +224,7 @@ function initFormSubmit() {
             return;
         }
 
-        // 8. 驗證主要需求（新增複選框：mainNeeds，含「其他」自訂輸入驗證）
-        const mainNeedsCheckboxes = document.querySelectorAll('input[name="mainNeeds"]');
+       // 8. 主要需求驗證 (複選：mainNeeds)
         const selectedMainNeeds = Array.from(document.querySelectorAll('input[name="mainNeeds"]:checked')).map(cb => {
             if (cb.value === '其他') {
                 const customText = document.getElementById('otherNeedText').value.trim();
@@ -235,22 +234,21 @@ function initFormSubmit() {
         });
 
         if (selectedMainNeeds.length === 0) {
-            if (mainNeedsCheckboxes.length > 0) {
-                showCustomValidity(mainNeedsCheckboxes[0], '請至少勾選一項主要需求！');
-            }
+            alert('請至少勾選一項「8. 主要需求」！');
+            const firstNeed = document.querySelector('input[name="mainNeeds"]');
+            if (firstNeed) { firstNeed.focus(); firstNeed.scrollIntoView({ behavior: 'smooth', block: 'center' }); }
             return;
         }
 
-        // 9. 驗證希望協助解決的問題（四格大卡片複選框：helpIssues）
-        const helpIssueCheckboxes = document.querySelectorAll('input[name="helpIssues"]');
+        // 9. 希望協助解決的問題驗證 (四格卡片：helpIssues)
         const selectedHelpIssues = Array.from(document.querySelectorAll('input[name="helpIssues"]:checked')).map(cb => cb.value);
         if (selectedHelpIssues.length === 0) {
-            if (helpIssueCheckboxes.length > 0) {
-                showCustomValidity(helpIssueCheckboxes[0], '請至少選擇一項希望協助解決的問題！');
-            }
+            alert('請至少選擇一項「9. 希望協助解決的問題」！');
+            const firstIssue = document.querySelector('input[name="helpIssues"]');
+            if (firstIssue) { firstIssue.scrollIntoView({ behavior: 'smooth', block: 'center' }); }
             return;
         }
-
+        
         // 10. 驗證具體爭議與遭遇的問題
         const descriptionInput = document.getElementById('description');
         if (descriptionInput && !descriptionInput.value.trim()) {
@@ -258,7 +256,7 @@ function initFormSubmit() {
             return;
         }
 
-        // 11. 驗證期望諮詢日期與時間 (時段一、二、三均為必填)
+        // 11. 期望諮詢日期與時間驗證 (時段一、二、三皆為必填)
         const bookingDate1 = document.getElementById('bookingDate1');
         const bookingTime1 = document.getElementById('bookingTime1');
         if (!validateBookingDate(bookingDate1, '時段一')) return;
@@ -282,7 +280,7 @@ function initFormSubmit() {
             showCustomValidity(bookingTime3, '請選擇時段三的預約時間！');
             return;
         }
-
+        
         // 12. 個資同意條款勾選
         const consentCheckbox = document.getElementById('consent');
         if (consentCheckbox && !consentCheckbox.checked) {
