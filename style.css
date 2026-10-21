@@ -58,28 +58,28 @@ body {
     height: 80px;
     display: flex;
     align-items: center;
+    width: 100%;
 }
 
 .nav-container {
-    max-width: 1200px;
+    max-width: 100% !important; /* 讓左右兩側隨視窗大小貼齊 */
     width: 100%;
     margin: 0 auto;
-    padding: 0 20px;
+    padding: 0 30px;
     display: flex;
     justify-content: space-between;
     align-items: center;
 }
-
 .brand-logo-group {
     display: flex;
-    align-items: center;
-    gap: 35px;
+    align-items: center !important; /* 垂直置中對齊 */
+    gap: 20px;
 }
 
 .logo-mark {
-    width: 44px;
-    height: 44px;
-    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
 .logo-img {
@@ -103,7 +103,7 @@ body {
 }
 
 .brand-title {
-    font-family: var(--font-serif);
+    font-family: var(--font-serif) !important;
     font-weight: 700;
     color: var(--navy-900);
     line-height: 1.1;
