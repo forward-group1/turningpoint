@@ -149,7 +149,7 @@ body {
 }
 
 @media screen and (max-width: 768px) {
-    .btn-cta, header .btn-cta, .nav-actions .btn-cta {
+    header .btn-cta {
         display: none !important;
     }
 }
