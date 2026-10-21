@@ -105,7 +105,7 @@
             <!-- 兩欄式服務對照卡片 -->
             <div class="services-grid" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 30px; margin-top: 30px;">
                 <!-- 左欄：企業勞資顧問 -->
-                <div class="service-card" style="background: #fff; padding: 30px; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.05);">
+                <div class="service-card" style="padding: 30px; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.05);">
                     <div class="icon-box" style="color: #1a365d; font-size: 28px; margin-bottom: 15px;"><i class="fa-solid fa-scale-balanced"></i></div>
                     <h4 style="font-size: 20px; font-weight: bold; margin-bottom: 10px;">企業勞資顧問</h4>
                     <p style="color: #e28743; font-weight: 500; margin-bottom: 15px; font-size: 14px;">法令遵循 · 勞資風險</p>
@@ -119,7 +119,7 @@
                 </div>
 
                 <!-- 右欄：企業管理顧問 -->
-                <div class="service-card" style="background: #fff; padding: 30px; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.05);">
+                <div class="service-card" style="padding: 30px; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.05);">
                     <div class="icon-box" style="color: #c05621; font-size: 28px; margin-bottom: 15px;"><i class="fa-solid fa-user-gear"></i></div>
                     <h4 style="font-size: 20px; font-weight: bold; margin-bottom: 10px;">企業管理顧問</h4>
                     <p style="color: #e28743; font-weight: 500; margin-bottom: 15px; font-size: 14px;">制度規劃 · 管理改善</p>
@@ -139,22 +139,19 @@
     <section id="apply-section" class="form-section">
         <div class="section-container border-container">
             <div class="section-header">
-                <!-- 標記 3：標題字體統一 -->
                 <h3 class="section-title">預約企業顧問諮詢</h3>
                 
-                <!-- 標記 4：深藍色背景框與白字 -->
                 <div class="subtitle-badge-box">
                     先說明您遇到的問題，其他交給我們協助釐清
                 </div>
                 
-                <!-- 標記 5：字距與大小調整 -->
                 <p class="section-desc">
                     請填寫以下資訊，提交後將由專員於 3 個工作天內與您聯繫。<br>
                     了解企業需求並協助安排 1 對 1 線上顧問諮詢。
                 </p>
             </div>
 
-            <!-- 網頁表單 (標記 6：上方加入藍色裝飾飾條) -->
+            <!-- 網頁表單 -->
             <form class="builtin-form styled-form-box" id="consultForm">
                 <div class="form-row">
                     <div class="form-group">
@@ -202,9 +199,36 @@
                     </div>
                 </div>
 
-                <!-- 8. 希望協助解決的問題 (四格卡片統一大小) -->
+                <!-- 8. 主要需求 (新增：可複選，包含法遵、勞資法令、企業管理制度、其他及自訂輸入框) -->
                 <div class="form-group">
-                    <label>8. 希望協助解決的問題【勾選 可複選】<span class="req">*</span></label>
+                    <label>8. 主要需求【可複選】<span class="req">*</span></label>
+                    <div class="radio-stack">
+                        <label class="radio-item">
+                            <input type="checkbox" name="mainNeeds" value="法遵"> 
+                            <span>法遵</span>
+                        </label>
+                        <label class="radio-item">
+                            <input type="checkbox" name="mainNeeds" value="勞資法令"> 
+                            <span>勞資法令</span>
+                        </label>
+                        <label class="radio-item">
+                            <input type="checkbox" name="mainNeeds" value="企業管理制度"> 
+                            <span>企業管理制度</span>
+                        </label>
+                        <label class="radio-item">
+                            <input type="checkbox" name="mainNeeds" id="otherNeedCheckbox" value="其他"> 
+                            <span>其他</span>
+                        </label>
+                    </div>
+                    <!-- 點選其他時顯示的自訂輸入框 -->
+                    <div id="otherNeedInputContainer" style="display: none; margin-top: 8px;">
+                        <input type="text" id="otherNeedText" class="form-control" placeholder="請填寫您的其他需求...">
+                    </div>
+                </div>
+
+                <!-- 9. 希望協助解決的問題 -->
+                <div class="form-group">
+                    <label>9. 希望協助解決的問題【可複選】<span class="req">*</span></label>
                     <div class="category-grid">
                         <label class="category-card">
                             <input type="checkbox" name="helpIssues" value="勞資法令與風險">
@@ -245,12 +269,12 @@
                 </div>
 
                 <div class="form-group">
-                    <label>9. 具體爭議與遭遇的問題<span class="req">*</span></label>
+                    <label>10. 具體爭議與遭遇的問題<span class="req">*</span></label>
                     <textarea id="description" rows="3" placeholder="例如：近期擬調動員工崗位，想確認相關程序是否合規..."></textarea>
                 </div>
                 
                 <div class="form-group">
-                    <label>10. 需求急迫程度【勾選】<span class="req">*</span></label>
+                    <label>11. 需求急迫程度<span class="req">*</span></label>
                     <div class="radio-stack">
                         <label class="radio-item">
                             <input type="radio" name="urgency" value="急需處理（已有爭議、申訴或期限）">
@@ -268,7 +292,7 @@
                 </div>
 
                 <div class="form-group">
-                    <label>11. 貴公司過去是否曾遇到過勞動檢查或勞資調解事件</label>
+                    <label>12. 貴公司過去是否曾遇到過勞動檢查或勞資調解事件</label>
                     <div class="radio-stack">
                         <label class="radio-item"><input type="radio" name="pastExperience" value="有，曾被勞檢且有改善處分/罰金紀錄"> <span>有，曾被勞檢且有改善處分/罰金紀錄</span></label>
                         <label class="radio-item"><input type="radio" name="pastExperience" value="有，曾進行過勞資爭議調解"> <span>有，曾進行過勞資爭議調解</span></label>
@@ -277,7 +301,7 @@
                 </div>
 
                 <div class="form-group">
-                    <label>12. 貴公司目前是否有配合的外部常年勞務或法律顧問</label>
+                    <label>13. 貴公司目前是否有配合的外部常年勞務或法律顧問</label>
                     <div class="radio-stack">
                         <label class="radio-item"><input type="radio" name="externalConsultant" value="有，已有長期配合的勞務顧問/律師"> <span>有，已有長期配合的勞務顧問/律師</span></label>
                         <label class="radio-item"><input type="radio" name="externalConsultant" value="無，目前主要由內部HR / 管理層研究處置"> <span>無，目前主要由內部HR / 管理層研究處置</span></label>
@@ -286,7 +310,7 @@
                 </div>
 
                 <div class="form-group">
-                    <label>13. 期望諮詢日期與時間<span class="req">*</span></label>
+                    <label>14. 期望諮詢日期與時間<span class="req">*</span></label>
                     
                     <!-- 時段一 -->
                     <div class="booking-slot-group">
