@@ -802,18 +802,31 @@ select.form-control {
     justify-content: center;
     align-items: center;
     flex-wrap: wrap;
-    gap: 12px; /* 標籤之間的間距 */
-    margin-top: 10px;
+    gap: 16px;
+    margin: 20px 0 35px 0;
 }
 
-.feature-badge {
-    background-color: var(--navy-900);
-    color: #ffffff;
-    font-size: clamp(16px, 2.5vw, 22px);
+.feature-card-item {
+    background: #ffffff;
+    border: 1px solid #e2e8f0;
+    border-top: 3px solid var(--navy-900); /* 頂部加一條深藍質感線 */
+    padding: 12px 24px;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    box-shadow: 0 4px 12px rgba(20, 40, 75, 0.05);
+    transition: transform 0.2s ease;
+}
+
+.feature-card-item i {
+    color: var(--amber-accent); /* 橘色圖示點綴 */
+    font-size: 18px;
+}
+
+.feature-card-item span {
+    color: var(--navy-900);
     font-weight: 700;
-    padding: 10px 24px;
-    border-radius: 50px; /* 👈 數值調大，讓左右兩端呈現完美半圓形膠囊 */
-    box-shadow: 0 4px 10px rgba(24, 57, 94, 0.15);
-    letter-spacing: 1px;
-    white-space: nowrap;
+    font-size: 16px;
+    letter-spacing: 0.5px;
 }
