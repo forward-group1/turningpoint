@@ -826,18 +826,13 @@ select.form-control {
 /* ========================================== */
 .styled-form-box .security-note {
     text-align: center;
-    color: var(--gray-600); /* 柔和的灰色 */
-    font-size: 13.5px;
-    margin-top: 20px;       /* 與上方「送出申請」按鈕保持適當距離 */
-    margin-bottom: 4px;     /* 與表單底部框線保持距離 */
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 8px;
+    color: var(--gray-400); /* 改為更柔和低調的灰色，像備註一樣 */
+    font-size: 12.5px;      /* 字體稍微改小，更有備註質感 */
+    margin-top: 10px;       /* 👈 緊貼著送出按鈕下方（距離縮小） */
+    margin-bottom: 0px;
     letter-spacing: 0.5px;
 }
 
-.styled-form-box .security-note i {
-    color: var(--navy-900); /* 圖示維持沈穩的深藍色點綴 */
-    font-size: 14px;
+.form-section {
+    padding-bottom: 80px; /* 👈 增加下方留白，讓表單與頁尾有漂亮的間隔 */
 }
