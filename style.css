@@ -489,16 +489,6 @@ select.form-control {
     background: var(--navy-800);
 }
 
-.security-badges {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-    gap: 16px;
-    width: 100%;
-    max-width: 800px; /* 👈 請設為跟上面 .styled-form-box 或 .form-section 相同的最大寬度 */
-    margin: 32px auto 40px auto; /* 👈 上下留白，左右 auto 自動置中對齊 */
-    padding: 0 20px;
-    box-sizing: border-box;
-}
 
 .badge-item {
     background: #ffffff; /* 如果在灰色背景上，可改為純白背景增添質感 */
@@ -829,4 +819,25 @@ select.form-control {
     font-weight: 700;
     font-size: 16px;
     letter-spacing: 0.5px;
+}
+
+/* ========================================== */
+/* 🔒 表單內部的灰色安全提示文字             */
+/* ========================================== */
+.styled-form-box .security-note {
+    text-align: center;
+    color: var(--gray-600); /* 柔和的灰色 */
+    font-size: 13.5px;
+    margin-top: 20px;       /* 與上方「送出申請」按鈕保持適當距離 */
+    margin-bottom: 4px;     /* 與表單底部框線保持距離 */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    letter-spacing: 0.5px;
+}
+
+.styled-form-box .security-note i {
+    color: var(--navy-900); /* 圖示維持沈穩的深藍色點綴 */
+    font-size: 14px;
 }
