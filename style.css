@@ -830,3 +830,23 @@ select.form-control {
     font-size: 16px;
     letter-spacing: 0.5px;
 }
+/* ========================================== */
+/* 🔒 底部單行灰色安全提示文字               */
+/* ========================================== */
+.security-note {
+    text-align: center;
+    color: var(--gray-600); /* 使用您原本設計的灰色，柔和不突兀 */
+    font-size: 13.5px;
+    margin-top: 32px;
+    margin-bottom: 24px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    letter-spacing: 0.5px;
+}
+
+.security-note i {
+    color: var(--navy-900); /* 保留小圖示點綴質感 */
+    font-size: 14px;
+}
