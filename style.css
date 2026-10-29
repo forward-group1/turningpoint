@@ -822,17 +822,20 @@ select.form-control {
 }
 
 /* ========================================== */
-/* 🔒 表單內部的灰色安全提示文字             */
+/* 🛠️ 表單區塊與底部間隔、備註文字調整        */
 /* ========================================== */
-.styled-form-box .security-note {
-    text-align: center;
-    color: var(--gray-400); /* 改為更柔和低調的灰色，像備註一樣 */
-    font-size: 12.5px;      /* 字體稍微改小，更有備註質感 */
-    margin-top: 10px;       /* 👈 緊貼著送出按鈕下方（距離縮小） */
-    margin-bottom: 0px;
-    letter-spacing: 0.5px;
+
+/* 1. 讓整塊預約表單區塊（含上下留白）與深藍色頁尾拉開舒適的間隔 */
+.form-section {
+    padding: 70px 0 90px 0; /* 讓上下方都有充足的呼吸空間，底部特別拉開與頁尾的距離 */
 }
 
-.form-section {
-    padding-bottom: 80px; /* 👈 增加下方留白，讓表單與頁尾有漂亮的間隔 */
+/* 2. 緊貼在「送出申請」按鈕下方的備註文字（無圖示、低調灰色） */
+.styled-form-box .security-note {
+    text-align: center;
+    color: var(--gray-400); /* 改為柔和低調的備註灰色 */
+    font-size: 13px;        /* 字體稍微改小，更有精緻備註質感 */
+    margin-top: 12px;       /* 緊貼在送出按鈕下方，距離縮小 */
+    margin-bottom: 0px;
+    letter-spacing: 0.5px;
 }
