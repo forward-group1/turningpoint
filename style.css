@@ -482,4 +482,525 @@ select.form-control {
     align-items: center;
     justify-content: center;
     gap: 8px;
-    tran
+    transition: background 0.2s ease;
+}
+
+.btn-submit:hover {
+    background: var(--navy-800);
+}
+
+
+.badge-item {
+    background: #ffffff; /* 如果在灰色背景上，可改為純白背景增添質感 */
+    border: 1px solid var(--gray-200);
+    padding: 14px 16px;
+    border-radius: var(--radius-sm);
+    font-size: 13px;
+    color: var(--gray-600);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.03);
+}
+
+.badge-item i {
+    color: var(--navy-900);
+    font-size: 15px;
+}
+
+/* 頁尾與彈窗 */
+.footer {
+    background-color: #0a192f;
+    color: #a8b2d1;
+    padding: 40px 20px 20px;
+}
+
+.footer-container {
+    max-width: 1100px;
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+    gap: 30px;
+}
+
+.footer-col {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    font-size: 13px;
+    line-height: 1.6;
+}
+
+.footer-heading {
+    color: #ffffff;
+    font-size: 15px;
+    font-weight: 600;
+    margin-bottom: 6px;
+    border-bottom: 2px solid #ffc107;
+    display: inline-block;
+    padding-bottom: 4px;
+    width: fit-content;
+}
+
+.footer-info-col a {
+    color: #a8b2d1;
+    text-decoration: none;
+    transition: color 0.2s;
+}
+
+.footer-info-col a:hover {
+    color: #f06a00;
+}
+
+.line-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    background-color: #06c755;
+    color: #ffffff;
+    padding: 8px 16px;
+    border-radius: 6px;
+    text-decoration: none;
+    font-weight: 600;
+    font-size: 13px;
+    width: fit-content;
+    margin-bottom: 12px;
+    transition: background-color 0.2s, transform 0.1s;
+}
+
+.line-btn:hover {
+    background-color: #05b34c;
+    transform: translateY(-2px);
+}
+
+.footer-copyright {
+    font-size: 11px;
+    color: var(--gray-400);
+    margin-top: 10px;
+}
+
+.footer-keywords {
+    margin-top: 4px;
+}
+
+@media (min-width: 768px) {
+    .footer-container {
+        flex-direction: row;
+        justify-content: space-between;
+        align-items: flex-start;
+    }
+    .footer-col {
+        flex: 1;
+        margin-top: 20px;
+    }
+    .footer-right-col {
+        align-items: flex-end;
+        text-align: right;
+    }
+}
+
+.modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.6);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 9999;
+}
+
+.modal-content {
+    background: #ffffff;
+    padding: 30px 24px;
+    border-radius: 12px;
+    text-align: center;
+    max-width: 90%;
+    width: 380px;
+    box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+}
+
+.modal-icon {
+    width: 60px;
+    height: 60px;
+    background: #e8f5e9;
+    color: #2e7d32;
+    font-size: 32px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 16px auto;
+}
+
+.modal-content h2 {
+    font-size: 20px;
+    margin-bottom: 10px;
+    color: #333;
+}
+
+.modal-content p {
+    font-size: 14px;
+    color: #666;
+    line-height: 1.5;
+    margin-bottom: 24px;
+}
+
+.btn-line-bind {
+    display: block;
+    width: 100%;
+    padding: 14px 0;
+    background-color: #06C755;
+    color: #ffffff;
+    font-weight: bold;
+    font-size: 16px;
+    text-decoration: none;
+    border-radius: 8px;
+    box-shadow: 0 4px 10px rgba(6, 199, 85, 0.3);
+    transition: background 0.2s;
+}
+
+.btn-line-bind:hover {
+    background-color: #05b34c;
+}
+
+/* 預約時段排版 */
+.booking-slot-group {
+    margin-bottom: 20px;
+}
+
+.slot-label {
+    font-size: 0.9em;
+    color: #555;
+    font-weight: bold;
+    display: block;
+    margin-bottom: 6px;
+}
+
+.booking-form-row {
+    display: flex;
+    gap: 15px;
+    width: 100%;
+}
+
+.booking-form-row input,
+.booking-form-row select {
+    flex: 1;
+    width: 50%;
+    min-width: 0;
+}
+
+@media (max-width: 600px) {
+    .booking-form-row {
+        flex-direction: column;
+        gap: 10px;
+    }
+    .booking-form-row input,
+    .booking-form-row select {
+        width: 100%;
+    }
+}
+
+/* 第 8 項四格大卡片強制等高與整齊對齊 */
+.category-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    gap: 15px;
+    margin-top: 10px;
+    align-items: stretch;
+}
+
+.category-card {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    cursor: pointer;
+}
+
+.category-card input[type="checkbox"] {
+    position: absolute;
+    opacity: 0;
+    width: 0;
+    height: 0;
+}
+
+.category-card .card-content {
+    background: #f8f9fa;
+    border: 2px solid #e9ecef;
+    border-radius: 10px;
+    padding: 20px;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    transition: all 0.2s ease-in-out;
+}
+
+.category-card .card-icon {
+    font-size: 20px;
+    color: #495057;
+    margin-bottom: 8px;
+}
+
+.category-card .card-title {
+    font-size: 16px;
+    font-weight: 700;
+    color: #212529;
+    margin-bottom: 6px;
+}
+
+.category-card .card-desc {
+    font-size: 13px;
+    color: #6c757d;
+    line-height: 1.4;
+}
+
+.category-card:hover .card-content {
+    border-color: #adb5bd;
+    background: #f1f3f5;
+}
+
+.category-card input[type="checkbox"]:checked + .card-content {
+    border-color: var(--navy-900);
+    background-color: #f0f4f9;
+    box-shadow: 0 4px 10px rgba(26, 54, 93, 0.1);
+}
+
+.category-card input[type="checkbox"]:checked + .card-content .card-icon,
+.category-card input[type="checkbox"]:checked + .card-content .card-title {
+    color: var(--navy-900);
+}
+
+/* ========================================== */
+/* 📱 僅在手機版隱藏主視覺 Logo 方格            */
+/* ========================================== */
+@media (max-width: 768px) {
+    .visual-card-wrapper {
+        display: none !important;
+    }
+}
+
+/* ========================================== */
+/* 🏷️ 三個獨立有底色標籤（膠囊樣式）排版      */
+/* ========================================== */
+.feature-badges-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 16px;
+    margin: 20px 0 35px 0;
+}
+
+.feature-card-item {
+    background: #ffffff;
+    border: 1px solid #e2e8f0;
+    border-top: 3px solid var(--navy-900); /* 頂部加一條深藍質感線 */
+    padding: 12px 24px;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    box-shadow: 0 4px 12px rgba(20, 40, 75, 0.05);
+    transition: transform 0.2s ease;
+}
+
+.feature-card-item i {
+    color: var(--amber-accent); /* 橘色圖示點綴 */
+    font-size: 18px;
+}
+
+.feature-card-item span {
+    color: var(--navy-900);
+    font-weight: 700;
+    font-size: 16px;
+    letter-spacing: 0.5px;
+}
+
+/* ========================================== */
+/* 🛠️ 表單區塊與底部間隔、備註文字調整        */
+/* ========================================== */
+
+/* 1. 讓整塊預約表單區塊（含上下留白）與深藍色頁尾拉開舒適的間隔 */
+.form-section {
+    padding: 70px 0 90px 0; /* 讓上下方都有充足的呼吸空間，底部特別拉開與頁尾的距離 */
+}
+
+/* 2. 緊貼在「送出申請」按鈕下方的備註文字（無圖示、低調灰色） */
+.styled-form-box .security-note {
+    text-align: center;
+    color: var(--gray-400); /* 改為柔和低調的備註灰色 */
+    font-size: 13px;        /* 字體稍微改小，更有精緻備註質感 */
+    margin-top: 12px;       /* 緊貼在送出按鈕下方，距離縮小 */
+    margin-bottom: 0px;
+    letter-spacing: 0.5px;
+}
+/* ========================================== */
+/* 🚀 5步驟專屬顧問諮詢流程與提醒最終修正樣式   */
+/* ========================================== */
+.process-section {
+    padding: 70px 0;
+    background-color: var(--white);
+    border-top: 1px solid var(--gray-200);
+    border-bottom: 1px solid var(--gray-200);
+}
+
+.process-tag {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    background: #eef2ff;
+    color: var(--navy-900);
+    padding: 6px 14px;
+    border-radius: 20px;
+    font-size: 13px;
+    font-weight: 700;
+    margin-bottom: 12px;
+}
+
+/* 讓 5 個步驟在電腦版完美橫向並排，確保寬度充足與純白背景 */
+.process-grid {
+    display: grid !important;
+    grid-template-columns: repeat(5, minmax(0, 1fr)) !important; /* 強制 5 欄平均展開 */
+    gap: 16px !important;
+    margin-top: 35px;
+    width: 100%;
+}
+
+@media screen and (max-width: 1024px) {
+    .process-grid {
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)) !important; /* 平板與小螢幕自動換行適應 */
+    }
+}
+
+.process-card {
+    background: #ffffff !important;           /* 確保純白色背景 */
+    border: 1px solid var(--gray-200) !important;
+    border-radius: 12px !important;
+    padding: 24px 14px !important;            /* 內距適中，容納 5 個並排 */
+    position: relative;
+    text-align: center;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.03);
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.process-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 10px 25px rgba(20, 40, 75, 0.08);
+    border-color: #cbd5e1;
+}
+
+.process-step-num {
+    position: absolute;
+    top: 10px;
+    right: 14px;
+    font-size: 20px;
+    font-weight: 900;
+    color: var(--gray-400);
+    opacity: 0.3;
+    font-family: var(--font-serif);
+}
+
+.process-icon {
+    width: 48px;
+    height: 48px;
+    background: var(--navy-900);
+    color: var(--white);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 18px;
+    margin: 0 auto 14px auto;
+    box-shadow: 0 4px 10px rgba(24, 57, 94, 0.2);
+}
+
+.process-card h4 {
+    font-size: 15px;
+    font-weight: 700;
+    color: var(--navy-900);
+    margin-bottom: 8px;
+}
+
+.process-card p {
+    font-size: 12.5px;
+    color: var(--gray-600);
+    line-height: 1.5;
+}
+
+/* ========================================== */
+/* 💡 流程提醒方塊：乖乖在 5 個步驟下方、有藍灰底色 */
+/* ========================================== */
+.process-notice-box {
+    width: 100%;
+    clear: both;
+    margin-top: 35px !important;
+    background: #f0f4f9;                    /* 一致的溫潤藍灰底色 */
+    border: 1px solid #d0e1fd;
+    border-left: 5px solid var(--navy-900);
+    border-radius: 10px;
+    padding: 22px 26px;
+    box-sizing: border-box;
+    box-shadow: 0 4px 12px rgba(26, 54, 93, 0.03);
+}
+
+.process-notice-box .notice-title {
+    font-size: 15.5px;
+    font-weight: 700;
+    color: var(--navy-900);
+    margin-bottom: 12px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.process-notice-box .notice-title i {
+    color: var(--navy-900);
+}
+
+.process-notice-box ul {
+    list-style: none;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.process-notice-box li {
+    font-size: 14px;
+    color: var(--gray-600);
+    line-height: 1.6;
+    padding-left: 16px;
+    position: relative;
+}
+
+.process-notice-box li::before {
+    content: "•";
+    position: absolute;
+    left: 4px;
+    color: var(--navy-900);
+    font-weight: bold;
+}
+
+.process-notice-box li.highlight-notice {
+    color: var(--navy-900);
+    font-weight: 700;
+    background: rgba(24, 57, 94, 0.05);
+    padding: 8px 12px;
+    border-radius: 6px;
+    margin-top: 6px;
+    border-left: 3px solid var(--navy-900);
+}
+
+.process-notice-box li.highlight-notice::before {
+    display: none;
+}
+
+.process-notice-box li.highlight-notice i {
+    color: var(--navy-900);
+    margin-right: 6px;
+}
