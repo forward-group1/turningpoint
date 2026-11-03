@@ -911,10 +911,6 @@ select.form-control {
     box-shadow: 0 4px 10px rgba(24, 57, 94, 0.2);
 }
 
-/* 讓第三步的 LINE 圖示或特定圖示也能完美呈現 */
-.process-card:nth-child(1) .process-icon {
-    background-color: #06c755; /* LINE 經典綠色點綴，增加識別度 */
-}
 
 .process-card h4 {
     font-size: 17px;
