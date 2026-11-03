@@ -987,13 +987,13 @@ select.form-control {
 }
 
 .process-notice-box li.highlight-notice {
-    color: var(--navy-900);
+    color: var(--amber-accent);
     font-weight: 700;
     background: rgba(24, 57, 94, 0.05);
     padding: 8px 12px;
     border-radius: 6px;
     margin-top: 6px;
-    border-left: 3px solid var(--navy-900);
+    border-left: 3px solid var(--amber-accent);
 }
 
 .process-notice-box li.highlight-notice::before {
@@ -1001,6 +1001,6 @@ select.form-control {
 }
 
 .process-notice-box li.highlight-notice i {
-    color: var(--navy-900);
+    color: var(--amber-accent);
     margin-right: 6px;
 }
