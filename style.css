@@ -840,41 +840,23 @@ select.form-control {
     letter-spacing: 0.5px;
 }
 /* ========================================== */
-/* 🚀 5步驟專屬顧問諮詢流程（舒適寬鬆排版）      */
+/* 🚀 5步驟專屬顧問諮詢流程（強制橫向 5 欄排列） */
 /* ========================================== */
-.process-section {
-    padding: 70px 0;
-    background-color: var(--white);
-    border-top: 1px solid var(--gray-200);
-    border-bottom: 1px solid var(--gray-200);
-}
-
-.process-tag {
-    display: inline-flex;
-    align-items: center;
-    gap: 6px;
-    background: #eef2ff;
-    color: var(--navy-900);
-    padding: 6px 14px;
-    border-radius: 20px;
-    font-size: 13px;
-    font-weight: 700;
-    margin-bottom: 12px;
-}
-
-/* 讓 5 個步驟的卡片改回比較寬鬆、大器的網格排版（電腦版自動舒適排列） */
-.process-grid-5 {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-    gap: 20px;
+.process-grid {
+    display: flex !important;               /* 👈 改用 Flex 強制橫向排列 */
+    flex-wrap: nowrap !important;           /* 電腦版不換行 */
+    gap: 16px;                              /* 卡片之間的間距 */
     margin-top: 35px;
+    width: 100%;
 }
 
 .process-card {
+    flex: 1;                                /* 👈 讓 5 張卡片平分寬度、橫向展開 */
+    min-width: 0;                           /* 防止內容撐開卡片 */
     background: var(--light-bg);
     border: 1px solid var(--gray-200);
     border-radius: 12px;
-    padding: 28px 20px;
+    padding: 24px 14px;                     /* 橫向排列時稍微縮減內距更精緻 */
     position: relative;
     text-align: center;
     transition: transform 0.2s ease, box-shadow 0.2s ease;
@@ -888,9 +870,9 @@ select.form-control {
 
 .process-step-num {
     position: absolute;
-    top: 14px;
-    right: 18px;
-    font-size: 24px;
+    top: 10px;
+    right: 14px;
+    font-size: 20px;
     font-weight: 900;
     color: var(--gray-400);
     opacity: 0.3;
@@ -898,30 +880,48 @@ select.form-control {
 }
 
 .process-icon {
-    width: 52px;
-    height: 52px;
+    width: 48px;
+    height: 48px;
     background: var(--navy-900);
     color: var(--white);
     border-radius: 50%;
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 20px;
-    margin: 0 auto 16px auto;
+    font-size: 18px;
+    margin: 0 auto 14px auto;
     box-shadow: 0 4px 10px rgba(24, 57, 94, 0.2);
 }
 
 .process-card h4 {
-    font-size: 16.5px;
+    font-size: 15px;
     font-weight: 700;
     color: var(--navy-900);
     margin-bottom: 8px;
+    white-space: nowrap;                     /* 讓卡片標題儘量不折行 */
 }
 
 .process-card p {
-    font-size: 13.5px;
+    font-size: 12.5px;
     color: var(--gray-600);
-    line-height: 1.6;
+    line-height: 1.5;
+}
+
+/* 📱 手機版自動變回直向排列，避免擠壓 */
+@media screen and (max-width: 992px) {
+    .process-grid {
+        flex-wrap: wrap !important;
+    }
+    .process-card {
+        flex: 1 1 calc(50% - 16px);          /* 中型螢幕一列兩張 */
+        min-width: 220px;
+    }
+}
+
+@media screen and (max-width: 576px) {
+    .process-card {
+        flex: 1 1 100%;                      /* 手機版一列一張 */
+    }
 }
 
 /* ========================================== */
@@ -986,7 +986,7 @@ select.form-control {
     padding: 8px 12px;
     border-radius: 6px;
     margin-top: 6px;
-    border-left: 3px solid var(--amber-accent); /* 僅用一小道橘色點綴代表重點 */
+    border-left: 3px solid var(--navy-900); 
 }
 
 .process-notice-box li.highlight-notice::before {
