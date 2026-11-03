@@ -994,6 +994,6 @@ select.form-control {
 }
 
 .process-notice-box li.highlight-notice i {
-    color: var(--amber-accent);
+    color: var(--navy-900);
     margin-right: 6px;
 }
