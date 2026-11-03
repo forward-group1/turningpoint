@@ -989,7 +989,7 @@ select.form-control {
 .process-notice-box li.highlight-notice {
     color: var(--amber-accent);
     font-weight: 700;
-    background: rgba(24, 57, 94, 0.05);
+    background: #ffffff !important;
     padding: 8px 12px;
     border-radius: 6px;
     margin-top: 6px;
