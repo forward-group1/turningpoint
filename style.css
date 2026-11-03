@@ -218,7 +218,6 @@ body {
     text-align: center;
 }
 
-/* 獨立控制主視覺卡片內 Logo 大小：維持大方醒目尺寸 */
 .brand-card-frame .logo-img {
     max-height: 140px !important;
     max-width: 180px !important;
@@ -301,7 +300,6 @@ body {
     margin: 0 auto 40px;
 }
 
-/* 4. 區塊大標題維持黑體 (無襯線) */
 .section-title {
     font-family: var(--font-sans) !important;
     font-size: 28px;
@@ -329,12 +327,11 @@ body {
     padding: 12px 24px;
     border-radius: 30px;
     box-shadow: 0 3px 8px rgba(26, 54, 93, 0.2);
-    letter-spacing: 2.5px; /* 👈 刻意拉開字與字之間的寬度，更有質感 */
-    line-height: 1.8;      /* 👈 兩行之間的距離拉開，呼吸感更好 */
+    letter-spacing: 2.5px;
+    line-height: 1.8;
     text-align: center;
 }
 
-/* 左欄淺藍、右欄淺黃背景色設定 */
 .service-card:nth-child(1) {
     background: #f0f4f9 !important;
     border: 1px solid #d0e1fd !important;
@@ -357,7 +354,6 @@ body {
     box-shadow: var(--shadow-lg);
 }
 
-/* 表單區塊樣式（藍色頂部裝飾條加粗至 16px） */
 .styled-form-box {
     background: var(--white);
     border-radius: var(--radius-sm);
@@ -447,7 +443,6 @@ select.form-control {
     outline: none;
 }
 
-/* 專門控制第 8 項「其他」的小型輸入框高度，避免被全域 textarea 蓋過 */
 #otherNeedText {
     height: 48px !important;
     min-height: 48px !important;
@@ -489,9 +484,8 @@ select.form-control {
     background: var(--navy-800);
 }
 
-
 .badge-item {
-    background: #ffffff; /* 如果在灰色背景上，可改為純白背景增添質感 */
+    background: #ffffff;
     border: 1px solid var(--gray-200);
     padding: 14px 16px;
     border-radius: var(--radius-sm);
@@ -775,18 +769,14 @@ select.form-control {
     color: var(--navy-900);
 }
 
-/* ========================================== */
-/* 📱 僅在手機版隱藏主視覺 Logo 方格            */
-/* ========================================== */
+/* 📱 僅在手機版隱藏主視覺 Logo 方格 */
 @media (max-width: 768px) {
     .visual-card-wrapper {
         display: none !important;
     }
 }
 
-/* ========================================== */
-/* 🏷️ 三個獨立有底色標籤（膠囊樣式）排版      */
-/* ========================================== */
+/* 🏷️ 三個獨立有底色標籤（膠囊樣式）排版 */
 .feature-badges-container {
     display: flex;
     justify-content: center;
@@ -799,7 +789,7 @@ select.form-control {
 .feature-card-item {
     background: #ffffff;
     border: 1px solid #e2e8f0;
-    border-top: 3px solid var(--navy-900); /* 頂部加一條深藍質感線 */
+    border-top: 3px solid var(--navy-900);
     padding: 12px 24px;
     border-radius: 10px;
     display: flex;
@@ -810,7 +800,7 @@ select.form-control {
 }
 
 .feature-card-item i {
-    color: var(--amber-accent); /* 橘色圖示點綴 */
+    color: var(--amber-accent);
     font-size: 18px;
 }
 
@@ -821,27 +811,21 @@ select.form-control {
     letter-spacing: 0.5px;
 }
 
-/* ========================================== */
-/* 🛠️ 表單區塊與底部間隔、備註文字調整        */
-/* ========================================== */
-
-/* 1. 讓整塊預約表單區塊（含上下留白）與深藍色頁尾拉開舒適的間隔 */
+/* 🛠️ 表單區塊與底部間隔、備註文字調整 */
 .form-section {
-    padding: 70px 0 90px 0; /* 讓上下方都有充足的呼吸空間，底部特別拉開與頁尾的距離 */
+    padding: 70px 0 90px 0;
 }
 
-/* 2. 緊貼在「送出申請」按鈕下方的備註文字（無圖示、低調灰色） */
 .styled-form-box .security-note {
     text-align: center;
-    color: var(--gray-400); /* 改為柔和低調的備註灰色 */
-    font-size: 13px;        /* 字體稍微改小，更有精緻備註質感 */
-    margin-top: 12px;       /* 緊貼在送出按鈕下方，距離縮小 */
+    color: var(--gray-400);
+    font-size: 13px;
+    margin-top: 12px;
     margin-bottom: 0px;
     letter-spacing: 0.5px;
 }
-/* ========================================== */
-/* 🚀 5步驟專屬顧問諮詢流程與提醒最終修正樣式   */
-/* ========================================== */
+
+/* 🚀 5步驟專屬顧問諮詢流程與提醒樣式（保留大框，內部置中微調） */
 .process-section {
     padding: 70px 0;
     background-color: var(--white);
@@ -862,10 +846,9 @@ select.form-control {
     margin-bottom: 12px;
 }
 
-/* 讓 5 個步驟在電腦版完美橫向並排，確保寬度充足與純白背景 */
 .process-grid {
     display: grid !important;
-    grid-template-columns: repeat(5, minmax(0, 1fr)) !important; /* 強制 5 欄平均展開 */
+    grid-template-columns: repeat(5, minmax(0, 1fr)) !important;
     gap: 16px !important;
     margin-top: 35px;
     width: 100%;
@@ -873,15 +856,15 @@ select.form-control {
 
 @media screen and (max-width: 1024px) {
     .process-grid {
-        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)) !important; /* 平板與小螢幕自動換行適應 */
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)) !important;
     }
 }
 
 .process-card {
-    background: #ffffff !important;           /* 確保純白色背景 */
+    background: #ffffff !important;
     border: 1px solid var(--gray-200) !important;
     border-radius: 12px !important;
-    padding: 24px 14px !important;            /* 內距適中，容納 5 個並排 */
+    padding: 24px 14px !important;
     position: relative;
     text-align: center;
     box-shadow: 0 4px 15px rgba(0, 0, 0, 0.03);
@@ -933,19 +916,21 @@ select.form-control {
 }
 
 /* ========================================== */
-/* 💡 流程提醒方塊：乖乖在 5 個步驟下方、有藍灰底色 */
+/* 💡 流程提醒方塊：保留大框，內部文字與小框置中微調 */
 /* ========================================== */
 .process-notice-box {
     width: 100%;
+    max-width: 950px;
     clear: both;
-    margin-top: 35px !important;
-    background: #f0f4f9;                    /* 一致的溫潤藍灰底色 */
+    margin: 40px auto 0 auto !important;
+    background: #f0f4f9;
     border: 1px solid #d0e1fd;
     border-left: 5px solid var(--navy-900);
     border-radius: 10px;
     padding: 22px 26px;
     box-sizing: border-box;
     box-shadow: 0 4px 12px rgba(26, 54, 93, 0.03);
+    text-align: left;
 }
 
 .process-notice-box .notice-title {
@@ -956,6 +941,7 @@ select.form-control {
     display: flex;
     align-items: center;
     gap: 8px;
+    justify-content: center; /* 標題置中 */
 }
 
 .process-notice-box .notice-title i {
@@ -968,6 +954,8 @@ select.form-control {
     display: flex;
     flex-direction: column;
     gap: 8px;
+    max-width: 750px;
+    margin: 0 auto; /* 上方兩行文字在大框內置中對齊 */
 }
 
 .process-notice-box li {
@@ -989,11 +977,16 @@ select.form-control {
 .process-notice-box li.highlight-notice {
     color: var(--navy-900);
     font-weight: 700;
-    background: rgba(24, 57, 94, 0.05);
-    padding: 8px 12px;
-    border-radius: 6px;
-    margin-top: 6px;
-    border-left: 3px solid var(--navy-900);
+    background: #ffffff !important; /* 小框內改為純白底色，在大框內更有層次感 */
+    border: 1px solid #d0e1fd !important;
+    padding: 10px 16px;
+    border-radius: 8px;
+    margin-top: 12px;
+    border-left: 4px solid var(--amber-accent) !important;
+    display: flex;
+    align-items: center;
+    justify-content: center; /* 重點小框內的文字置中 */
+    text-align: center;
 }
 
 .process-notice-box li.highlight-notice::before {
@@ -1001,6 +994,6 @@ select.form-control {
 }
 
 .process-notice-box li.highlight-notice i {
-    color: var(--navy-900);
+    color: var(--amber-accent);
     margin-right: 6px;
 }
