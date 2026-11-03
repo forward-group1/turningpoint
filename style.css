@@ -927,20 +927,18 @@ select.form-control {
 }
 
 /* ========================================== */
-/* 💡 流程提醒方塊（確保乖乖在 5 個步驟下方）   */
+/* 💡 流程提醒：移除大框、置中、保留精緻小框   */
 /* ========================================== */
 .process-notice-box {
     width: 100%;
-    clear: both;                            /* 確保不與上方浮動或橫向元素衝突 */
-    margin-top: 40px !important;            /* 與上方 5 個步驟保持舒適的間隔 */
-    background: #f0f4f9;                    /* 溫潤的一致藍灰底色 */
-    border: 1px solid #d0e1fd;
-    border-left: 5px solid var(--navy-900);
-    border-radius: 10px;
-    padding: 22px 26px;
-    max-width: 100%;                        /* 撐滿容器寬度 */
+    max-width: 850px;                       /* 限制適當寬度，讓它在電腦版置中時不會過寬 */
+    margin: 40px auto 0 auto !important;    /* 👈 左右 auto 實現完美置中 */
+    background: transparent !important;     /* 👈 移除外面大框的背景色 */
+    border: none !important;                /* 👈 移除外面大框的邊框 */
+    box-shadow: none !important;            /* 移除大框陰影 */
+    padding: 0;
     box-sizing: border-box;
-    box-shadow: 0 4px 12px rgba(26, 54, 93, 0.03);
+    text-align: left;                       /* 內部文字保持左對齊以便閱讀 */
 }
 
 .process-notice-box .notice-title {
@@ -951,6 +949,7 @@ select.form-control {
     display: flex;
     align-items: center;
     gap: 8px;
+    justify-content: center;                /* 標題置中 */
 }
 
 .process-notice-box .notice-title i {
@@ -963,6 +962,8 @@ select.form-control {
     display: flex;
     flex-direction: column;
     gap: 8px;
+    max-width: 700px;                       /* 讓上方兩行文字稍微集中置中 */
+    margin: 0 auto;
 }
 
 .process-notice-box li {
@@ -981,14 +982,20 @@ select.form-control {
     font-weight: bold;
 }
 
+/* 🎯 保留並優化您想要的「小的重點提示框」 */
 .process-notice-box li.highlight-notice {
     color: var(--navy-900);
     font-weight: 700;
-    background: rgba(24, 57, 94, 0.05);
-    padding: 8px 12px;
-    border-radius: 6px;
-    margin-top: 6px;
-    border-left: 3px solid var(--navy-900);
+    background: #f0f4f9 !important;         /* 👈 保留裡面小框的柔和藍灰背景 */
+    border: 1px solid #d0e1fd !important;   /* 👈 保留小框的精緻邊框 */
+    padding: 10px 16px;
+    border-radius: 8px;                     /* 圓角框 */
+    margin-top: 12px;                       /* 與上方文字拉開一點距離 */
+    border-left: 4px solid var(--navy-900) !important; /* 左側保留重點裝飾條 */
+    display: flex;
+    align-items: center;
+    justify-content: center;                /* 讓這句重要提醒文字在小框內置中 */
+    text-align: center;
 }
 
 .process-notice-box li.highlight-notice::before {
