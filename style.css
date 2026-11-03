@@ -840,11 +840,11 @@ select.form-control {
     letter-spacing: 0.5px;
 }
 /* ========================================== */
-/* 🚀 專屬顧問諮詢流程區塊樣式                  */
+/* 🚀 5步驟專屬顧問諮詢流程與提醒樣式          */
 /* ========================================== */
 .process-section {
     padding: 70px 0;
-    background-color: var(--white); /* 用純白背景與上下區塊的淺灰背景區隔，層次感更好 */
+    background-color: var(--white);
     border-top: 1px solid var(--gray-200);
     border-bottom: 1px solid var(--gray-200);
 }
@@ -862,18 +862,19 @@ select.form-control {
     margin-bottom: 12px;
 }
 
-.process-grid {
+/* 5個步驟在電腦版自動平分排列 */
+.process-grid-5 {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
-    gap: 20px;
-    margin-top: 40px;
+    grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
+    gap: 16px;
+    margin-top: 35px;
 }
 
 .process-card {
     background: var(--light-bg);
     border: 1px solid var(--gray-200);
     border-radius: 12px;
-    padding: 28px 20px;
+    padding: 24px 18px;
     position: relative;
     text-align: center;
     transition: transform 0.2s ease, box-shadow 0.2s ease;
@@ -885,12 +886,11 @@ select.form-control {
     border-color: #cbd5e1;
 }
 
-/* 步驟數字浮水印裝飾 */
 .process-step-num {
     position: absolute;
-    top: 14px;
-    right: 18px;
-    font-size: 24px;
+    top: 12px;
+    right: 16px;
+    font-size: 22px;
     font-weight: 900;
     color: var(--gray-400);
     opacity: 0.3;
@@ -898,29 +898,98 @@ select.form-control {
 }
 
 .process-icon {
-    width: 56px;
-    height: 56px;
+    width: 50px;
+    height: 50px;
     background: var(--navy-900);
     color: var(--white);
     border-radius: 50%;
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 22px;
-    margin: 0 auto 18px auto;
+    font-size: 20px;
+    margin: 0 auto 14px auto;
     box-shadow: 0 4px 10px rgba(24, 57, 94, 0.2);
 }
 
-
 .process-card h4 {
-    font-size: 17px;
+    font-size: 16px;
     font-weight: 700;
     color: var(--navy-900);
-    margin-bottom: 10px;
+    margin-bottom: 8px;
 }
 
 .process-card p {
-    font-size: 13.5px;
+    font-size: 13px;
+    color: var(--gray-600);
+    line-height: 1.5;
+}
+
+/* 流程下方提醒方框樣式 */
+.process-notice-box {
+    margin-top: 35px;
+    background: #fdfaf3; /* 柔和的淺橘黃色底，帶有提醒性質 */
+    border: 1.5px solid #fcefc9;
+    border-left: 5px solid var(--amber-accent); /* 左側加粗橘色條 */
+    border-radius: 10px;
+    padding: 20px 24px;
+    max-width: 900px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.process-notice-box .notice-title {
+    font-size: 15px;
+    font-weight: 700;
+    color: var(--navy-900);
+    margin-bottom: 10px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.process-notice-box .notice-title i {
+    color: var(--amber-accent);
+}
+
+.process-notice-box ul {
+    list-style: none;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.process-notice-box li {
+    font-size: 14px;
     color: var(--gray-600);
     line-height: 1.6;
+    padding-left: 16px;
+    position: relative;
+}
+
+.process-notice-box li::before {
+    content: "•";
+    position: absolute;
+    left: 4px;
+    color: var(--navy-900);
+    font-weight: bold;
+}
+
+/* 特別強調最後一句免費諮詢限制 */
+.process-notice-box li.highlight-notice {
+    color: #c05621;
+    font-weight: 700;
+    background: rgba(242, 153, 74, 0.08);
+    padding: 6px 10px;
+    border-radius: 6px;
+    margin-top: 4px;
+}
+
+.process-notice-box li.highlight-notice::before {
+    display: none; /* 隱藏預設圓點，改用星星icon */
+}
+
+.process-notice-box li.highlight-notice i {
+    color: var(--amber-accent);
+    margin-right: 4px;
 }
